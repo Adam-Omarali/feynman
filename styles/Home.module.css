@@ -1,5 +1,6 @@
 .container {
   padding: 0 2rem;
+  height: 100vh;
 }
 
 .main {
@@ -21,13 +22,35 @@
   align-items: center;
 }
 
+.headerPages {
+  display: flex;
+  padding: 2rem 0;
+  align-items: center;
+  gap: 30px;
+}
+
 .header {
   display: flex;
   flex: 1;
-  padding: 2rem 0;
   border-bottom: 1px solid #eaeaea;
+  justify-content: space-between;
+}
+
+.courseList {
+  display: flex;
+  padding: 10px;
   align-items: center;
-  gap: 30px;
+  gap: 8%
+}
+
+.columnFlex{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rowFlex{
+  display: flex;
 }
 
 .footer a {
