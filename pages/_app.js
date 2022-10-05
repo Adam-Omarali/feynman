@@ -7,6 +7,7 @@ import Header from '../components/Header';
 import { useEffect, useState } from 'react';
 import { appContext } from '../context/appContext'
 import config from '../config';
+import Head from 'next/head';
 
 
 function MyApp({ Component, pageProps:{session, ...pageProps} }) {
@@ -14,7 +15,10 @@ function MyApp({ Component, pageProps:{session, ...pageProps} }) {
   const [context, setContext] = useState(null)
 
   useEffect(() => {
-    fetch(`${config.server}/api/user`, {method: 'GET'}).then(res => res.json().then(data => setContext(data)))
+    fetch(`${config.server}/api/user`, {method: 'GET'}).then(res => res.json().then(data => 
+      {
+        setContext(data)
+      }))
   }, [])
 
   return (
@@ -26,6 +30,11 @@ function MyApp({ Component, pageProps:{session, ...pageProps} }) {
             dark: darkTheme.className
           }}>
           <NextUIProvider>
+                <Head>
+                    <title>Feynman</title>
+                    <meta name="description" content="Continously learn by developing your own material" />
+                    <link rel="icon" href="/favicon.ico" />
+                </Head>
                 <Component {...pageProps}/>
           </NextUIProvider>
         </NextThemesProvider>

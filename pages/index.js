@@ -1,25 +1,19 @@
 import { getSession } from 'next-auth/react'
-import Head from 'next/head'
-import CourseList from '../components/CourseList'
 import mongoose from 'mongoose'
 import { UserModel } from '../models/User'
 import Header from '../components/Header'
 import styles from '../styles/Home.module.css'
+import GridView from '../components/GridView'
 
 export default function Home(props) {
   
   return (
     <div className={styles.container}>
-      <Head>
-        <title>Feynman</title>
-        <meta name="description" content="Continously learn by developing your own material" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
 
       <Header/>
 
       <main>
-        <CourseList />
+        <GridView name="Courses" />
       </main>
     </div>
   )
@@ -39,8 +33,7 @@ export async function getServerSideProps(context){
     if (!user){
       const newUser = await UserModel.create({
         email: session.user.email,
-        name: session.user.name,
-        courses: []
+        name: session.user.name
       })
     }
     

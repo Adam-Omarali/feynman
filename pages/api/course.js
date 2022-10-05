@@ -2,16 +2,19 @@ import { NextApiRequest, NextApiResponse } from "next";
 import mongoose from "mongoose";
 import { CourseModel } from "../../models/Course";
 import { UserModel } from "../../models/User";
+import { getSession } from "next-auth/react";
+import { UnitModel } from "../../models/Unit";
 
 export default async function handler(req, res){
     try {
 
-        console.log(req.method)
+        const session = await getSession({req})
+
         if (req.method === "POST"){
 
             if(!req.body) return res.status(400).send("Missing body")
             await mongoose.connect(process.env.MONGODB_URL)
-            const course = await CourseModel.create({ userId: req.body.userId, name: req.body.name, units: req.body.units })
+            const course = await CourseModel.create({ userId: req.body.userId, name: req.body.name, units: [], examScores: [] })
 
             const user = await UserModel.findById(req.body.userId)
             user.courses = [...user.courses, course._id]
@@ -33,6 +36,38 @@ export default async function handler(req, res){
 
             res.status.send(200)
 
+        }
+
+        else if (req.method === "GET"){
+            await mongoose.connect(process.env.MONGODB_URL)
+            const courses = await CourseModel.find({userId: req.body.userId})
+
+            if(courses.length < 0) return res.status(400).send("No courses tied to the user")
+
+            res.status.send(200).json({courses: courses})
+        }
+
+        else if (req.method === "DELETE"){
+            if(!req.body) return res.status(400).send("Missing body")
+
+            await mongoose.connect(process.env.MONGODB_URL)
+            const courses = await CourseModel.deleteOne({_id: req.body.courseId})
+            const units = await UnitModel.deleteMany({courseId: req.body.courseId})
+            // const user = await UserModel.findOne({email: session.user.email})
+
+            // for (let index = 0; index < user.courses.length; index++) {
+            //     const course = user.courses[index];
+            //     if(course == req.body.courseId){
+            //         user.courses = user.course.splice(index, 1)
+            //         console.log(user.courses)
+            //         await user.save()
+            //         break
+            //     }
+            // }
+
+            if(courses.length < 0) return res.status(400).send("No courses under that id")
+
+            res.status.send(200)
         }
         
     } catch (error) {
