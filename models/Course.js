@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 const CourseSchema = new mongoose.Schema({
     userId: mongoose.SchemaTypes.ObjectId,
     name: String,
-    units: [mongoose.SchemaTypes.ObjectId],
     exams: [{
         name: String,
         scores: [Number],

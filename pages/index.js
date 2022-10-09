@@ -10,7 +10,7 @@ export default function Home(props) {
   return (
     <div className={styles.container}>
 
-      <Header/>
+      <Header title="Home"/>
 
       <main>
         <GridView name="Courses" />

@@ -12,13 +12,11 @@ export default async function handler(req, res){
 
         if (req.method === "POST"){
 
+            console.log(1)
+
             if(!req.body) return res.status(400).send("Missing body")
             await mongoose.connect(process.env.MONGODB_URL)
             const course = await CourseModel.create({ userId: req.body.userId, name: req.body.name, units: [], examScores: [] })
-
-            const user = await UserModel.findById(req.body.userId)
-            user.courses = [...user.courses, course._id]
-            await user.save()
 
             return res.status(200).json(course)
 
@@ -53,19 +51,8 @@ export default async function handler(req, res){
             await mongoose.connect(process.env.MONGODB_URL)
             const courses = await CourseModel.deleteOne({_id: req.body.courseId})
             const units = await UnitModel.deleteMany({courseId: req.body.courseId})
-            // const user = await UserModel.findOne({email: session.user.email})
 
-            // for (let index = 0; index < user.courses.length; index++) {
-            //     const course = user.courses[index];
-            //     if(course == req.body.courseId){
-            //         user.courses = user.course.splice(index, 1)
-            //         console.log(user.courses)
-            //         await user.save()
-            //         break
-            //     }
-            // }
-
-            if(courses.length < 0) return res.status(400).send("No courses under that id")
+            // if(courses.length < 0) return res.status(400).send("No courses under that id")
 
             res.status.send(200)
         }

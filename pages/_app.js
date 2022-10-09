@@ -18,6 +18,7 @@ function MyApp({ Component, pageProps:{session, ...pageProps} }) {
     fetch(`${config.server}/api/user`, {method: 'GET'}).then(res => res.json().then(data => 
       {
         setContext(data)
+        console.log(data)
       }))
   }, [])
 

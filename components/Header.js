@@ -24,6 +24,9 @@ export default function Header(props){
                 {/* <div>Courses</div> */}
                 {/* <div>Settings</div> */}
             </div>
+            <h2>
+                {props.title}
+            </h2>
             <div className={styles.headerPages}>
                 {context.user && <p>{context.user.name}</p>}
                 <Switch

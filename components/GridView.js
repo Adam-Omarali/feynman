@@ -1,12 +1,13 @@
-import { Button, Input, Link } from '@nextui-org/react'
+import { Button, Input, Link, Popover, Text } from '@nextui-org/react'
 import { useContext, useEffect, useState } from 'react'
 import { appContext } from '../context/appContext'
 import { deleteCourse, newCourse, updateCourse } from '../services/courseServices'
 import styles from '../styles/Home.module.css'
 import update from 'immutability-helper'
-import { getCourseById } from '../lib/getMaterials'
-import { newUnit } from '../services/unitServices'
+import { deleteUnit, newUnit, updateUnit } from '../services/unitServices'
 import { useRouter } from 'next/router'
+import { BsChevronDown } from "react-icons/bs";
+import { getCourseById } from '../lib/getMaterials'
 
 export default function GridView(props){
 
@@ -18,7 +19,6 @@ export default function GridView(props){
     const router = useRouter()
 
     let data = context.courses
-    let parentName = null
 
     let folderIcon = <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
                     width="75" height="75"
@@ -39,27 +39,26 @@ export default function GridView(props){
     }
 
     async function newData(){
-        let courses = [...context.courses]
 
         if (props.name === "Courses"){
             const body = {userId: context.user._id, name: folderName}
-            courses = await newCourse(body, courses)
+            let courses = await newCourse(body, context.courses)
+            context.set({...context, courses})
         }
         else if (props.name === "Units"){
             const body = {courseId: props.course, name: folderName}
-            courses = await newUnit(body, context, courses)
-        }
-        else {
-            let lessons = [...courses.units[props.unit].lessons]
+            let units = context.units
+            units = await newUnit(body, units)
+            context.set({...context, units})
         }
         
         setNewFolder(false)
         setFolderName("")
-        context.set({...context, courses})
     }
 
     async function updateData(id){
 
+        //find piece of content by id and change the name
         let content = [...data]
         for (let index = 0; index < content.length; index++) {
             const element = content[index];
@@ -68,39 +67,57 @@ export default function GridView(props){
             }
         }
 
-        //change what we're updating based on input
-        let courses = props.name === "Courses" ? content : [...context.courses]
-        let body = { name: folderName, courseId: id}
-
+        let newContext = context
+        
+        //update backend
+        //update context
         if (props.name === "Courses"){
-            updateCourse(body)
+            let body = { name: folderName, courseId: id}
+            await updateCourse(body)
+            newContext = update(context, {courses: {$set: courses }})
         }
         else if (props.name === "Units"){
-            courses.units = content
-        }
-        else {
-            let units = [...courses.units[props.unit]]
-            units.lessons = content
+            let body = { name: folderName, unitId: id}
+            await updateUnit(body)
+            let units = context.units
+            units[props.courseId] = content
+            newContext = update(context, {units: {$set: units }})
         }
 
-        const newContext = update(context, {courses: {$set: courses }})
-        console.log(newContext)
+        context.set(newContext)
         setFolderName("")
         setEdit(false)
     }
 
-    async function delData(){
-        let courses = [...context.courses]
+    async function delData(id){
+        let link = '/'
+        let newContext = null
 
-        if (props.name == "Units"){
-            const body = {courseId: props.course}
-            courses = await deleteCourse(body, courses)
+        let content = [...data]
+        for (let index = 0; index < content.length; index++) {
+            if(content[index]._id == id){
+                content.splice(index, 1)
+            }
         }
 
-        const newContext = update(context, {courses: {$set: courses }})
-        console.log(newContext)
+        if(props.name == "Courses"){
+            const body = {courseId: id}
+            await deleteCourse(body)
+            newContext = update(context, {courses: {$set: content }})
+            router.push(link)
+        }
+        if (props.name == "Units"){
+            const body = {unitId: id}
+            await deleteUnit(body)
+
+            let units = context.units
+            units[props.course] = content
+            newContext = update(context, {units: {$set: units }})
+
+            router.asPath.includes("course") ? "" : router.push(link + "course/" + id)
+        }
+
         context.set(newContext)
-        router.push('/')
     }
 
     function generateLink(id){
@@ -113,8 +130,7 @@ export default function GridView(props){
         if (props.name === "Units"){
             let course = getCourseById(context, props.course)
             if(course !== undefined){
-                data = course.units
-                parentName = `Course: ${course.name}`
+                data = context.units[props.course]
             }
             else{
                 data = []
@@ -127,14 +143,9 @@ export default function GridView(props){
 
         return(
             <div>
-                {props.name !== "Courses" &&
-                <div>
-                    <h1>{parentName}</h1>
-                    <Button onClick={() => delData()} color="error" auto flat>Delete</Button>
-                </div>}
                 <h1>{props.name}</h1>
                 <div className={styles.courseList}>      
-                    <Button auto color="gradient" onClick={() => setNewFolder(true)}>{`New ${props.name.slice(0, -1)}`}</Button>
+                    <Button auto color="gradient" onClick={() => setNewFolder(true)} style={{width: '100%'}}>{`New ${props.name.slice(0, -1)}`}</Button>
                     {newFolder && 
                         <div className={styles.columnFlex}>
                             {folderIcon}
@@ -147,6 +158,7 @@ export default function GridView(props){
                     {data && data.map(data => {
                         if (data !== null)
                         return(
+                            <>
                             <div key={data._id} className={styles.columnFlex}>
                                 <Link href={generateLink(data._id)}>
                                     <a>
@@ -154,19 +166,35 @@ export default function GridView(props){
                                     </a>
                                 </Link>
                                 <div className={styles.rowFlex} style={{gap: '5px'}}>
-                                    {editFolder ?
+                                    {editFolder == data._id ?
                                         <>
                                             {folderInput} 
                                             <Button auto onClick={() => updateData(data._id)}>Update</Button>
                                         </> : 
-                                        <p onDoubleClick={() => {setEdit(true); setNewFolder(false); setFolderName(data.name)}}>{data.name}</p>
+                                        <>
+                                            <div style={{display: "flex", alignItems: "center", justifyContent: "space-between"}}>
+                                                <p onDoubleClick={() => {setEdit(data._id); setNewFolder(false); setFolderName(data.name)}}>{data.name}</p>
+                                                <Popover>
+                                                    <Popover.Trigger>
+                                                        <object>
+                                                            <BsChevronDown fontSize={"small"} style={{marginLeft: "10px"}}></BsChevronDown>
+                                                        </object>
+                                                    </Popover.Trigger>
+                                                    <Popover.Content>
+                                                        <Button onClick={() => delData(data._id)} color="error" auto flat>Delete</Button>
+                                                    </Popover.Content>
+                                                </Popover>
+                                            </div>
+                                        </>
                                     }
                                 </div>
                             </div>
+                            </>
                         )
                     })
                     }
                 </div>
+                <div></div>
             </div>
         )
     }

@@ -18,20 +18,11 @@ async function newCourse(body, courses){
     
 }
 
-async function deleteCourse(body, courses){
+async function deleteCourse(body){
     const res = await fetch(`${config.server}/api/course`, 
                 {method: 'DELETE', 
                 body: JSON.stringify(body), 
                 headers: {'Content-Type': 'application/json'}})
-
-    for (let index = 0; index < courses.length; index++) {
-        if(courses[index]._id == body.courseId){
-            console.log(1)
-            courses.splice(index, 1)
-        }
-    }
-
-    return courses
 }
 
 export {newCourse, updateCourse, deleteCourse}

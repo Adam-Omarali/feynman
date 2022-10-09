@@ -8,27 +8,22 @@ async function updateUnit(body){
                 headers: {'Content-Type': 'application/json'}})
 }
 
-async function newUnit(body, context, courses){
+async function newUnit(body, units){
     const res = await fetch(`${config.server}/api/unit`, 
                 {method: 'POST', 
                 body: JSON.stringify(body), 
                 headers: {'Content-Type': 'application/json'}})
 
-    let course = getCourseById(context, body.courseId)
-    let units = [...course.units, res]
+    units[body.courseId].push(await res.json())
 
-    console.log(units)
-
-    //find course from courses and update it's unit property
-    for (let index = 0; index < courses.length; index++) {
-        const element = courses[index];
-        if (element._id == course._id){
-            courses[index].units = units
-            console.log(courses[index].units)
-        }
-    }
-    return courses
-    
+    return units
 }
 
-export {newUnit, updateUnit}
+async function deleteUnit(body){
+    const res = await fetch(`${config.server}/api/unit`, 
+                {method: 'DELETE', 
+                body: JSON.stringify(body), 
+                headers: {'Content-Type': 'application/json'}})
+}
+
+export {newUnit, updateUnit, deleteUnit}
