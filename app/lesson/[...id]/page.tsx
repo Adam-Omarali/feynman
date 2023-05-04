@@ -1,5 +1,7 @@
 import React from "react";
 
-export default function Page({ params }: { params: string }) {
-  return <div>lesson</div>;
+export default async function Page({ params }: { params: string }) {
+  // const course = await getMaterial("getUnit", params);
+
+  return <div>{"hi"}</div>;
 }

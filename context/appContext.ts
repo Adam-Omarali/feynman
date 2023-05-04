@@ -28,7 +28,7 @@ export interface courseMenu {
     }
 }
 
-export interface context {
+export interface contextInterface {
     value?: {
         user: {
             name: string,
@@ -37,9 +37,23 @@ export interface context {
             id: string
         } | {},
         courses: {[key: string]: {
-            units?: {[key: string]: {
+            units: {[key: string]: {
                 lessons?: {[key: string]: {}}
             }}},
+        }
+    }
+    set?: Function
+}
+
+export interface context2 {
+    value?: {
+        user: {
+            name: string,
+            image: string,
+            email: string,
+            id: string
+        } | {},
+        courses: {[key: string]: courseMenu
         }
     }
     set?: Function

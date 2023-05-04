@@ -2,7 +2,7 @@ import { LoadingOverlay } from "@mantine/core";
 import { onAuthStateChanged, signInWithPopup } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { defaultContext, appContext, context } from "../../context/appContext";
+import { defaultContext, appContext } from "../../context/appContext";
 import { auth, provider } from "../../firebase/clientConfig";
 
 function ContextProvider({ children }: { children: React.ReactNode }) {

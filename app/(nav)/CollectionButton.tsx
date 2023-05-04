@@ -6,7 +6,7 @@ import {
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { context, courseMenu } from "../../context/appContext";
+import { courseMenu } from "../../context/appContext";
 import { rem } from "../../util/rem";
 import { ItemInput } from "./header";
 

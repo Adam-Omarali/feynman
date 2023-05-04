@@ -19,7 +19,11 @@ import { DisplayCourseGroup } from "./CollectionButton";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase/clientConfig";
 import { UserButton } from "./UserButton";
-import { appContext, context, courseMenu } from "../../context/appContext";
+import {
+  appContext,
+  contextInterface,
+  courseMenu,
+} from "../../context/appContext";
 import EmojiPicker from "emoji-picker-react";
 
 const useStyles = createStyles((theme) => ({
@@ -167,7 +171,7 @@ export const blankCourse = {
 };
 
 async function addCourse(
-  context: context,
+  context: contextInterface,
   label: string,
   emoji: string,
   userId: string
@@ -191,7 +195,7 @@ async function addCourse(
 }
 
 async function addUnit(
-  context: context,
+  context: contextInterface,
   label: string,
   emoji: string,
   userId: string,
@@ -220,7 +224,7 @@ async function addUnit(
 }
 
 async function addLesson(
-  context: context,
+  context: contextInterface,
   label: string,
   emoji: string,
   userId: string,
@@ -274,7 +278,7 @@ export function ItemInput({
   const [emoji, setEmoji] = useState("🚀");
   const [pickEmoji, setPickEmoji] = useState(false);
   const [user, loading] = useAuthState(auth);
-  let context: context = useContext(appContext);
+  let context: contextInterface = useContext(appContext);
 
   const ref = useDetectClickOutside({ onTriggered: close });
   return (
@@ -282,7 +286,7 @@ export function ItemInput({
       <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
         <p onMouseOver={() => setPickEmoji(true)}>{emoji}</p>
         <Input
-          placeholder="Course Name"
+          placeholder={type.charAt(0).toUpperCase() + type.slice(1) + " Name"}
           autoFocus
           onKeyUp={async (e) => {
             if (e.key == "Enter" && user) {
@@ -337,7 +341,7 @@ export function NavbarSimple() {
   const [user, loading] = useAuthState(auth);
   const [courses, setCourses] = useState({});
 
-  let context: context = useContext(appContext);
+  let context: contextInterface = useContext(appContext);
 
   useEffect(() => {
     async function getMaterials() {
