@@ -9,7 +9,9 @@ import Image from '@tiptap/extension-image';
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import React, { useCallback, useEffect, useState } from "react";
-
+import "@benrbray/prosemirror-math/style/math.css";
+import "katex/dist/katex.min.css";
+import { MathInline } from "./Math.extension";
 import MenuBar from "./MenuBar";
 
 export default () => {
@@ -21,7 +23,8 @@ export default () => {
       Highlight,
       TaskList,
       TaskItem,
-      Image
+      Image,
+      MathInline
     ],
   });
 
