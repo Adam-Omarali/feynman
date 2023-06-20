@@ -5,10 +5,9 @@ import "../styles/styles.css";
 import Highlight from "@tiptap/extension-highlight";
 import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
-import Image from '@tiptap/extension-image';
+import Image from "@tiptap/extension-image";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import React, { useCallback, useEffect, useState } from "react";
 import "@benrbray/prosemirror-math/style/math.css";
 import "katex/dist/katex.min.css";
 import { MathInline } from "./Math.extension";
@@ -24,7 +23,7 @@ export default () => {
       TaskList,
       TaskItem,
       Image,
-      MathInline
+      MathInline,
     ],
   });
 

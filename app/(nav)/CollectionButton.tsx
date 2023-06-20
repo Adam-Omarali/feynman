@@ -1,67 +1,11 @@
-import { ActionIcon, createStyles, Input, UnstyledButton } from "@mantine/core";
-import {
-  IconChevronLeft,
-  IconChevronRight,
-  IconPlus,
-} from "@tabler/icons-react";
+"use client";
+
+import { IconChevronRight, IconPlus } from "@tabler/icons-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { courseMenu } from "../../context/appContext";
 import { rem } from "../../util/rem";
 import { ItemInput } from "./header";
-
-const useStyles = createStyles((theme) => ({
-  collectionLink: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: `${rem(8)} 7px`,
-    textDecoration: "none",
-    borderRadius: theme.radius.sm,
-    fontSize: theme.fontSizes.xs,
-    color:
-      theme.colorScheme === "dark"
-        ? theme.colors.dark[0]
-        : theme.colors.gray[7],
-    lineHeight: 1,
-    fontWeight: 500,
-
-    "&:hover": {
-      backgroundColor:
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[6]
-          : theme.colors.gray[0],
-      color: theme.colorScheme === "dark" ? theme.white : theme.black,
-    },
-  },
-
-  chevron: {
-    transition: "transform 200ms ease",
-  },
-
-  control: {
-    fontWeight: 500,
-    display: "block",
-    width: "100%",
-    color: theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
-    fontSize: theme.fontSizes.sm,
-
-    "&:hover": {
-      backgroundColor:
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[7]
-          : theme.colors.gray[0],
-      color: theme.colorScheme === "dark" ? theme.white : theme.black,
-    },
-  },
-
-  add: {
-    opacity: 0,
-    "&:hover": {
-      opacity: 1,
-    },
-  },
-}));
 
 export function DisplayCourseGroup({ course }: { course: courseMenu }) {
   const [courseOpened, setCourseOpened] = useState(false);
@@ -77,7 +21,7 @@ export function DisplayCourseGroup({ course }: { course: courseMenu }) {
       if (lessons) {
         setLessonOpened([
           ...lessonOpened,
-          Array<boolean>(Object.keys(lessons!).length).fill(false),
+          Array<boolean>(Object.keys(lessons).length).fill(false),
         ]);
       } else {
         setLessonOpened([...lessonOpened, []]);
@@ -101,8 +45,10 @@ export function DisplayCourseGroup({ course }: { course: courseMenu }) {
           setUnitOpened(arr);
 
           let lessonArr = [...lessonOpened];
-          lessonArr[idx] = Array<boolean>(lessonArr[idx].length).fill(value);
-          setLessonOpened(lessonArr);
+          if (lessonArr.length > idx) {
+            lessonArr[idx] = Array<boolean>(lessonArr[idx].length).fill(value);
+            setLessonOpened(lessonArr);
+          }
         }
         let unitItem: { name: string; id: string; emoji: string } = {
           name: unit.name!,
@@ -110,7 +56,6 @@ export function DisplayCourseGroup({ course }: { course: courseMenu }) {
           id: unit.id!,
         };
         if (courseOpened && unit) {
-          console.log(course.id + " " + unit.id);
           return (
             <div style={{ paddingLeft: "7px" }} key={unit.name}>
               <CollectionButton
@@ -120,26 +65,28 @@ export function DisplayCourseGroup({ course }: { course: courseMenu }) {
                 type={"lesson"}
                 refId={course.id + " " + unit.id}
               />
-              {Object.values(unit.lessons!).map((lesson, idx2) => {
-                let lesssonItem: { name: string; id: string; emoji: string } = {
-                  name: lesson.name!,
-                  emoji: lesson.emoji!,
-                  id: lesson.id!,
-                };
-                if (unitOpened && lessonOpened[idx][idx2]) {
-                  return (
-                    <div style={{ paddingLeft: "20px" }} key={lesson.name}>
-                      <CollectionButton
-                        item={lesssonItem}
-                        opened={undefined}
-                        type={"none"}
-                        setOpened={() => {}}
-                        refId={course.id + " " + unit.id}
-                      />
-                    </div>
-                  );
-                }
-              })}
+              {unit.lessons &&
+                Object.values(unit.lessons).map((lesson, idx2) => {
+                  let lesssonItem: { name: string; id: string; emoji: string } =
+                    {
+                      name: lesson.name!,
+                      emoji: lesson.emoji!,
+                      id: lesson.id!,
+                    };
+                  if (unitOpened && lessonOpened[idx][idx2]) {
+                    return (
+                      <div style={{ paddingLeft: "20px" }} key={lesson.name}>
+                        <CollectionButton
+                          item={lesssonItem}
+                          opened={undefined}
+                          type={"none"}
+                          setOpened={() => {}}
+                          refId={course.id + " " + unit.id}
+                        />
+                      </div>
+                    );
+                  }
+                })}
             </div>
           );
         }
@@ -161,18 +108,17 @@ export default function CollectionButton({
   type?: string;
   refId?: string;
 }) {
-  const { classes, theme } = useStyles();
   const [displayAdd, setDisplayAdd] = useState(false);
   const [addCourse, setAddCourse] = useState(false);
-  const ChevronIcon = theme.dir === "ltr" ? IconChevronRight : IconChevronLeft;
+  const ChevronIcon = IconChevronRight;
 
   return (
     <div>
-      <UnstyledButton className={classes.control}>
+      <button className="w-full">
         <div
           // onClick={(event) => event.preventDefault()}
           key={item.id}
-          className={classes.collectionLink}
+          className="flex items-center justify-between px-2 py-2 rounded text-xs leading-none font-medium text-gray-500 hover:text-black hover:bg-gray-100"
           onMouseEnter={() => setDisplayAdd(true)}
           onMouseLeave={() => setDisplayAdd(false)}
         >
@@ -183,13 +129,11 @@ export default function CollectionButton({
                   addCourse ? setAddCourse(false) : null;
                   opened !== undefined ? setOpened(!opened) : null;
                 }}
-                className={classes.chevron}
+                className="transition-transform duration-150 ease-linear"
                 size="1rem"
                 stroke={1.5}
                 style={{
-                  transform: opened
-                    ? `rotate(${theme.dir === "rtl" ? -90 : 90}deg)`
-                    : "none",
+                  transform: opened ? `rotate(90deg)` : "none",
                 }}
               />
             ) : null}
@@ -225,7 +169,7 @@ export default function CollectionButton({
             />
           ) : null}
         </div>
-      </UnstyledButton>
+      </button>
       {addCourse ? (
         <div style={{ padding: "5px 5px 0px 12px", margin: "0px" }}>
           <ItemInput

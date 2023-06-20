@@ -1,7 +1,9 @@
-import { LoadingOverlay } from "@mantine/core";
+"use client";
+
 import { onAuthStateChanged, signInWithPopup } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
+import Spinner from "../../components/Spinner";
 import { defaultContext, appContext } from "../../context/appContext";
 import { auth, provider } from "../../firebase/clientConfig";
 
@@ -37,7 +39,7 @@ function ContextProvider({ children }: { children: React.ReactNode }) {
   });
 
   if (loading) {
-    return <>Loading...</>;
+    return <Spinner />;
   } else {
     return (
       <appContext.Provider value={{ ...context, set: setContext }}>

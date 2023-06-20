@@ -1,5 +1,30 @@
 import { createContext, Dispatch, SetStateAction, useContext } from "react";
 
+export interface units {
+    [key: string]: {
+        name?: string,
+        emoji?: string,
+        id?: string
+        userId?: string,
+        questions?: {}[],
+        lastTest?: {},
+        lessons?: lessons
+    }
+}
+
+export interface lesson {
+    name: string
+    id: string
+    courseId: string
+    unitId: string
+    emoji?: string
+    content?: string
+}
+
+interface lessons {
+    [key: string]: lesson
+}
+
 export interface courseMenu {
     name: string,
     emoji: string,
@@ -8,24 +33,7 @@ export interface courseMenu {
     questions: {}[],
     lastTest: {},
     id: string,
-    units: {
-        [key: string]: {
-            name?: string,
-            emoji?: string,
-            id?: string
-            userId?: string,
-            questions?: {}[],
-            lastTest?: {},
-            lessons?: {
-                [key: string]: {
-                    name?: string,
-                    id?: string,
-                    emoji?: string
-                    content?: string
-                }
-            }
-        }
-    }
+    units: units
 }
 
 export interface contextInterface {

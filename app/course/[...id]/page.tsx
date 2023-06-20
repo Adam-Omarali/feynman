@@ -1,15 +1,13 @@
 "use client";
-import { Button, Skeleton } from "@mantine/core";
+import { MaterialCard } from "@/components/MaterialCard";
+import { Button } from "@/components/ui/Button";
+import { IconDots } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { useContext } from "react";
-import TipTap from "../../../components/Editor";
-import { MaterialCard } from "../../../components/MaterialCard";
-import {
-  appContext,
-  context2,
-  contextInterface,
-} from "../../../context/appContext";
+import { UserMenu } from "../../../components/MaterialMenu";
+import { appContext, context2 } from "../../../context/appContext";
 import { fetchMaterial } from "../../../services/fetchMaterial";
+import TipTap from "../../../components/Editor";
 
 export default function Home({ params }: { params: { id: string } }) {
   async function getMaterial() {
@@ -19,23 +17,17 @@ export default function Home({ params }: { params: { id: string } }) {
   const context: context2 = useContext(appContext);
   // const course = await fetchMaterial("/course/" + params.id[0]);
   if (result.isLoading) {
-    return <Skeleton height={8} radius="xl" />;
-  }
-  if (context.value) {
-    console.log(context.value.courses[result.data.id]);
+    return <span className="loading loading-spinner text-primary"></span>;
   }
   return (
-    <div style={{ width: "80%" }}>
-      <h1>{result.data.name}</h1>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
+    <div style={{ padding: "0px 20px", flex: "80%" }}>
+      <div className="flex justify-between items-center">
+        <h1>{result.data.name + " " + result.data.emoji}</h1>
+        <UserMenu id={result.data.id} context={context} type={"course"} />
+      </div>
+      <div className="flex justify-between items-center">
         <h3>Units</h3>
-        <Button color="primary">Add Unit</Button>
+        <Button>Add Unit</Button>
       </div>
       {context.value &&
         context.value.courses[result.data.id] &&

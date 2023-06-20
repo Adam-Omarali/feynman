@@ -1,15 +1,12 @@
-"use client";
+import "./globals.css";
 import { Manrope } from "@next/font/google";
-import MantineWrapper from "./(providers)/mantineProvider";
 import ContextProvider from "./(providers)/contextProvider";
-import { NavbarSimple } from "./(nav)/header";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import QueryClientWrapper from "./(providers)/queryProvider";
+import Navbar from "./(nav)/nav";
 
 const manrope = Manrope({
   subsets: [],
 });
-
-const queryClient = new QueryClient();
 
 export default function RootLayout({
   children,
@@ -19,18 +16,16 @@ export default function RootLayout({
   return (
     <html className={manrope.className}>
       <head />
-      <MantineWrapper>
-        <body style={{ margin: 0 }}>
-          <ContextProvider>
-            <QueryClientProvider client={queryClient}>
-              <div style={{ display: "flex", gap: "20px" }}>
-                <NavbarSimple />
-                {children}
-              </div>
-            </QueryClientProvider>
-          </ContextProvider>
-        </body>
-      </MantineWrapper>
+      <body style={{ margin: 0 }}>
+        <ContextProvider>
+          <QueryClientWrapper>
+            <div style={{ display: "flex", gap: "5px" }}>
+              <Navbar />
+              {children}
+            </div>
+          </QueryClientWrapper>
+        </ContextProvider>
+      </body>
     </html>
   );
 }

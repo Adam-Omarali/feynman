@@ -1,57 +1,19 @@
-import {
-  UnstyledButton,
-  UnstyledButtonProps,
-  Group,
-  Avatar,
-  Text,
-  createStyles,
-} from "@mantine/core";
+"use client";
+import { auth } from "@/firebase/clientConfig";
 
-const useStyles = createStyles((theme) => ({
-  user: {
-    display: "block",
-    width: "100%",
-    padding: theme.spacing.md,
-    color: theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
-
-    "&:hover": {
-      backgroundColor:
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[8]
-          : theme.colors.gray[0],
-    },
-  },
-}));
-
-interface UserButtonProps extends UnstyledButtonProps {
-  image: string;
-  name: string;
-  email: string;
-  icon?: React.ReactNode;
-}
-
-export function UserButton({
-  image,
-  name,
-  email,
-  icon,
-  ...others
-}: UserButtonProps) {
-  const { classes } = useStyles();
-
+export function UserButton() {
   return (
-    <UnstyledButton className={classes.user} {...others}>
-      <Group>
-        <Avatar src={image} radius="xl" />
-
-        <div style={{ flex: 1 }}>
-          <Text size="sm" weight={400}>
-            {name}
-          </Text>
+    <div className="w-full flex p-3 gap-4 items-center">
+      <div className="avatar">
+        <div className="w-10 rounded-full">
+          <img
+            src={auth.currentUser?.photoURL ? auth.currentUser?.photoURL : ""}
+          />
         </div>
-
-        {/* {icon || <IconChevronRight size="0.9rem" stroke={1.5} />} */}
-      </Group>
-    </UnstyledButton>
+      </div>
+      <div className="text-sm">
+        <p>{auth.currentUser?.displayName}</p>
+      </div>
+    </div>
   );
 }
