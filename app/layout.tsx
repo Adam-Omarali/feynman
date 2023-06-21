@@ -1,5 +1,5 @@
 import "./globals.css";
-import { Manrope } from "@next/font/google";
+import { Manrope } from "next/font/google";
 import ContextProvider from "./(providers)/contextProvider";
 import QueryClientWrapper from "./(providers)/queryProvider";
 import Navbar from "./(nav)/nav";

@@ -73,7 +73,11 @@ export function DisplayCourseGroup({ course }: { course: courseMenu }) {
                       emoji: lesson.emoji!,
                       id: lesson.id!,
                     };
-                  if (unitOpened && lessonOpened[idx][idx2]) {
+                  if (
+                    unitOpened &&
+                    lessonOpened.length > idx &&
+                    lessonOpened[idx][idx2]
+                  ) {
                     return (
                       <div style={{ paddingLeft: "20px" }} key={lesson.name}>
                         <CollectionButton

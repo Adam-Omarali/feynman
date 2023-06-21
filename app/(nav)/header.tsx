@@ -118,7 +118,7 @@ export function CourseList() {
     }
   }
 
-  const result = useQuery({ queryKey: ["all courses"], queryFn: getMaterials });
+  const result = useQuery({ queryKey: ["allCourses"], queryFn: getMaterials });
 
   let context: contextInterface = useContext(appContext);
 
