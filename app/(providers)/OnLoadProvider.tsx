@@ -2,35 +2,36 @@
 
 import { onAuthStateChanged, signInWithPopup } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 import Spinner from "../../components/Spinner";
-import { defaultContext, appContext } from "../../context/appContext";
 import { auth, provider } from "../../firebase/clientConfig";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { UserState, login } from "@/redux/user";
+import { setCourses } from "@/redux/courses";
 
-function ContextProvider({ children }: { children: React.ReactNode }) {
-  const [context, setContext] = useState(defaultContext);
-  const [user, loading] = useAuthState(auth);
+function AuthProvider({ children }: { children: React.ReactNode }) {
+  const user = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const subscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser === null) {
         await signInWithPopup(auth, provider);
       } else {
-        let newContext = context;
-        newContext.value.user = {
+        let newUser: UserState = {
           name: currentUser?.displayName!,
           email: currentUser?.email!,
-          image: currentUser?.photoURL!,
+          photo: currentUser?.photoURL!,
           id: currentUser?.uid,
         };
+        dispatch(login(newUser));
         let materials = await (
           await fetch("/api/getMaterials", {
             body: JSON.stringify({ id: currentUser.uid }),
             method: "POST",
           })
         ).json();
-        newContext.value.courses = materials;
-        setContext(newContext);
+        dispatch(setCourses(materials));
       }
     });
     return () => {
@@ -38,15 +39,11 @@ function ContextProvider({ children }: { children: React.ReactNode }) {
     };
   });
 
-  if (loading) {
+  if (user.id === "") {
     return <Spinner />;
   } else {
-    return (
-      <appContext.Provider value={{ ...context, set: setContext }}>
-        {children}
-      </appContext.Provider>
-    );
+    return <>{children}</>;
   }
 }
 
-export default ContextProvider;
+export default AuthProvider;

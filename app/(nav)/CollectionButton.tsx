@@ -3,9 +3,9 @@
 import { IconChevronRight, IconPlus } from "@tabler/icons-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { courseMenu } from "../../context/appContext";
 import { rem } from "../../util/rem";
-import { ItemInput } from "./header";
+import { ItemInput } from "./course-list";
+import { courseMenu } from "@/redux/courses";
 
 export function DisplayCourseGroup({ course }: { course: courseMenu }) {
   const [courseOpened, setCourseOpened] = useState(false);

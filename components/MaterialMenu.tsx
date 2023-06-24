@@ -2,7 +2,6 @@
 
 import { IconTrash, IconDots } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
-import { context2 } from "../context/appContext";
 import { deleteMaterial } from "../services/deleteMaterial";
 
 /**
@@ -13,15 +12,7 @@ import { deleteMaterial } from "../services/deleteMaterial";
  * @returns ui for an editing menu
  */
 
-export function UserMenu({
-  id,
-  context,
-  type,
-}: {
-  id: string;
-  context: context2;
-  type: string;
-}) {
+export function UserMenu({ id, type }: { id: string; type: string }) {
   const router = useRouter();
   return (
     <details className="dropdown dropdown-left">
@@ -33,7 +24,7 @@ export function UserMenu({
           <div
             className="text-red-500 hover:text-red-500 hover:bg-red-100"
             onClick={async () => {
-              await deleteMaterial(id, context, type);
+              await deleteMaterial(id, type);
               router.push("/");
             }}
           >

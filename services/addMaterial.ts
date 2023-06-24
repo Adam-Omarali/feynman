@@ -1,7 +1,7 @@
-import { context2, contextInterface } from "../context/appContext";
+import { store } from "@/redux/store";
+import { addCourseStore } from "@/redux/courses";
 
 export async function addCourse(
-    context: contextInterface,
     label: string,
     emoji: string,
     userId: string
@@ -17,15 +17,10 @@ export async function addCourse(
         })
     ).json();
     newCourse["units"] = [];
-    let newContext = context;
-    if (context.value && context.set) {
-        newContext.value!.courses[newCourse.id] = newCourse;
-        context.set(newContext);
-    }
+    store.dispatch(addCourseStore(newCourse))
 }
   
 export async function addUnit(
-    context: contextInterface,
     label: string,
     emoji: string,
     userId: string,
@@ -42,19 +37,18 @@ export async function addUnit(
         method: "POST",
       })
     ).json();
-    let newContext = context;
-    let units = newContext.value?.courses[refId].units;
-    if (units) {
-      units[newUnit.id] = newUnit;
-      newContext.value!.courses[refId].units = units;
-    }
-    if (context.set) {
-      context.set(newContext);
-    }
+    // let newContext = context;
+    // let units = newContext.value?.courses[refId].units;
+    // if (units) {
+    //   units[newUnit.id] = newUnit;
+    //   newContext.value!.courses[refId].units = units;
+    // }
+    // if (context.set) {
+    //   context.set(newContext);
+    // }
 }
   
 export async function addLesson(
-    context: contextInterface,
     label: string,
     emoji: string,
     userId: string,
@@ -74,15 +68,15 @@ export async function addLesson(
         method: "POST",
       })
     ).json();
-    let newContext = {...context};
-    let units = context.value?.courses[courseId].units;
-    if(units && units[unitId].lessons){
-        units[unitId].lessons![newLesson.id] = newLesson
-        if(newContext.value?.courses[refId].units){
-            newContext.value.courses[refId].units = units
-        }
-    }
-    if (context.set) {
-      context.set(newContext);
-    }
+    // let newContext = {...context};
+    // let units = context.value?.courses[courseId].units;
+    // if(units && units[unitId].lessons){
+    //     units[unitId].lessons![newLesson.id] = newLesson
+    //     if(newContext.value?.courses[refId].units){
+    //         newContext.value.courses[refId].units = units
+    //     }
+    // }
+    // if (context.set) {
+    //   context.set(newContext);
+    // }
 }

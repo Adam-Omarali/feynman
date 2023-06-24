@@ -6,12 +6,13 @@ import { useDetectClickOutside } from "react-detect-click-outside";
 import { DisplayCourseGroup } from "./CollectionButton";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase/clientConfig";
-import { appContext, contextInterface } from "../../context/appContext";
 import EmojiPicker from "emoji-picker-react";
 import { addCourse, addLesson, addUnit } from "../../services/addMaterial";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 export const blankCourse = {
   emoji: "",
@@ -43,8 +44,8 @@ export function ItemInput({
 
   const [emoji, setEmoji] = useState("🚀");
   const [pickEmoji, setPickEmoji] = useState(false);
-  const [user, loading] = useAuthState(auth);
-  let context: contextInterface = useContext(appContext);
+  const user = useSelector((state: RootState) => state.user);
+  let courses = useSelector((state: RootState) => state.courses.value);
 
   const ref = useDetectClickOutside({ onTriggered: close });
   return (
@@ -60,28 +61,11 @@ export function ItemInput({
               setDisplay(false);
               console.log(type);
               if (type == "course") {
-                await addCourse(
-                  context,
-                  e.currentTarget.value,
-                  emoji,
-                  user?.uid
-                );
+                await addCourse(e.currentTarget.value, emoji, user.id);
               } else if (type == "unit") {
-                await addUnit(
-                  context,
-                  e.currentTarget.value,
-                  emoji,
-                  user.uid,
-                  refId!
-                );
+                await addUnit(e.currentTarget.value, emoji, user.id, refId!);
               } else if (type == "lesson") {
-                await addLesson(
-                  context,
-                  e.currentTarget.value,
-                  emoji,
-                  user.uid,
-                  refId!
-                );
+                await addLesson(e.currentTarget.value, emoji, user.id, refId!);
               }
             }
           }}
@@ -104,23 +88,7 @@ export function ItemInput({
 
 export function CourseList() {
   const [addCourse, setAddCourse] = useState(false);
-  const [user, loading] = useAuthState(auth);
-
-  async function getMaterials() {
-    if (!loading) {
-      let materials = await (
-        await fetch("/api/getMaterials", {
-          body: JSON.stringify({ id: user?.uid }),
-          method: "POST",
-        })
-      ).json();
-      return materials;
-    }
-  }
-
-  const result = useQuery({ queryKey: ["allCourses"], queryFn: getMaterials });
-
-  let context: contextInterface = useContext(appContext);
+  let courses = useSelector((state: RootState) => state.courses.value);
 
   return (
     <div>
@@ -148,16 +116,14 @@ export function CourseList() {
         />
       ) : null}
       <li>
-        {context.value?.courses ? (
-          Object.values(context.value.courses).map((course: any) => (
-            <div key={course.id}>
-              <DisplayCourseGroup course={course} />
-            </div>
-          ))
-        ) : result.isLoading ? (
-          <Skeleton />
+        {Object.keys(courses).length === 0 ? (
+          <div className="space-y-2 flex flex-col gap-3 p-3">
+            {[0, 1, 2].map((_) => (
+              <Skeleton className="h-4 w-40 bg-slate-300" key={_} />
+            ))}
+          </div>
         ) : (
-          Object.values(result.data).map((course: any) => (
+          Object.values(courses).map((course: any) => (
             <div key={course.id}>
               <DisplayCourseGroup course={course} />
             </div>
