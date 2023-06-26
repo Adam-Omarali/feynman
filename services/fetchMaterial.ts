@@ -1,4 +1,4 @@
-import { lesson } from "../context/appContext";
+import { lesson } from "@/redux/courses";
 
 export async function fetchMaterial(endpoint:string){
   try{

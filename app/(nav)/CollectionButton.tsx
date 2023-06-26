@@ -9,12 +9,13 @@ import { courseMenu } from "@/redux/courses";
 
 export function DisplayCourseGroup({ course }: { course: courseMenu }) {
   const [courseOpened, setCourseOpened] = useState(false);
-  const [unitOpened, setUnitOpened] = useState<boolean[]>(
-    Array<boolean>(Object.keys(course.units).length).fill(false)
-  );
+  const [unitOpened, setUnitOpened] = useState<boolean[]>([]);
   const [lessonOpened, setLessonOpened] = useState<boolean[][]>([]);
 
   useEffect(() => {
+    let unitTemp = Array<boolean>(Object.keys(course.units).length).fill(false);
+    setUnitOpened(unitTemp);
+
     for (let unit in Object.keys(course.units)) {
       unit = Object.keys(course.units)[unit];
       let lessons = course.units[unit].lessons;
@@ -27,7 +28,7 @@ export function DisplayCourseGroup({ course }: { course: courseMenu }) {
         setLessonOpened([...lessonOpened, []]);
       }
     }
-  }, []);
+  }, [course]);
 
   return (
     <div>
@@ -57,7 +58,7 @@ export function DisplayCourseGroup({ course }: { course: courseMenu }) {
         };
         if (courseOpened && unit) {
           return (
-            <div style={{ paddingLeft: "7px" }} key={unit.name}>
+            <div style={{ paddingLeft: "7px" }} key={unit.id}>
               <CollectionButton
                 item={unitItem}
                 opened={unitOpened[idx]}
@@ -79,7 +80,7 @@ export function DisplayCourseGroup({ course }: { course: courseMenu }) {
                     lessonOpened[idx][idx2]
                   ) {
                     return (
-                      <div style={{ paddingLeft: "20px" }} key={lesson.name}>
+                      <div style={{ paddingLeft: "20px" }} key={lesson.id}>
                         <CollectionButton
                           item={lesssonItem}
                           opened={undefined}
@@ -158,7 +159,7 @@ export default function CollectionButton({
             >
               <span style={{ marginRight: rem(9), fontSize: rem(16) }}>
                 {item.emoji}
-              </span>{" "}
+              </span>
               {item.name}
             </Link>
           </div>

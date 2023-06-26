@@ -18,10 +18,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               emoji: emoji,
               courseId: ref,
               questions: {},
-              lastTest: {}
+              lastTest: {},
+              lessons: {}
             };
 
-            console.log(newUnit)
             await unitRef.set(newUnit);
           
             // Return the new course data

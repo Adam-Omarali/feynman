@@ -45,7 +45,6 @@ export function ItemInput({
   const [emoji, setEmoji] = useState("🚀");
   const [pickEmoji, setPickEmoji] = useState(false);
   const user = useSelector((state: RootState) => state.user);
-  let courses = useSelector((state: RootState) => state.courses.value);
 
   const ref = useDetectClickOutside({ onTriggered: close });
   return (
@@ -59,7 +58,6 @@ export function ItemInput({
           onKeyUp={async (e) => {
             if (e.key == "Enter" && user) {
               setDisplay(false);
-              console.log(type);
               if (type == "course") {
                 await addCourse(e.currentTarget.value, emoji, user.id);
               } else if (type == "unit") {

@@ -12,7 +12,13 @@ import { deleteMaterial } from "../services/deleteMaterial";
  * @returns ui for an editing menu
  */
 
-export function UserMenu({ id, type }: { id: string; type: string }) {
+export function UserMenu({
+  ids,
+  type,
+}: {
+  ids: { lessonId: string; unitId: string; courseId: string };
+  type: string;
+}) {
   const router = useRouter();
   return (
     <details className="dropdown dropdown-left">
@@ -24,8 +30,13 @@ export function UserMenu({ id, type }: { id: string; type: string }) {
           <div
             className="text-red-500 hover:text-red-500 hover:bg-red-100"
             onClick={async () => {
-              await deleteMaterial(id, type);
-              router.push("/");
+              await deleteMaterial(ids, type);
+              if (type == "course") router.push("/");
+              if (type == "unit") router.push("/course/" + ids.courseId);
+              if (type == "lesson")
+                router.push(
+                  "/unit/" + ids.unitId + "?courseId=" + ids.courseId
+                );
             }}
           >
             <IconTrash size="0.9rem" stroke={1.5} />

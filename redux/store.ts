@@ -1,12 +1,19 @@
 import { configureStore } from '@reduxjs/toolkit'
 import userReducer from './user'
 import courseReducer from './courses'
+import loadingReducer from './loading'
+
 
 export const store = configureStore({
   reducer: {
     user: userReducer,
-    courses: courseReducer
+    courses: courseReducer,
+    loading: loadingReducer
   },
+})
+
+store.subscribe(() => {
+  localStorage.setItem('courses', JSON.stringify(store.getState().courses.value))
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

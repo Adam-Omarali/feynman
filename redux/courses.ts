@@ -1,16 +1,20 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
+import { produce } from 'immer'
+
+export interface unit {
+    name: string,
+    emoji: string,
+    id: string
+    userId: string,
+    questions: {}[],
+    lastTest: {},
+    lessons: lessons,
+    courseId: string
+}
 
 export interface units {
-  [key: string]: {
-      name?: string,
-      emoji?: string,
-      id?: string
-      userId?: string,
-      questions?: {}[],
-      lastTest?: {},
-      lessons?: lessons
-  }
+  [key: string]: unit
 }
 
 export interface lesson {
@@ -18,7 +22,7 @@ export interface lesson {
   id: string
   courseId: string
   unitId: string
-  emoji?: string
+  emoji: string
   content?: string
 }
 
@@ -55,13 +59,23 @@ export const courseSlice = createSlice({
     addCourseStore: (state, action: PayloadAction<courseMenu>) => {
       state.value[action.payload.id] = action.payload
     },
+    addLessonStore: (state, action: PayloadAction<lesson>) => {
+      return produce(state, draft => {
+        let courseId = action.payload.courseId
+        let unitId = action.payload.unitId
+        draft.value[courseId].units[unitId].lessons[action.payload.id] = action.payload
+      })
+    },
     deleteCourseStore: (state, action: PayloadAction<string>) => {
       delete state.value[action.payload]
+    },
+    deleteUnitStore: (state, action: PayloadAction<{units: units, courseId: string}>) => {
+      state.value[action.payload.courseId].units = action.payload.units
     }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { setCourses, addCourseStore, deleteCourseStore } = courseSlice.actions
+export const { setCourses, addCourseStore, addLessonStore, deleteCourseStore, deleteUnitStore } = courseSlice.actions
 
 export default courseSlice.reducer

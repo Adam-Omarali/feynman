@@ -1,5 +1,5 @@
 import { store } from "@/redux/store";
-import { addCourseStore } from "@/redux/courses";
+import { addCourseStore, addLessonStore, setCourses, unit } from "@/redux/courses";
 
 export async function addCourse(
     label: string,
@@ -26,7 +26,7 @@ export async function addUnit(
     userId: string,
     refId: string
 ) {
-    let newUnit = await (
+    let newUnit: unit = await (
       await fetch("/api/addUnit", {
         body: JSON.stringify({
           name: label,
@@ -37,15 +37,10 @@ export async function addUnit(
         method: "POST",
       })
     ).json();
-    // let newContext = context;
-    // let units = newContext.value?.courses[refId].units;
-    // if (units) {
-    //   units[newUnit.id] = newUnit;
-    //   newContext.value!.courses[refId].units = units;
-    // }
-    // if (context.set) {
-    //   context.set(newContext);
-    // }
+
+    let courses = {...store.getState().courses.value}
+    courses[refId].units[newUnit.id] = newUnit    
+    store.dispatch(setCourses(courses))
 }
   
 export async function addLesson(
@@ -68,15 +63,6 @@ export async function addLesson(
         method: "POST",
       })
     ).json();
-    // let newContext = {...context};
-    // let units = context.value?.courses[courseId].units;
-    // if(units && units[unitId].lessons){
-    //     units[unitId].lessons![newLesson.id] = newLesson
-    //     if(newContext.value?.courses[refId].units){
-    //         newContext.value.courses[refId].units = units
-    //     }
-    // }
-    // if (context.set) {
-    //   context.set(newContext);
-    // }
+
+    store.dispatch(addLessonStore(newLesson))
 }

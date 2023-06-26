@@ -1,6 +1,6 @@
 import { store } from "@/redux/store";
 import { fetchMaterial, getCourseIdFromUnitId, getIdFromLessonId } from "./fetchMaterial";
-import { CourseState, deleteCourseStore, units } from "@/redux/courses";
+import { CourseState, deleteCourseStore, deleteUnitStore, setCourses, units } from "@/redux/courses";
 
 async function deleteLessonAPI(lessonId: string){
     await fetch("/api/deleteById", {
@@ -48,7 +48,10 @@ async function deleteUnitAPI(unitId: string, units: units){
             id: unitId,
             type: "units"
         }),
-        method: "DELETE",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        method: "POST",
     })
     if(units[unitId].lessons){
         let lessons = units[unitId].lessons
@@ -58,26 +61,25 @@ async function deleteUnitAPI(unitId: string, units: units){
     }
 }
 
-// export async function deleteUnit(unitId: string, context?: context2){
-//     if(context){
-//         let courseId = await getCourseIdFromUnitId(unitId)
-//         let units = context.value?.courses[courseId].units
-//         if(units){
-//             await deleteUnitAPI(unitId, units)
-//         }
-//         await deleteUnitContext(unitId, context, courseId)
-//     }
-// }
+export async function deleteUnit(unitId: string, courseId: string){
+    let courses = {...store.getState().courses.value}
+    let units = courses[courseId].units
+    if(units){
+        await deleteUnitAPI(unitId, units)
+    }
+    let {[unitId]: {}, ...unitsToKeep} = units
+    store.dispatch(deleteUnitStore({units: unitsToKeep, courseId}))
+}
 
 export async function deleteCourse(id: string){
     let courseStore:CourseState = store.getState().courses
     let courses = courseStore.value
-    // if(courses && courses[id]['units']){
-    //     let units = courses[id].units
-    //     for(let unitId in units){
-    //         deleteUnitAPI(unitId, units)
-    //     }
-    // }
+    if(courses && courses[id]['units']){
+        let units = courses[id].units
+        for(let unitId in units){
+            deleteUnitAPI(unitId, units)
+        }
+    }
 
     store.dispatch(deleteCourseStore(id))
 
@@ -89,17 +91,17 @@ export async function deleteCourse(id: string){
         headers: {
             'Content-Type': 'application/json',
         },
-        method: "DELETE",
+        method: "POST",
     })
 }
 
-export async function deleteMaterial(id: string, type: string){
+export async function deleteMaterial(ids: {lessonId: string, unitId: string, courseId: string}, type: string){
     if(type == "course"){
-        await deleteCourse(id)
+        await deleteCourse(ids.courseId)
     }
-    // else if(type == "unit"){
-    //     await deleteUnit(id)
-    // }
+    else if(type == "unit"){
+        await deleteUnit(ids.unitId, ids.courseId)
+    }
     // else if (type == "lesson"){
     //     await deleteLesson(id)
     // }

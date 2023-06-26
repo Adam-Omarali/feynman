@@ -6,6 +6,7 @@ import React, { useContext } from "react";
 import TipTap from "../../../components/Editor";
 import { UserMenu } from "../../../components/MaterialMenu";
 import { fetchMaterial } from "../../../services/fetchMaterial";
+import { store } from "@/redux/store";
 
 export default function Page(url: {
   params: { id: string[] };
@@ -17,6 +18,9 @@ export default function Page(url: {
   }
 
   const result = useQuery({ queryKey: ["course"], queryFn: getMaterial });
+
+  // const lesson = store.getState().courses.value[searchParams]
+
   // const course = await fetchMaterial("/course/" + params.id[0]);
   if (result.isLoading) {
     return <Skeleton />;

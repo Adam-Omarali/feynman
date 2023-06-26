@@ -16,7 +16,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               userId: userId,
               name: name,
               emoji: emoji,
-              lastExam: {}
+              lastExam: {},
+              units: {}
             };
             await courseRef.set(newCourse);
           
