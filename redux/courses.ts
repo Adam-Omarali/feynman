@@ -10,7 +10,8 @@ export interface unit {
     questions: {}[],
     lastTest: {},
     lessons: lessons,
-    courseId: string
+    courseId: string,
+    description: string
 }
 
 export interface units {
@@ -59,6 +60,12 @@ export const courseSlice = createSlice({
     addCourseStore: (state, action: PayloadAction<courseMenu>) => {
       state.value[action.payload.id] = action.payload
     },
+    addUnitStore: (state, action: PayloadAction<unit>) => {
+      return produce(state, draft => {
+        let courseId = action.payload.courseId
+        draft.value[courseId].units[action.payload.id] = action.payload
+      })
+    },
     addLessonStore: (state, action: PayloadAction<lesson>) => {
       return produce(state, draft => {
         let courseId = action.payload.courseId
@@ -69,13 +76,20 @@ export const courseSlice = createSlice({
     deleteCourseStore: (state, action: PayloadAction<string>) => {
       delete state.value[action.payload]
     },
-    deleteUnitStore: (state, action: PayloadAction<{units: units, courseId: string}>) => {
-      state.value[action.payload.courseId].units = action.payload.units
+    deleteUnitStore: (state, action: PayloadAction<{unitId:string, courseId: string}>) => {
+      return produce(state, draft => {
+        delete draft.value[action.payload.courseId].units[action.payload.unitId]
+      })    
+    },
+    deleteLessonStore: (state, action: PayloadAction<{courseId: string, unitId:string, lessonId:string}>) => {
+      return produce(state, draft => {
+        delete draft.value[action.payload.courseId].units[action.payload.unitId].lessons[action.payload.lessonId]
+      })
     }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { setCourses, addCourseStore, addLessonStore, deleteCourseStore, deleteUnitStore } = courseSlice.actions
+export const { setCourses, addCourseStore, addLessonStore, addUnitStore, deleteCourseStore, deleteUnitStore, deleteLessonStore } = courseSlice.actions
 
 export default courseSlice.reducer

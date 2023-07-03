@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         let { id } = JSON.parse(req.body)
         id = id[0]
 
-        let doc = await db.collection("courses").doc(id).get()
+        let doc = await db.collection("questions").doc(id).get()
         if (doc.exists){
             res.status(200).send(doc.data())
         }

@@ -3,6 +3,18 @@
 @tailwind utilities;
  
 @layer base {
+  h1 {
+    @apply text-3xl font-semibold;
+  }
+  h2 {
+    @apply text-xl font-semibold;
+  }
+  ul {
+    @apply list-disc
+  }
+  ol {
+    @apply list-decimal
+  }
   :root {
     --background: 0 0% 100%;
     --foreground: 222.2 47.4% 11.2%;

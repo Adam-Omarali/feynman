@@ -26,6 +26,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
       })
     ).json();
     dispatch(setCourses(materials));
+    dispatch(fetched());
   }
 
   useEffect(() => {

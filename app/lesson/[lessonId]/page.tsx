@@ -1,0 +1,57 @@
+"use client";
+
+import { Skeleton } from "@/components/ui/Skeleton";
+import { useQuery } from "@tanstack/react-query";
+import React, { useContext } from "react";
+import TipTap from "../../../components/Editor";
+import { UserMenu } from "../../../components/MaterialMenu";
+import { fetchMaterial } from "../../../services/fetchMaterial";
+import { RootState, store } from "@/redux/store";
+import { useSelector } from "react-redux";
+
+export default function Page({
+  params,
+  searchParams,
+}: {
+  params: { lessonId: string };
+  searchParams: { course: string; unit: string };
+}) {
+  let course = useSelector(
+    (state: RootState) => state.courses.value[searchParams.course]
+  );
+
+  if (course === undefined) {
+    return <Skeleton className="h-4 w-[150px] p-4"></Skeleton>;
+  }
+  let unit = course.units[searchParams.unit];
+  if (unit === undefined) {
+    return <Skeleton className="h-4 w-[150px] p-4"></Skeleton>;
+  }
+  let lesson = unit.lessons[params.lessonId];
+  if (lesson === undefined) {
+    return <Skeleton className="h-4 w-[150px] p-4"></Skeleton>;
+  }
+
+  return (
+    <div style={{ padding: "0px 20px", flex: "80%" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <p>{lesson.name + " " + lesson.emoji}</p>
+        <UserMenu
+          ids={{
+            courseId: searchParams.course,
+            unitId: searchParams.unit,
+            lessonId: params.lessonId,
+          }}
+          type={"lesson"}
+        />
+      </div>
+      <TipTap />
+    </div>
+  );
+}

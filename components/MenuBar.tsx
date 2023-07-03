@@ -107,6 +107,27 @@ export default ({ editor }: { editor: Editor }) => {
       title: "Clear Format",
       action: () => editor.chain().focus().clearNodes().unsetAllMarks().run(),
     },
+    // {
+    //   type: "divider",
+    // },
+    // {
+    //   icon: "align-left",
+    //   title: "Left",
+    //   action: () => editor.chain().focus().setTextAlign("left"),
+    //   isActive: () => editor.isActive({ textAlign: "left" }),
+    // },
+    // {
+    //   icon: "align-center",
+    //   title: "Center",
+    //   action: () => editor.chain().focus().setTextAlign("center"),
+    //   isActive: () => editor.isActive({ textAlign: "center" }),
+    // },
+    // {
+    //   icon: "align-right",
+    //   title: "Right",
+    //   action: () => editor.chain().focus().setTextAlign("right"),
+    //   isActive: () => editor.isActive({ textAlign: "right" }),
+    // },
     {
       type: "divider",
     },

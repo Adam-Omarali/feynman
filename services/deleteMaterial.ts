@@ -1,6 +1,6 @@
 import { store } from "@/redux/store";
 import { fetchMaterial, getCourseIdFromUnitId, getIdFromLessonId } from "./fetchMaterial";
-import { CourseState, deleteCourseStore, deleteUnitStore, setCourses, units } from "@/redux/courses";
+import { CourseState, deleteCourseStore, deleteLessonStore, deleteUnitStore, setCourses, units } from "@/redux/courses";
 
 async function deleteLessonAPI(lessonId: string){
     await fetch("/api/deleteById", {
@@ -8,7 +8,10 @@ async function deleteLessonAPI(lessonId: string){
             id: lessonId,
             type: "lessons"
         }),
-        method: "DELETE",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        method: "POST",
     })
 }
 
@@ -23,24 +26,10 @@ async function deleteLessonAPI(lessonId: string){
 //     }
 // }
 
-// export async function deleteLesson(lessonId: string){
-//     await deleteLessonAPI(lessonId)
-//     if(context){
-//         await deleteLessonContext(lessonId, context)
-//     }
-// }
-
-// async function deleteUnitContext(unitId: string, context: context2, courseId?:string){
-//     if(!courseId){
-//         courseId = await getCourseIdFromUnitId(unitId)
-//     }
-
-//     let newContext = {...context}
-//     delete newContext.value?.courses[courseId!].units[unitId]
-//     if(context.set){
-//         context.set(newContext)
-//     }
-// }
+export async function deleteLesson(courseId:string, unitId: string, lessonId: string){
+    await deleteLessonAPI(lessonId)
+    store.dispatch(deleteLessonStore({courseId, unitId, lessonId}))
+}
 
 async function deleteUnitAPI(unitId: string, units: units){
     await fetch("/api/deleteById", {
@@ -67,8 +56,7 @@ export async function deleteUnit(unitId: string, courseId: string){
     if(units){
         await deleteUnitAPI(unitId, units)
     }
-    let {[unitId]: {}, ...unitsToKeep} = units
-    store.dispatch(deleteUnitStore({units: unitsToKeep, courseId}))
+    store.dispatch(deleteUnitStore({unitId, courseId}))
 }
 
 export async function deleteCourse(id: string){
@@ -102,7 +90,8 @@ export async function deleteMaterial(ids: {lessonId: string, unitId: string, cou
     else if(type == "unit"){
         await deleteUnit(ids.unitId, ids.courseId)
     }
-    // else if (type == "lesson"){
-    //     await deleteLesson(id)
-    // }
+    else if (type == "lesson"){
+        console.log(1)
+        await deleteLesson(ids.courseId, ids.unitId, ids.lessonId)
+    }
 }

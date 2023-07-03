@@ -1,10 +1,11 @@
 import { store } from "@/redux/store";
-import { addCourseStore, addLessonStore, setCourses, unit } from "@/redux/courses";
+import { addCourseStore, addLessonStore, addUnitStore, setCourses, unit } from "@/redux/courses";
 
 export async function addCourse(
     label: string,
     emoji: string,
-    userId: string
+    userId: string,
+    description?: string
     ) {
     let newCourse = await (
         await fetch("/api/addCourse", {
@@ -12,19 +13,22 @@ export async function addCourse(
             name: label,
             userId: userId,
             emoji: emoji,
+            description: description ? description : ""
         }),
         method: "POST",
         })
     ).json();
     newCourse["units"] = [];
     store.dispatch(addCourseStore(newCourse))
+    return `/course/${newCourse.id}`
 }
   
 export async function addUnit(
     label: string,
     emoji: string,
     userId: string,
-    refId: string
+    refId: string,
+    description?: string
 ) {
     let newUnit: unit = await (
       await fetch("/api/addUnit", {
@@ -33,14 +37,14 @@ export async function addUnit(
           emoji: emoji,
           userId: userId,
           ref: refId,
+          description: description ? description : ""
         }),
         method: "POST",
       })
     ).json();
 
-    let courses = {...store.getState().courses.value}
-    courses[refId].units[newUnit.id] = newUnit    
-    store.dispatch(setCourses(courses))
+    store.dispatch(addUnitStore(newUnit))
+    return `/unit/${newUnit.id}?course=${refId}`
 }
   
 export async function addLesson(
@@ -64,5 +68,6 @@ export async function addLesson(
       })
     ).json();
 
-    store.dispatch(addLessonStore(newLesson))
+    store.dispatch(addLessonStore(newLesson));
+    return `/lesson/${newLesson.id}?course=${courseId}&unit=${unitId}`
 }

@@ -1,7 +1,15 @@
-export default async function Home() {
+import CourseGallery from "@/components/CourseGallery";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Feynman",
+};
+
+export default function Home() {
   return (
-    <div>
-      <h1>Courses</h1>
+    <div className="p-4">
+      <p className="text-xl font-semibold pb-2">Courses</p>
+      <CourseGallery />
     </div>
   );
 }

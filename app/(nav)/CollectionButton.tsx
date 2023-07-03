@@ -13,21 +13,28 @@ export function DisplayCourseGroup({ course }: { course: courseMenu }) {
   const [lessonOpened, setLessonOpened] = useState<boolean[][]>([]);
 
   useEffect(() => {
-    let unitTemp = Array<boolean>(Object.keys(course.units).length).fill(false);
+    let unitToAdd = Object.keys(course.units).length - unitOpened.length;
+    let unitTemp = [...unitOpened];
+    for (let index = 0; index < unitToAdd; index++) {
+      unitTemp.push(false);
+    }
     setUnitOpened(unitTemp);
+
+    let lessonTemp: boolean[][] = [];
 
     for (let unit in Object.keys(course.units)) {
       unit = Object.keys(course.units)[unit];
       let lessons = course.units[unit].lessons;
       if (lessons) {
-        setLessonOpened([
-          ...lessonOpened,
+        lessonTemp = [
+          ...lessonTemp,
           Array<boolean>(Object.keys(lessons).length).fill(false),
-        ]);
+        ];
       } else {
-        setLessonOpened([...lessonOpened, []]);
+        lessonTemp = [...lessonTemp, []];
       }
     }
+    setLessonOpened(lessonTemp);
   }, [course]);
 
   return (
@@ -64,7 +71,7 @@ export function DisplayCourseGroup({ course }: { course: courseMenu }) {
                 opened={unitOpened[idx]}
                 setOpened={handleUnitOpened}
                 type={"lesson"}
-                refId={course.id + " " + unit.id}
+                refId={course.id}
               />
               {unit.lessons &&
                 Object.values(unit.lessons).map((lesson, idx2) => {

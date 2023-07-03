@@ -34,9 +34,7 @@ export function UserMenu({
               if (type == "course") router.push("/");
               if (type == "unit") router.push("/course/" + ids.courseId);
               if (type == "lesson")
-                router.push(
-                  "/unit/" + ids.unitId + "?courseId=" + ids.courseId
-                );
+                router.push("/unit/" + ids.unitId + "?course=" + ids.courseId);
             }}
           >
             <IconTrash size="0.9rem" stroke={1.5} />
