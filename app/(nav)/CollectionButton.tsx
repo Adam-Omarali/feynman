@@ -3,31 +3,39 @@
 import { IconChevronRight, IconPlus } from "@tabler/icons-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { courseMenu } from "../../context/appContext";
 import { rem } from "../../util/rem";
-import { ItemInput } from "./header";
+import { ItemInput } from "./course-list";
+import { courseMenu } from "@/redux/courses";
 
 export function DisplayCourseGroup({ course }: { course: courseMenu }) {
   const [courseOpened, setCourseOpened] = useState(false);
-  const [unitOpened, setUnitOpened] = useState<boolean[]>(
-    Array<boolean>(Object.keys(course.units).length).fill(false)
-  );
+  const [unitOpened, setUnitOpened] = useState<boolean[]>([]);
   const [lessonOpened, setLessonOpened] = useState<boolean[][]>([]);
 
   useEffect(() => {
+    let unitToAdd = Object.keys(course.units).length - unitOpened.length;
+    let unitTemp = [...unitOpened];
+    for (let index = 0; index < unitToAdd; index++) {
+      unitTemp.push(false);
+    }
+    setUnitOpened(unitTemp);
+
+    let lessonTemp: boolean[][] = [];
+
     for (let unit in Object.keys(course.units)) {
       unit = Object.keys(course.units)[unit];
       let lessons = course.units[unit].lessons;
       if (lessons) {
-        setLessonOpened([
-          ...lessonOpened,
+        lessonTemp = [
+          ...lessonTemp,
           Array<boolean>(Object.keys(lessons).length).fill(false),
-        ]);
+        ];
       } else {
-        setLessonOpened([...lessonOpened, []]);
+        lessonTemp = [...lessonTemp, []];
       }
     }
-  }, []);
+    setLessonOpened(lessonTemp);
+  }, [course]);
 
   return (
     <div>
@@ -57,13 +65,13 @@ export function DisplayCourseGroup({ course }: { course: courseMenu }) {
         };
         if (courseOpened && unit) {
           return (
-            <div style={{ paddingLeft: "7px" }} key={unit.name}>
+            <div style={{ paddingLeft: "7px" }} key={unit.id}>
               <CollectionButton
                 item={unitItem}
                 opened={unitOpened[idx]}
                 setOpened={handleUnitOpened}
                 type={"lesson"}
-                refId={course.id + " " + unit.id}
+                refId={course.id}
               />
               {unit.lessons &&
                 Object.values(unit.lessons).map((lesson, idx2) => {
@@ -79,7 +87,7 @@ export function DisplayCourseGroup({ course }: { course: courseMenu }) {
                     lessonOpened[idx][idx2]
                   ) {
                     return (
-                      <div style={{ paddingLeft: "20px" }} key={lesson.name}>
+                      <div style={{ paddingLeft: "20px" }} key={lesson.id}>
                         <CollectionButton
                           item={lesssonItem}
                           opened={undefined}
@@ -158,7 +166,7 @@ export default function CollectionButton({
             >
               <span style={{ marginRight: rem(9), fontSize: rem(16) }}>
                 {item.emoji}
-              </span>{" "}
+              </span>
               {item.name}
             </Link>
           </div>

@@ -1,4 +1,4 @@
-import { CourseList } from "./header";
+import { CourseList } from "./course-list";
 import { UserButton } from "./UserButton";
 
 function Navbar() {

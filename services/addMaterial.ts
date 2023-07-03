@@ -1,10 +1,11 @@
-import { context2, contextInterface } from "../context/appContext";
+import { store } from "@/redux/store";
+import { addCourseStore, addLessonStore, addUnitStore, setCourses, unit } from "@/redux/courses";
 
 export async function addCourse(
-    context: contextInterface,
     label: string,
     emoji: string,
-    userId: string
+    userId: string,
+    description?: string
     ) {
     let newCourse = await (
         await fetch("/api/addCourse", {
@@ -12,49 +13,41 @@ export async function addCourse(
             name: label,
             userId: userId,
             emoji: emoji,
+            description: description ? description : ""
         }),
         method: "POST",
         })
     ).json();
     newCourse["units"] = [];
-    let newContext = context;
-    if (context.value && context.set) {
-        newContext.value!.courses[newCourse.id] = newCourse;
-        context.set(newContext);
-    }
+    store.dispatch(addCourseStore(newCourse))
+    return `/course/${newCourse.id}`
 }
   
 export async function addUnit(
-    context: contextInterface,
     label: string,
     emoji: string,
     userId: string,
-    refId: string
+    refId: string,
+    description?: string
 ) {
-    let newUnit = await (
+    let newUnit: unit = await (
       await fetch("/api/addUnit", {
         body: JSON.stringify({
           name: label,
           emoji: emoji,
           userId: userId,
           ref: refId,
+          description: description ? description : ""
         }),
         method: "POST",
       })
     ).json();
-    let newContext = context;
-    let units = newContext.value?.courses[refId].units;
-    if (units) {
-      units[newUnit.id] = newUnit;
-      newContext.value!.courses[refId].units = units;
-    }
-    if (context.set) {
-      context.set(newContext);
-    }
+
+    store.dispatch(addUnitStore(newUnit))
+    return `/unit/${newUnit.id}?course=${refId}`
 }
   
 export async function addLesson(
-    context: contextInterface,
     label: string,
     emoji: string,
     userId: string,
@@ -74,15 +67,7 @@ export async function addLesson(
         method: "POST",
       })
     ).json();
-    let newContext = {...context};
-    let units = context.value?.courses[courseId].units;
-    if(units && units[unitId].lessons){
-        units[unitId].lessons![newLesson.id] = newLesson
-        if(newContext.value?.courses[refId].units){
-            newContext.value.courses[refId].units = units
-        }
-    }
-    if (context.set) {
-      context.set(newContext);
-    }
+
+    store.dispatch(addLessonStore(newLesson));
+    return `/lesson/${newLesson.id}?course=${courseId}&unit=${unitId}`
 }

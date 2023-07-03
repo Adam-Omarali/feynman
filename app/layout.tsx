@@ -1,8 +1,9 @@
 import "./globals.css";
 import { Manrope } from "next/font/google";
-import ContextProvider from "./(providers)/contextProvider";
 import QueryClientWrapper from "./(providers)/queryProvider";
 import Navbar from "./(nav)/nav";
+import ReduxWrapper from "./(providers)/reduxProvider";
+import AuthProvider from "./(providers)/OnLoadProvider";
 
 const manrope = Manrope({
   subsets: [],
@@ -17,14 +18,16 @@ export default function RootLayout({
     <html className={manrope.className}>
       <head />
       <body style={{ margin: 0 }}>
-        <ContextProvider>
+        <ReduxWrapper>
           <QueryClientWrapper>
-            <div style={{ display: "flex", gap: "5px" }}>
-              <Navbar />
-              {children}
-            </div>
+            <AuthProvider>
+              <div style={{ display: "flex", gap: "5px" }}>
+                <Navbar />
+                {children}
+              </div>
+            </AuthProvider>
           </QueryClientWrapper>
-        </ContextProvider>
+        </ReduxWrapper>
       </body>
     </html>
   );

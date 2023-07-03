@@ -2,7 +2,6 @@
 
 import { IconTrash, IconDots } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
-import { context2 } from "../context/appContext";
 import { deleteMaterial } from "../services/deleteMaterial";
 
 /**
@@ -14,12 +13,10 @@ import { deleteMaterial } from "../services/deleteMaterial";
  */
 
 export function UserMenu({
-  id,
-  context,
+  ids,
   type,
 }: {
-  id: string;
-  context: context2;
+  ids: { lessonId: string; unitId: string; courseId: string };
   type: string;
 }) {
   const router = useRouter();
@@ -33,8 +30,11 @@ export function UserMenu({
           <div
             className="text-red-500 hover:text-red-500 hover:bg-red-100"
             onClick={async () => {
-              await deleteMaterial(id, context, type);
-              router.push("/");
+              await deleteMaterial(ids, type);
+              if (type == "course") router.push("/");
+              if (type == "unit") router.push("/course/" + ids.courseId);
+              if (type == "lesson")
+                router.push("/unit/" + ids.unitId + "?course=" + ids.courseId);
             }}
           >
             <IconTrash size="0.9rem" stroke={1.5} />

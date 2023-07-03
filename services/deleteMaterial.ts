@@ -1,5 +1,6 @@
-import { context2, units } from "../context/appContext";
+import { store } from "@/redux/store";
 import { fetchMaterial, getCourseIdFromUnitId, getIdFromLessonId } from "./fetchMaterial";
+import { CourseState, deleteCourseStore, deleteLessonStore, deleteUnitStore, setCourses, units } from "@/redux/courses";
 
 async function deleteLessonAPI(lessonId: string){
     await fetch("/api/deleteById", {
@@ -7,38 +8,27 @@ async function deleteLessonAPI(lessonId: string){
             id: lessonId,
             type: "lessons"
         }),
-        method: "DELETE",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        method: "POST",
     })
 }
 
-async function deleteLessonContext(lessonId: string, context: context2){
-    let {courseId, unitId} = await getIdFromLessonId(lessonId)
-    let newContext = {...context}
-    if(newContext.value?.courses[courseId].units[unitId].lessons){
-        delete newContext.value?.courses[courseId].units[unitId].lessons![lessonId]
-    }
-    if(context.set){
-        context.set(newContext)
-    }
-}
+// async function deleteLessonContext(lessonId: string){
+//     let {courseId, unitId} = await getIdFromLessonId(lessonId)
+//     let newContext = {...context}
+//     if(newContext.value?.courses[courseId].units[unitId].lessons){
+//         delete newContext.value?.courses[courseId].units[unitId].lessons![lessonId]
+//     }
+//     if(context.set){
+//         context.set(newContext)
+//     }
+// }
 
-export async function deleteLesson(lessonId: string, context?: context2){
+export async function deleteLesson(courseId:string, unitId: string, lessonId: string){
     await deleteLessonAPI(lessonId)
-    if(context){
-        await deleteLessonContext(lessonId, context)
-    }
-}
-
-async function deleteUnitContext(unitId: string, context: context2, courseId?:string){
-    if(!courseId){
-        courseId = await getCourseIdFromUnitId(unitId)
-    }
-
-    let newContext = {...context}
-    delete newContext.value?.courses[courseId!].units[unitId]
-    if(context.set){
-        context.set(newContext)
-    }
+    store.dispatch(deleteLessonStore({courseId, unitId, lessonId}))
 }
 
 async function deleteUnitAPI(unitId: string, units: units){
@@ -47,7 +37,10 @@ async function deleteUnitAPI(unitId: string, units: units){
             id: unitId,
             type: "units"
         }),
-        method: "DELETE",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        method: "POST",
     })
     if(units[unitId].lessons){
         let lessons = units[unitId].lessons
@@ -57,48 +50,48 @@ async function deleteUnitAPI(unitId: string, units: units){
     }
 }
 
-export async function deleteUnit(unitId: string, context?: context2){
-    if(context){
-        let courseId = await getCourseIdFromUnitId(unitId)
-        let units = context.value?.courses[courseId].units
-        if(units){
-            await deleteUnitAPI(unitId, units)
-        }
-        await deleteUnitContext(unitId, context, courseId)
+export async function deleteUnit(unitId: string, courseId: string){
+    let courses = {...store.getState().courses.value}
+    let units = courses[courseId].units
+    if(units){
+        await deleteUnitAPI(unitId, units)
     }
+    store.dispatch(deleteUnitStore({unitId, courseId}))
 }
 
-export async function deleteCourse(id: string, context: context2){
-    let courses = context.value?.courses
+export async function deleteCourse(id: string){
+    let courseStore:CourseState = store.getState().courses
+    let courses = courseStore.value
     if(courses && courses[id]['units']){
         let units = courses[id].units
         for(let unitId in units){
             deleteUnitAPI(unitId, units)
         }
     }
-    let newContext = {...context}
-    delete newContext.value?.courses[id]
-    if(context.set){
-        context.set(newContext)
-    }
+
+    store.dispatch(deleteCourseStore(id))
 
     await fetch("/api/deleteById", {
         body: JSON.stringify({
-          id: id,
-          type: "courses"
+            id: id,
+            type: "courses"
         }),
-        method: "DELETE",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        method: "POST",
     })
 }
 
-export async function deleteMaterial(id: string, context: context2, type: string){
+export async function deleteMaterial(ids: {lessonId: string, unitId: string, courseId: string}, type: string){
     if(type == "course"){
-        await deleteCourse(id, context)
+        await deleteCourse(ids.courseId)
     }
     else if(type == "unit"){
-        await deleteUnit(id, context)
+        await deleteUnit(ids.unitId, ids.courseId)
     }
     else if (type == "lesson"){
-        await deleteLesson(id, context)
+        console.log(1)
+        await deleteLesson(ids.courseId, ids.unitId, ids.lessonId)
     }
 }

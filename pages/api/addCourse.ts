@@ -5,7 +5,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const db = firebaseAdmin.firestore();
 
     if (req.method == "POST"){
-        const {name, userId, emoji} = JSON.parse(req.body)
+        const {name, userId, emoji, description} = JSON.parse(req.body)
 
 
         if (name && userId){
@@ -16,7 +16,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               userId: userId,
               name: name,
               emoji: emoji,
-              lastExam: {}
+              lastExam: {},
+              units: {},
+              questions: [],
+              description: description ? description : ""
             };
             await courseRef.set(newCourse);
           

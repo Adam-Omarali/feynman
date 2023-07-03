@@ -4,9 +4,8 @@ import { firebaseAdmin } from "../../firebase/serverConfig";
 export default async function handler(req: NextApiRequest, res: NextApiResponse){
     const db = firebaseAdmin.firestore();
 
-    if (req.method == "POST"){
-        let { id } = JSON.parse(req.body)
-        id = id[0]
+    if (req.method == "GET"){
+        let id = "2Q6q3BiwnVtHeu90iBs3"
 
         let doc = await db.collection("questions").doc(id).get()
         if (doc.exists){
