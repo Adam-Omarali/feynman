@@ -2,12 +2,13 @@
 
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useQuery } from "@tanstack/react-query";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import TipTap from "../../../components/Editor";
 import { UserMenu } from "../../../components/MaterialMenu";
 import { fetchMaterial } from "../../../services/fetchMaterial";
 import { RootState, store } from "@/redux/store";
 import { useSelector } from "react-redux";
+import { BookOpen, Edit } from "lucide-react";
 
 export default function Page({
   params,
@@ -16,6 +17,8 @@ export default function Page({
   params: { lessonId: string };
   searchParams: { course: string; unit: string };
 }) {
+  let [editable, setEditable] = useState(true);
+
   let course = useSelector(
     (state: RootState) => state.courses.value[searchParams.course]
   );
@@ -42,16 +45,21 @@ export default function Page({
         }}
       >
         <p>{lesson.name + " " + lesson.emoji}</p>
-        <UserMenu
-          ids={{
-            courseId: searchParams.course,
-            unitId: searchParams.unit,
-            lessonId: params.lessonId,
-          }}
-          type={"lesson"}
-        />
+        <div className="flex items-center">
+          <button onClick={() => setEditable(!editable)}>
+            {editable ? <BookOpen /> : <Edit />}
+          </button>
+          <UserMenu
+            ids={{
+              courseId: searchParams.course,
+              unitId: searchParams.unit,
+              lessonId: params.lessonId,
+            }}
+            type={"lesson"}
+          />
+        </div>
       </div>
-      <TipTap />
+      <TipTap isEditable={editable} />
     </div>
   );
 }

@@ -6,15 +6,20 @@ import Highlight from "@tiptap/extension-highlight";
 import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
 import Image from "@tiptap/extension-image";
-import { EditorContent, useEditor } from "@tiptap/react";
+import { Editor, EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import TextAlign from "@tiptap/extension-text-align";
 import "@benrbray/prosemirror-math/style/math.css";
 import "katex/dist/katex.min.css";
 import { MathInline } from "./Math.extension";
 import MenuBar from "./MenuBar";
+import { useEffect } from "react";
 
-export default () => {
+export default ({ isEditable }: { isEditable: boolean }) => {
+  useEffect(() => {
+    editor?.setEditable(isEditable);
+  }, [isEditable]);
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({}),
@@ -30,9 +35,11 @@ export default () => {
     ],
   });
 
+  console.log(editor?.getHTML());
+
   return (
     <div className="editor">
-      {editor && <MenuBar editor={editor} />}
+      {editor && isEditable && <MenuBar editor={editor} />}
       <EditorContent
         className="editor__content"
         editor={editor}

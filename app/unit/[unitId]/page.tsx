@@ -53,9 +53,9 @@ export default function Page({
           type={"unit"}
         />
       </div>
-      <div className="flex justify-between items-center">
+      {/* <div className="flex justify-between items-center">
         <h3>Lessons</h3>
-      </div>
+      </div> */}
 
       <div className="flex flex-wrap gap-4">
         {Object.keys(unit.lessons).map((lessonId) => {

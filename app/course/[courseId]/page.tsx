@@ -1,18 +1,13 @@
 "use client";
 
-import { Button } from "@/components/ui/Button";
-import { useQuery } from "@tanstack/react-query";
-import { fetchMaterial } from "../../../services/fetchMaterial";
-import TipTap from "../../../components/Editor";
 import { UserMenu } from "@/components/MaterialMenu";
-import { RootState, store } from "@/redux/store";
+import { RootState } from "@/redux/store";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useSelector } from "react-redux";
-import UnitModal from "@/components/Modal";
 import Modal from "@/components/Modal";
 import { MaterialCard } from "@/components/MaterialCard";
 import NewMaterialForm from "@/components/NewMaterialForm";
-import { addCourse, addUnit } from "@/services/addMaterial";
+import { addUnit } from "@/services/addMaterial";
 import Link from "next/link";
 
 export default function Home({ params }: { params: { courseId: string } }) {
@@ -39,9 +34,10 @@ export default function Home({ params }: { params: { courseId: string } }) {
           type={"course"}
         />
       </div>
-      <div className="flex justify-between items-center">
+      <div>{course.description}</div>
+      {/* <div className="flex justify-between items-center">
         <h3>Units</h3>
-      </div>
+      </div> */}
 
       <div className="flex flex-wrap gap-4">
         {Object.keys(course.units).map((unitID) => {
