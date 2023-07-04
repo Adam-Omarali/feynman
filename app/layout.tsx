@@ -23,9 +23,11 @@ export default function RootLayout({
         <ReduxWrapper>
           <QueryClientWrapper>
             <AuthProvider>
-              <div style={{ display: "flex", gap: "5px" }}>
-                <Navbar />
-                {children}
+              <div>
+                <div className="fixed">
+                  <Navbar />
+                </div>
+                <div className="ml-56 w-full">{children}</div>
               </div>
             </AuthProvider>
           </QueryClientWrapper>

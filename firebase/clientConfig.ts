@@ -29,4 +29,4 @@ export const db = getFirestore(app);
 export const auth = getAuth(app)
 export const provider = new GoogleAuthProvider();
 // export const per = getPerformance(app)
-const analytics = typeof window !== undefined ? getAnalytics(app) : null
+// const analytics = typeof window !== undefined ? getAnalytics(app) : null

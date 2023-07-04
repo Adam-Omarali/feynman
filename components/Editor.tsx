@@ -15,6 +15,7 @@ import { MathInline } from "./Math.extension";
 import MenuBar from "./MenuBar";
 import { useEffect } from "react";
 import Typography from "@tiptap/extension-typography";
+import Youtube from "@tiptap/extension-youtube";
 
 export default ({
   isEditable,
@@ -38,6 +39,10 @@ export default ({
         types: ["heading", "paragraph"],
         alignments: ["left", "right", "center"],
       }),
+      Youtube.configure({
+        controls: true,
+        width: window.innerWidth * 0.7,
+      }),
     ],
     content: `${content}`,
     onUpdate: ({ editor }) => {
@@ -54,10 +59,9 @@ export default ({
     <div className={isEditable ? "editor" : ""}>
       {editor && isEditable && <MenuBar editor={editor} />}
       <EditorContent
-        className={"editor__content"}
+        className={"editor__content h-screen"}
         editor={editor}
         style={isEditable ? {} : { padding: 0 }}
-        onChange={(e) => console.log(2)}
       />
     </div>
   );
