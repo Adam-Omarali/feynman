@@ -15,11 +15,15 @@ import { MathInline } from "./Math.extension";
 import MenuBar from "./MenuBar";
 import { useEffect } from "react";
 
-export default ({ isEditable }: { isEditable: boolean }) => {
-  useEffect(() => {
-    editor?.setEditable(isEditable);
-  }, [isEditable]);
-
+export default ({
+  isEditable,
+  setContent,
+  content,
+}: {
+  isEditable: boolean;
+  setContent: Function;
+  content: string;
+}) => {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({}),
@@ -33,17 +37,25 @@ export default ({ isEditable }: { isEditable: boolean }) => {
         alignments: ["left", "right", "center"],
       }),
     ],
+    content: `${content}`,
+    onUpdate: ({ editor }) => {
+      let html = editor.getHTML();
+      setContent(html);
+    },
   });
 
-  console.log(editor?.getHTML());
+  useEffect(() => {
+    editor?.setEditable(isEditable);
+  }, [isEditable]);
 
   return (
-    <div className="editor">
+    <div className={isEditable ? "editor" : ""}>
       {editor && isEditable && <MenuBar editor={editor} />}
       <EditorContent
-        className="editor__content"
+        className={"editor__content"}
         editor={editor}
-        style={{ listStyle: "initial" }}
+        style={isEditable ? {} : { padding: 0 }}
+        onChange={(e) => console.log(2)}
       />
     </div>
   );

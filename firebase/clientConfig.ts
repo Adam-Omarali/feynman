@@ -28,5 +28,5 @@ export const app = getApps.length > 0 ? getApp() : initializeApp(firebaseConfig)
 export const db = getFirestore(app);
 export const auth = getAuth(app)
 export const provider = new GoogleAuthProvider();
-export const per = getPerformance(app)
+// export const per = getPerformance(app)
 export const analytics = getAnalytics(app)

@@ -2,13 +2,14 @@
 
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useQuery } from "@tanstack/react-query";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import TipTap from "../../../components/Editor";
 import { UserMenu } from "../../../components/MaterialMenu";
 import { fetchMaterial } from "../../../services/fetchMaterial";
 import { RootState, store } from "@/redux/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { BookOpen, Edit } from "lucide-react";
+import { EditLessonContent } from "@/services/updateMaterial";
 
 export default function Page({
   params,
@@ -17,8 +18,6 @@ export default function Page({
   params: { lessonId: string };
   searchParams: { course: string; unit: string };
 }) {
-  let [editable, setEditable] = useState(true);
-
   let course = useSelector(
     (state: RootState) => state.courses.value[searchParams.course]
   );
@@ -35,16 +34,31 @@ export default function Page({
     return <Skeleton className="h-4 w-[150px] p-4"></Skeleton>;
   }
 
+  let [editable, setEditable] = useState(true);
+  let [content, setContent] = useState(lesson.content ? lesson.content : "");
+  const contentRef = useRef<string>(content);
+
+  useEffect(() => {
+    contentRef.current = content;
+  }, [content]);
+
+  useEffect(() => {
+    return () => {
+      if (contentRef.current != lesson.content) {
+        EditLessonContent(
+          contentRef.current,
+          searchParams.course,
+          searchParams.unit,
+          params.lessonId
+        );
+      }
+    };
+  }, []);
+
   return (
     <div style={{ padding: "0px 20px", flex: "80%" }}>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <p>{lesson.name + " " + lesson.emoji}</p>
+      <div className="flex items-center justify-between py-2">
+        <h1>{lesson.name + " " + lesson.emoji}</h1>
         <div className="flex items-center">
           <button onClick={() => setEditable(!editable)}>
             {editable ? <BookOpen /> : <Edit />}
@@ -59,7 +73,11 @@ export default function Page({
           />
         </div>
       </div>
-      <TipTap isEditable={editable} />
+      <TipTap
+        isEditable={editable}
+        setContent={setContent}
+        content={lesson.content ? lesson.content : ""}
+      />
     </div>
   );
 }

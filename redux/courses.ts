@@ -85,11 +85,16 @@ export const courseSlice = createSlice({
       return produce(state, draft => {
         delete draft.value[action.payload.courseId].units[action.payload.unitId].lessons[action.payload.lessonId]
       })
+    },
+    updateLessonContent: (state, action: PayloadAction<{courseId: string, unitId:string, lessonId:string, content: string}>) => {
+      return produce(state, draft => {
+        draft.value[action.payload.courseId].units[action.payload.unitId].lessons[action.payload.lessonId].content = action.payload.content
+      })
     }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { setCourses, addCourseStore, addLessonStore, addUnitStore, deleteCourseStore, deleteUnitStore, deleteLessonStore } = courseSlice.actions
+export const { setCourses, addCourseStore, addLessonStore, addUnitStore, deleteCourseStore, deleteUnitStore, deleteLessonStore, updateLessonContent } = courseSlice.actions
 
 export default courseSlice.reducer
