@@ -4,6 +4,8 @@ import QueryClientWrapper from "./(providers)/queryProvider";
 import Navbar from "./(nav)/nav";
 import ReduxWrapper from "./(providers)/reduxProvider";
 import AuthProvider from "./(providers)/OnLoadProvider";
+import { getAnalytics } from "firebase/analytics";
+import { app } from "@/firebase/clientConfig";
 
 const manrope = Manrope({
   subsets: [],

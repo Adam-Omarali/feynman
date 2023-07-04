@@ -14,6 +14,7 @@ import "katex/dist/katex.min.css";
 import { MathInline } from "./Math.extension";
 import MenuBar from "./MenuBar";
 import { useEffect } from "react";
+import Typography from "@tiptap/extension-typography";
 
 export default ({
   isEditable,
@@ -30,6 +31,7 @@ export default ({
       Highlight,
       TaskList,
       TaskItem,
+      Typography,
       Image,
       MathInline,
       TextAlign.configure({

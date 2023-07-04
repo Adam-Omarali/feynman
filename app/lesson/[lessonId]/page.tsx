@@ -38,20 +38,27 @@ export default function Page({
   let [content, setContent] = useState(lesson.content ? lesson.content : "");
   const contentRef = useRef<string>(content);
 
+  function updateContent() {
+    if (contentRef.current != lesson.content) {
+      EditLessonContent(
+        contentRef.current,
+        searchParams.course,
+        searchParams.unit,
+        params.lessonId
+      );
+    }
+  }
+
   useEffect(() => {
     contentRef.current = content;
   }, [content]);
 
   useEffect(() => {
+    window.addEventListener("beforeunload", (ev) => {
+      updateContent();
+    });
     return () => {
-      if (contentRef.current != lesson.content) {
-        EditLessonContent(
-          contentRef.current,
-          searchParams.course,
-          searchParams.unit,
-          params.lessonId
-        );
-      }
+      updateContent();
     };
   }, []);
 
