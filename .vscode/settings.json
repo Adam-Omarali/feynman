@@ -3,5 +3,11 @@
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
   "npm-intellisense.scanDevDependencies": false,
-  "npm.exclude": ""
+  "npm.exclude": "",
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  }
 }

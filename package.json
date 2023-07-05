@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@benrbray/prosemirror-math": "^0.2.2",
+    "@mantine/core": "^6.0.15",
     "@next-auth/firebase-adapter": "^2.0.1",
     "@radix-ui/react-slot": "^1.0.2",
     "@reduxjs/toolkit": "^1.9.5",
@@ -33,6 +34,7 @@
     "lucide-react": "^0.246.0",
     "next": "^13.4.6",
     "next-auth": "^4.20.1",
+    "radix-ui": "^1.0.1",
     "react": "18.2.0",
     "react-detect-click-outside": "^1.1.7",
     "react-dom": "18.2.0",
