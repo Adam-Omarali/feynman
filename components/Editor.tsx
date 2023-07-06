@@ -16,6 +16,7 @@ import MenuBar from "./MenuBar";
 import { useEffect } from "react";
 import Typography from "@tiptap/extension-typography";
 import Youtube from "@tiptap/extension-youtube";
+import Link from "@tiptap/extension-link";
 
 export default ({
   isEditable,
@@ -34,6 +35,7 @@ export default ({
       TaskItem,
       Typography,
       Image,
+      Link,
       MathInline,
       TextAlign.configure({
         types: ["heading", "paragraph"],

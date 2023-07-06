@@ -6,9 +6,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const db = firebaseAdmin.firestore();
 
     if (req.method == "GET"){
-        let id = req?.query?.id
+        let id = req?.query?.id as string
         if (id){
-            id = id[0]
             await getMaterial("units", id, res, db)     
         }
     }

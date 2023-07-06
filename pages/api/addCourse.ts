@@ -19,7 +19,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               lastExam: {},
               units: {},
               questions: [],
-              description: description ? description : ""
+              description: description ? description : "",
+              unitOrder: []
             };
             await courseRef.set(newCourse);
           

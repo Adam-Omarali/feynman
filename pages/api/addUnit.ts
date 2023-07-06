@@ -1,5 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { firebaseAdmin } from "../../firebase/serverConfig";
+import { FieldValue } from "firebase-admin/firestore";
+import { store } from "@/redux/store";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse){
     const db = firebaseAdmin.firestore();
@@ -20,10 +22,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               questions: {},
               lastTest: {},
               lessons: {},
-              description: description ? description : ""
+              description: description ? description : "",
+              lessonOrder: []
             };
 
             await unitRef.set(newUnit);
+
+            const courseRef = db.collection('courses').doc(ref);
+            courseRef.update({unitOrder: FieldValue.arrayUnion(unitRef.id)})
           
             // Return the new course data
             res.status(200).json(newUnit);
