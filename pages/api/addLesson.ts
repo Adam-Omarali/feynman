@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { firebaseAdmin } from "../../firebase/serverConfig";
+import { FieldValue } from "firebase-admin/firestore";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse){
     const db = firebaseAdmin.firestore();
@@ -22,6 +23,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               content: []
             };
             await lessonRef.set(newLesson);
+
+            const unitRef = db.collection('units').doc(unitId);
+            await unitRef.update({lessonOrder: FieldValue.arrayUnion(lessonRef.id)})
           
             // Return the new course data
             res.status(200).json(newLesson);

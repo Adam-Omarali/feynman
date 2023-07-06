@@ -29,7 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             await unitRef.set(newUnit);
 
             const courseRef = db.collection('courses').doc(ref);
-            courseRef.update({unitOrder: FieldValue.arrayUnion(unitRef.id)})
+            await courseRef.update({unitOrder: FieldValue.arrayUnion(unitRef.id)})
           
             // Return the new course data
             res.status(200).json(newUnit);

@@ -63,23 +63,23 @@ export const courseSlice = createSlice({
       state.value[action.payload.id] = action.payload
     },
     addUnitStore: (state, action: PayloadAction<unit>) => {
-      return produce(state, draft => {
-        let courseId = action.payload.courseId
-        draft.value[courseId].units[action.payload.id] = action.payload
-        draft.value[courseId].unitOrder.push(action.payload.id)
-      })
-      // let tempArr = state.value[action.payload.courseId].unitOrder.slice()
-      // tempArr.push(action.payload.id)
-      // return {...state, 
-      //   value: {...state.value, 
-      //     [action.payload.courseId]: {...state.value[action.payload.courseId], 
-      //       units: {...state.value[action.payload.courseId].units, 
-      //       [action.payload.id]: action.payload
-      //     },
-      //     unitOrder: tempArr
-      //     }
-      //   }
-      // }
+      // return produce(state, draft => {
+      //   let courseId = action.payload.courseId
+      //   draft.value[courseId].units[action.payload.id] = action.payload
+      //   draft.value[courseId].unitOrder.push(action.payload.id)
+      // })
+      let tempArr = state.value[action.payload.courseId].unitOrder.slice()
+      tempArr.push(action.payload.id)
+      return {...state, 
+        value: {...state.value, 
+          [action.payload.courseId]: {...state.value[action.payload.courseId], 
+            units: {...state.value[action.payload.courseId].units, 
+            [action.payload.id]: action.payload
+          },
+          unitOrder: tempArr
+          }
+        }
+      }
     },
     addLessonStore: (state, action: PayloadAction<lesson>) => {
       return produce(state, draft => {
