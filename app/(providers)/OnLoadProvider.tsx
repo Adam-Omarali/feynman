@@ -46,6 +46,8 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
               } else {
                 getMaterials(currentUser.uid);
               }
+            } else {
+              dispatch(fetched());
             }
           } else {
             getMaterials(currentUser.uid);
