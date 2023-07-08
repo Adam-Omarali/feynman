@@ -7,10 +7,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method == "POST"){
         const {userId, question, answer, difficulty, lesson} = JSON.parse(req.body)
 
+        console.log("AAAAA");
 
         if (userId){
-            // Create a new course document in Firestore
-            const flashcardRef = db.collection('flashcourses').doc();
+            // Create a new flashcard document in Firestore
+            const flashcardRef = db.collection('flashcards').doc();
             const newFlashcard = {
               id: flashcardRef.id,
               userId: userId,
@@ -21,7 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             };
             await flashcardRef.set(newFlashcard);
           
-            // Return the new course data
+            // Return the new flashcard
             res.status(200).json(newFlashcard);
         }
         else{

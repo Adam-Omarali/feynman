@@ -14,13 +14,14 @@ import { useState } from "react";
 import { useSelector } from "react-redux"
 
 export default function PopoverDemo() {
-    const [question, setQuestion] = useState("");
-    const [answer, setAnswer] = useState("");
+    const [question, setQuestion] = useState("What is 1+1?");
+    const [answer, setAnswer] = useState("2");
     const [difficulty, setDifficulty] = useState(0);
-    const [lesson, setLesson] = useState("");
+    const [lesson, setLesson] = useState("none");
+    const user = useSelector((state: RootState) => state.user);
 
     function createFlashCard(){
-        const user = useSelector((state: RootState) => state.user);
+        console.log({question: question, answer: answer, difficulty: difficulty, lesson: lesson});
         addFlashcard(user.id, {question: question, answer: answer, difficulty: difficulty, lesson: lesson})
     }
 
@@ -28,7 +29,7 @@ export default function PopoverDemo() {
         <div>
             <Popover>
                 <PopoverTrigger asChild>
-                    <Button variant="outline">Open popover</Button>
+                    <Button variant="outline">Add Flashcard</Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-80">
                     <div className="grid gap-4">

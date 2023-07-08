@@ -73,7 +73,7 @@ export async function addFlashcard(
   f: Flashcard
 ) {
   let newFlashcard = await (
-    await fetch("/api/addFlashcard", {
+    await fetch("/api/addFlashcards", {
       body: JSON.stringify({
         userId: userId,
         qusetion: f.question,
