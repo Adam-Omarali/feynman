@@ -77,8 +77,13 @@ export default function Page({
             </div>
           );
         })}
-        <Modal triggerText="Add Lesson">
-          <NewMaterialForm add={add} lesson={true} />
+        <Modal>
+          <Modal.Trigger>
+            <MaterialCard add={"Add Lesson"}></MaterialCard>
+          </Modal.Trigger>
+          <Modal.Content triggerText="Add Lesson">
+            <NewMaterialForm add={add} lesson={true} />
+          </Modal.Content>
         </Modal>
       </div>
     </div>

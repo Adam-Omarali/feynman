@@ -19,8 +19,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               name: name,
               emoji: emoji,
               courseId: ref,
-              questions: {},
-              lastTest: {},
               lessons: {},
               description: description ? description : "",
               lessonOrder: []

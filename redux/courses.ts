@@ -7,8 +7,6 @@ export interface unit {
     emoji: string,
     id: string
     userId: string,
-    questions: {}[],
-    lastTest: {},
     lessons: lessons,
     courseId: string,
     description: string,
@@ -26,6 +24,7 @@ export interface lesson {
   unitId: string
   emoji: string
   content?: string
+  questions: string[]
 }
 
 interface lessons {
@@ -37,8 +36,6 @@ export interface courseMenu {
   emoji: string,
   description: string,
   userId: string,
-  questions: {}[],
-  lastTest: {},
   id: string,
   units: units,
   unitOrder: string[]
@@ -89,6 +86,13 @@ export const courseSlice = createSlice({
         draft.value[courseId].units[unitId].lessonOrder.push(action.payload.id)
       })
     },
+    addQuestionLesson: (state, action: PayloadAction<{questionId: string, lessonId: string, courseId: string, unitId: string}>) => {
+      return produce(state, draft => {
+        let courseId = action.payload.courseId
+        let unitId = action.payload.unitId
+        draft.value[courseId].units[unitId].lessons[action.payload.lessonId].questions.push(action.payload.questionId)
+      })
+    },
     deleteCourseStore: (state, action: PayloadAction<string>) => {
       delete state.value[action.payload]
     },
@@ -111,6 +115,7 @@ export const courseSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { setCourses, addCourseStore, addLessonStore, addUnitStore, deleteCourseStore, deleteUnitStore, deleteLessonStore, updateLessonContent } = courseSlice.actions
+export const { setCourses, addCourseStore, addLessonStore, addUnitStore, deleteCourseStore, deleteUnitStore, 
+  deleteLessonStore, updateLessonContent, addQuestionLesson } = courseSlice.actions
 
 export default courseSlice.reducer

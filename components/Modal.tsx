@@ -1,33 +1,54 @@
 "use client";
 
-import { createContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import CloseModal from "./CloseModal";
-import { Button } from "./ui/Button";
-import { MaterialCard } from "./MaterialCard";
 
-export let modalContext = createContext(() => {});
+export let modalContext = createContext({
+  close: () => {},
+  open: () => {},
+  value: false,
+});
 
-function Modal({
-  triggerText,
-  children,
-}: {
-  triggerText: string;
-  children: React.ReactNode;
-}) {
-  const [openModal, setOpenModal] = useState(false);
+function Modal({ children }: { children: React.ReactNode }) {
+  const [modal, setOpenModal] = useState(false);
 
   function closeModal() {
     setOpenModal(false);
   }
 
+  function openModal() {
+    setOpenModal(true);
+  }
+
   return (
     <div>
-      <button onClick={() => setOpenModal(true)}>
-        <MaterialCard add={triggerText} />
-      </button>
-      {openModal ? (
-        <div className="fixed inset-0 bg-zinc-900/20 z-10">
-          <div className="container flex items-center h-full max-w-lg mx-auto">
+      <modalContext.Provider
+        value={{ close: closeModal, open: openModal, value: modal }}
+      >
+        {children}
+      </modalContext.Provider>
+    </div>
+  );
+}
+
+Modal.Trigger = ({ children }: { children: React.ReactNode }) => {
+  const modal = useContext(modalContext);
+  return <div onClick={modal.open}>{children}</div>;
+};
+
+Modal.Content = ({
+  children,
+  triggerText,
+}: {
+  children: React.ReactNode;
+  triggerText: string;
+}) => {
+  const modal = useContext(modalContext);
+  return (
+    <div>
+      {modal.value ? (
+        <div className="fixed inset-0 bg-zinc-900/20 z-20">
+          <div className="container flex items-center h-full mx-auto">
             <div
               className="relative bg-white w-full h-fit pt-4 px-2 rounded-lg"
               style={{ minHeight: "8rem" }}
@@ -37,22 +58,16 @@ function Modal({
                   <p className="text-slate-600">{triggerText}</p>
                 </div>
                 <div>
-                  <CloseModal
-                    closeModal={() => {
-                      setOpenModal(false);
-                    }}
-                  />
+                  <CloseModal closeModal={modal.close} />
                 </div>
               </div>
-              <modalContext.Provider value={closeModal}>
-                {children}
-              </modalContext.Provider>
+              {children}
             </div>
           </div>
         </div>
       ) : null}
     </div>
   );
-}
+};
 
 export default Modal;

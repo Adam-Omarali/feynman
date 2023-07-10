@@ -18,7 +18,7 @@ function NewMaterialForm({
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
-  const closeModal = useContext(modalContext);
+  const modal = useContext(modalContext);
 
   function close() {
     setSelectEmoji(false);
@@ -28,7 +28,7 @@ function NewMaterialForm({
     e.preventDefault();
     setLoading(true);
     await add(name, emoji, description);
-    closeModal();
+    modal.close();
   }
 
   if (loading) {

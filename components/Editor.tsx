@@ -18,15 +18,17 @@ import Typography from "@tiptap/extension-typography";
 import Youtube from "@tiptap/extension-youtube";
 import Link from "@tiptap/extension-link";
 
-export default ({
+export default function TipTap({
   isEditable,
   setContent,
   content,
+  flashcard,
 }: {
   isEditable: boolean;
   setContent: Function;
   content: string;
-}) => {
+  flashcard?: boolean;
+}) {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({}),
@@ -59,12 +61,12 @@ export default ({
 
   return (
     <div className={isEditable ? "editor" : ""}>
-      {editor && isEditable && <MenuBar editor={editor} />}
+      {editor && isEditable && !flashcard && <MenuBar editor={editor} />}
       <EditorContent
-        className={"editor__content h-screen"}
+        className={"editor__content"}
         editor={editor}
         style={isEditable ? {} : { padding: 0 }}
       />
     </div>
   );
-};
+}

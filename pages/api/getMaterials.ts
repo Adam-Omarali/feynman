@@ -10,6 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         let courseData = await db.collection('courses').where('userId', '==' , id).get()
         let unitData = await db.collection('units').where('userId', '==' , id).get()
         let lessonData = await db.collection('lessons').where('userId', '==' , id).get()
+        let questionData = await db.collection('questions').where('userId', '==' , id).get()
 
         let courses:{[key: string]: object} = {}
 
@@ -34,7 +35,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             courses[course.id] = course
         })
 
-        res.status(200).send(courses)
+        let questions: {[key: string]: object} = {}
+        questionData.forEach(question => {
+            questions[question.id] = question.data()
+        })
+
+        res.status(200).send({courses, questions})
   
     }
 }

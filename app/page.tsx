@@ -1,3 +1,4 @@
+import AddFlashcard from "@/components/AddFlashcard";
 import CourseGallery from "@/components/CourseGallery";
 import { Metadata } from "next";
 
@@ -10,6 +11,7 @@ export default function Home() {
     <div className="p-4">
       <p className="text-xl font-semibold pb-2">Courses</p>
       <CourseGallery />
+      <AddFlashcard />
     </div>
   );
 }

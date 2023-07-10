@@ -9,6 +9,7 @@ import { MaterialCard } from "@/components/MaterialCard";
 import NewMaterialForm from "@/components/NewMaterialForm";
 import { addUnit } from "@/services/addMaterial";
 import Link from "next/link";
+import AddFlashcard from "@/components/AddFlashcard";
 
 export default function Home({ params }: { params: { courseId: string } }) {
   let course = useSelector(
@@ -50,8 +51,13 @@ export default function Home({ params }: { params: { courseId: string } }) {
             </div>
           );
         })}
-        <Modal triggerText="Add Unit">
-          <NewMaterialForm add={add} lesson={false} />
+        <Modal>
+          <Modal.Trigger>
+            <MaterialCard add={"Add Unit"}></MaterialCard>
+          </Modal.Trigger>
+          <Modal.Content triggerText="Add Unit">
+            <NewMaterialForm add={add} lesson={false} />
+          </Modal.Content>
         </Modal>
       </div>
     </div>

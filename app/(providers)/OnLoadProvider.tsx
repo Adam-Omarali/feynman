@@ -10,6 +10,7 @@ import { UserState, login } from "@/redux/user";
 import { CourseState, courseMenu, setCourses } from "@/redux/courses";
 import { isObjectEmpty } from "@/util/helper";
 import { fetched } from "@/redux/loading";
+import { question, setQuestions } from "@/redux/questions";
 
 function AuthProvider({ children }: { children: React.ReactNode }) {
   const user = useSelector((state: RootState) => state.user);
@@ -19,13 +20,17 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
 
   async function getMaterials(userId: string) {
     console.log("Fetching Materials On Load");
-    let materials = await (
+    let materials: {
+      courses: { [key: string]: courseMenu };
+      questions: { [key: string]: question };
+    } = await (
       await fetch("/api/getMaterials", {
         body: JSON.stringify({ id: userId }),
         method: "POST",
       })
     ).json();
-    dispatch(setCourses(materials));
+    dispatch(setCourses(materials.courses));
+    dispatch(setQuestions(materials.questions));
     dispatch(fetched());
   }
 
@@ -35,13 +40,16 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
         await signInWithPopup(auth, provider);
       } else {
         if (isObjectEmpty(courses)) {
-          let temp = localStorage.getItem("courses");
-          if (temp != null) {
-            let store: { [key: string]: courseMenu } = JSON.parse(temp);
-            let storeValues = Object.values(store);
+          let tempCourses = localStorage.getItem("courses");
+          let tempQuestions = localStorage.getItem("questions");
+          if (tempCourses != null && tempQuestions != null) {
+            let questions = JSON.parse(tempQuestions);
+            let course: { [key: string]: courseMenu } = JSON.parse(tempCourses);
+            let storeValues = Object.values(course);
             if (storeValues.length > 0) {
               if (storeValues[0].userId === currentUser.uid && loading) {
-                dispatch(setCourses(store));
+                dispatch(setQuestions(questions));
+                dispatch(setCourses(course));
                 dispatch(fetched());
               } else {
                 getMaterials(currentUser.uid);

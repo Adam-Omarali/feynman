@@ -19,8 +19,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               emoji: emoji,
               courseId: courseId,
               unitId: unitId,
-              lastQuiz: {},
-              content: []
+              questions: [],
+              content: ""
             };
             await lessonRef.set(newLesson);
 

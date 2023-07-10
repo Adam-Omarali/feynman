@@ -1,5 +1,13 @@
 import { store } from "@/redux/store";
-import { addCourseStore, addLessonStore, addUnitStore, setCourses, unit } from "@/redux/courses";
+import { addCourseStore, addLessonStore, addUnitStore, unit, addQuestionLesson } from "@/redux/courses";
+import { Flashcard } from "@/components/FlashcardForm";
+import { addQuestion } from "@/redux/questions";
+
+export interface ids {
+  lessonId: string,
+  unitId: string,
+  courseId: string
+}
 
 export async function addCourse(
     label: string,
@@ -70,4 +78,29 @@ export async function addLesson(
 
     store.dispatch(addLessonStore(newLesson));
     return `/lesson/${newLesson.id}?course=${courseId}&unit=${unitId}`
+}
+
+export async function addFlashcard(
+  userId: string,
+  ids: ids,
+  f: Flashcard
+) {
+  let newFlashcard = await (
+    await fetch("/api/addFlashcard", {
+      body: JSON.stringify({
+        userId: userId,
+        question: f.question,
+        answer: f.answer,
+        difficulty: f.difficulty,
+        lessonId: ids.lessonId
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: "POST",
+    })
+  ).json();
+
+  store.dispatch(addQuestion(newFlashcard))
+  store.dispatch(addQuestionLesson({...ids, questionId: newFlashcard.id}))
 }

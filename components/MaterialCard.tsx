@@ -31,14 +31,14 @@ export function MaterialCard({ title, add }: { title?: string; add?: string }) {
           </div>
         </>
       ) : (
-        <div className="flex items-center justify-center h-56">
-          <div className="flex flex-col items-center content-center">
-            <Plus size={40} />
-            <h2 className="card-title font-normal text-slate-500 hover:text-black">
-              {add}
-            </h2>
+        <button>
+          <div className="flex items-center justify-center h-56 text-slate-500 hover:text-black">
+            <div className="flex flex-col items-center content-center">
+              <Plus size={40} />
+              <h2 className="card-title font-normal">{add}</h2>
+            </div>
           </div>
-        </div>
+        </button>
       )}
     </div>
   );
