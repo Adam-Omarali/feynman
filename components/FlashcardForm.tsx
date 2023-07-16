@@ -5,7 +5,7 @@ import { Button } from "./ui/Button";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { addFlashcard } from "@/services/addMaterial";
-import TipTap from "./Editor";
+import TipTap from "./editor/Editor";
 import { getLessonList } from "@/lib/utils";
 import {
   Select,

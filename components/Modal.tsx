@@ -48,7 +48,7 @@ Modal.Content = ({
     <div>
       {modal.value ? (
         <div className="fixed inset-0 bg-zinc-900/20 z-20">
-          <div className="container flex items-center h-full mx-auto">
+          <div className="container flex items-center h-full mx-auto max-h-[90%]">
             <div
               className="relative bg-white w-full h-fit pt-4 px-2 rounded-lg"
               style={{ minHeight: "8rem" }}

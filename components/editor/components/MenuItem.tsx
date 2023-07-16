@@ -1,5 +1,5 @@
 import React, { MouseEventHandler } from "react";
-import "../styles/menu-item.css";
+import "../../../styles/menu-item.css";
 import "remixicon/fonts/remixicon.css";
 
 export default ({
