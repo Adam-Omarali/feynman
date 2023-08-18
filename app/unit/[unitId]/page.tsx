@@ -2,7 +2,7 @@
 
 import React from "react";
 import { fetchMaterial } from "../../../services/fetchMaterial";
-import TipTap from "../../../components/Editor";
+import TipTap from "../../../components/editor/Editor";
 import { UserMenu } from "@/components/MaterialMenu";
 import { RootState, store } from "@/redux/store";
 import { useSelector } from "react-redux";

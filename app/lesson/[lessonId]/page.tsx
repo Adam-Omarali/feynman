@@ -3,7 +3,7 @@
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useQuery } from "@tanstack/react-query";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import TipTap from "../../../components/Editor";
+import TipTap from "../../../components/editor/Editor";
 import { UserMenu } from "../../../components/MaterialMenu";
 import { fetchMaterial } from "../../../services/fetchMaterial";
 import { RootState, store } from "@/redux/store";
