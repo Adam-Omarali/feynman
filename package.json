@@ -43,6 +43,7 @@
     "date-fns": "^2.30.0",
     "emoji-picker-react": "^4.4.7",
     "firebase": "^9.17.2",
+    "firebase-admin": "^11.10.1",
     "katex": "^0.16.8",
     "lucide-react": "^0.246.0",
     "next": "^13.4.6",
