@@ -26,7 +26,6 @@ export default function Page({
     return <Skeleton className="h-4 w-[150px] p-4"></Skeleton>;
   }
   let unit = course.units[params.unitId];
-  console.log(unit);
   if (unit === undefined) {
     return <Skeleton className="h-4 w-[150px] p-4"></Skeleton>;
   }

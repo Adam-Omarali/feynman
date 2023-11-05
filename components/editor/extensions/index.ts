@@ -16,6 +16,7 @@ import { InputRule } from "@tiptap/core";
 import UploadImagesPlugin from "../plugins/imageUpload";
 import Youtube from "@tiptap/extension-youtube";
 import { Mathematics } from '@tiptap-pro/extension-mathematics'
+import Typography from "@tiptap/extension-typography";
 
 const CustomImage = TiptapImage.extend({
   addProseMirrorPlugins() {
@@ -130,5 +131,6 @@ export const TiptapExtensions = [
     controls: true,
     width: window.innerWidth * 0.7,
   }),
-  Mathematics
+  Mathematics,
+  Typography
 ];

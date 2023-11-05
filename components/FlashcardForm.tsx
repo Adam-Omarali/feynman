@@ -17,8 +17,8 @@ import {
 import { modalContext } from "./Modal";
 
 function FlashcardForm() {
-  const [question, setQuestion] = useState("");
-  const [answer, setAnswer] = useState("");
+  const [question, setQuestion] = useState([]);
+  const [answer, setAnswer] = useState([]);
   const [difficulty, setDifficulty] = useState(0);
   const [lesson, setLesson] = useState("none");
   const user = useSelector((state: RootState) => state.user);
@@ -42,8 +42,8 @@ function FlashcardForm() {
           lesson: lesson,
         }
       );
-      setQuestion("");
-      setAnswer("");
+      setQuestion([]);
+      setAnswer([]);
       setDifficulty(0);
       setLesson("none");
     }
@@ -127,8 +127,8 @@ function FlashcardForm() {
 }
 
 export type Flashcard = {
-  question: string;
-  answer: string;
+  question: Array<Object>;
+  answer: Array<Object>;
   difficulty: number;
   lesson: string;
 };

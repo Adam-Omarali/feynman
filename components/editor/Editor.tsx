@@ -16,7 +16,7 @@ export default function Editor({
 }: {
   isEditable: boolean;
   setContent: Function;
-  content: string;
+  content: Object;
   flashcard?: boolean;
 }) {
   const [saveStatus, setSaveStatus] = useState("Saved");
@@ -45,8 +45,6 @@ export default function Editor({
     editable: isEditable,
   });
 
-  const prev = useRef("");
-
   // Hydrate the editor with the content from localStorage.
   useEffect(() => {
     if (editor && content && !hydrated) {
@@ -66,10 +64,12 @@ export default function Editor({
           : "relative w-full border-stone-200 bg-white p-8 sm:mb-2 sm:rounded-lg sm:border max-h-[500px]"
       }
     >
-      <div className="absolute right-5 top-5 mb-5 rounded-lg bg-stone-100 px-1 py-1 text-sm text-stone-400">
-        {saveStatus}
-      </div>
-      {editor && <EditorBubbleMenu editor={editor} />}
+      {isEditable ? (
+        <div className="absolute right-5 top-5 mb-5 rounded-lg bg-stone-100 px-1 py-1 text-sm text-stone-400">
+          {saveStatus}
+        </div>
+      ) : null}
+      {editor && isEditable && <EditorBubbleMenu editor={editor} />}
       <EditorContent editor={editor} />
     </div>
   );

@@ -25,7 +25,7 @@ export default function TipTap({
 }: {
   isEditable: boolean;
   setContent: Function;
-  content: string;
+  content: string | Object;
   flashcard?: boolean;
 }) {
   const editor = useEditor({

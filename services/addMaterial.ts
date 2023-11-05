@@ -44,7 +44,7 @@ export async function addUnit(
           name: label,
           emoji: emoji,
           userId: userId,
-          ref: refId,
+          ref: refId.split(" ")[0],
           description: description ? description : ""
         }),
         method: "POST",

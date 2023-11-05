@@ -35,8 +35,10 @@ export default function Page({
   }
 
   let [editable, setEditable] = useState(true);
-  let [content, setContent] = useState(lesson.content ? lesson.content : "");
-  const contentRef = useRef<string>(content);
+  let [content, setContent] = useState<[]>(
+    lesson.content ? lesson.content : []
+  );
+  const contentRef = useRef<[]>(content);
 
   function updateContent() {
     if (contentRef.current != lesson.content) {
@@ -62,6 +64,8 @@ export default function Page({
     };
   }, []);
 
+  console.log(lesson);
+
   return (
     <div style={{ padding: "0px 20px", flex: "80%" }}>
       <div className="flex items-center justify-between py-2">
@@ -83,7 +87,7 @@ export default function Page({
       <TipTap
         isEditable={editable}
         setContent={setContent}
-        content={lesson.content ? lesson.content : ""}
+        content={lesson.content ? lesson.content : []}
       />
     </div>
   );

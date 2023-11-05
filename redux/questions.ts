@@ -4,8 +4,8 @@ import { produce } from 'immer'
 export interface question {
     id: string,
     userId: string,
-    question: string,
-    answer: string,
+    question: {content: [], type: string},
+    answer: {content: [], type: string},
     difficulty: number,
     lesson: string,
     history: {}

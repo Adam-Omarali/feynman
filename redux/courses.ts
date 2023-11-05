@@ -23,7 +23,7 @@ export interface lesson {
   courseId: string
   unitId: string
   emoji: string
-  content?: string
+  content?: []
   questions: string[]
 }
 
@@ -106,7 +106,7 @@ export const courseSlice = createSlice({
         delete draft.value[action.payload.courseId].units[action.payload.unitId].lessons[action.payload.lessonId]
       })
     },
-    updateLessonContent: (state, action: PayloadAction<{courseId: string, unitId:string, lessonId:string, content: string}>) => {
+    updateLessonContent: (state, action: PayloadAction<{courseId: string, unitId:string, lessonId:string, content: []}>) => {
       return produce(state, draft => {
         draft.value[action.payload.courseId].units[action.payload.unitId].lessons[action.payload.lessonId].content = action.payload.content
       })

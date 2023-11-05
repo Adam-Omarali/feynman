@@ -71,7 +71,7 @@ export function DisplayCourseGroup({ course }: { course: courseMenu }) {
                 opened={unitOpened[idx]}
                 setOpened={handleUnitOpened}
                 type={"lesson"}
-                refId={course.id}
+                refId={course.id + " " + unit.id} //have to have unit id at this level for adding lessons using + on a unit
               />
               {unit.lessons &&
                 Object.values(unit.lessons).map((lesson, idx2) => {
@@ -154,7 +154,7 @@ export default function CollectionButton({
                 type == "unit"
                   ? "/course/" + item.id
                   : type == "lesson"
-                  ? "/unit/" + item.id + "?course=" + refId
+                  ? "/unit/" + item.id + "?course=" + refId?.split(" ")[0]
                   : "/lesson/" +
                     item.id +
                     "?course=" +
