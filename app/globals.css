@@ -15,6 +15,9 @@
   ol {
     @apply list-decimal
   }
+  li {
+    @apply leading-normal -mb-2
+  }
   :root {
     --background: 0 0% 100%;
     --foreground: 222.2 47.4% 11.2%;

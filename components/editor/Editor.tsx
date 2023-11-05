@@ -39,6 +39,7 @@ export default function Editor({
     onUpdate: (e) => {
       setSaveStatus("Unsaved");
       debouncedUpdates(e);
+      setContent(e.editor.getHTML());
     },
     autofocus: "end",
     editable: isEditable,
@@ -61,7 +62,7 @@ export default function Editor({
       }}
       className={
         !flashcard
-          ? "relative min-h-[500px] w-full max-w-screen-lg border-stone-200 bg-white p-12 px-8 sm:mb-[calc(20vh)] sm:rounded-lg sm:border sm:px-12 sm:shadow-lg max-h-[500px]"
+          ? "relative min-h-[500px] w-full max-w-screen-lg border-stone-200 bg-white p-12 px-8 sm:mb-[calc(20vh)] sm:rounded-lg sm:border sm:px-12 sm:shadow-lg h-fit"
           : "relative w-full border-stone-200 bg-white p-8 sm:mb-2 sm:rounded-lg sm:border max-h-[500px]"
       }
     >
