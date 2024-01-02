@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { firebaseAdmin } from "../../firebase/serverConfig";
+import firebaseAdmin from "../../firebase/serverConfig";
 import { FieldValue } from "firebase-admin/firestore";
 import { store } from "@/redux/store";
 

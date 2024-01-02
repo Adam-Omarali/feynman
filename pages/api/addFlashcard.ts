@@ -1,12 +1,12 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { firebaseAdmin } from "../../firebase/serverConfig";
+import firebaseAdmin from "../../firebase/serverConfig";
 import { FieldValue } from "firebase-admin/firestore";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse){
     const db = firebaseAdmin.firestore();
 
     if (req.method == "POST"){
-        const {userId, question, answer, difficulty, lessonId} = req.body
+        const {userId, question, answer, solution, difficulty, lessonId} = req.body
 
         if (userId){
             // Create a new flashcard document in Firestore
@@ -16,10 +16,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               id: flashcardRef.id,
               userId: userId,
               question: question,
-              answer: answer,
+              answer: answer.length == 0 ? null : answer,
+              solution: solution.length == 0 ? null : solution,
               difficulty: difficulty,
               lesson: lessonId,
-              history: {}
+              history: []
             };
             await flashcardRef.set(newFlashcard);
             await lessonRef.update({questions: FieldValue.arrayUnion(flashcardRef.id)})

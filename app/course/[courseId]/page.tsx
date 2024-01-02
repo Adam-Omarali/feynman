@@ -35,7 +35,7 @@ export default function Home({ params }: { params: { courseId: string } }) {
           type={"course"}
         />
       </div>
-      <div>{course.description}</div>
+      <div className="pb-2">{course.description}</div>
       {/* <div className="flex justify-between items-center">
         <h3>Units</h3>
       </div> */}

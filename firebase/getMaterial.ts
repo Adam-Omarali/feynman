@@ -1,5 +1,5 @@
 import { NextApiResponse } from "next"
-import { firebaseAdmin } from "./serverConfig"
+import firebaseAdmin from "./serverConfig"
 
 /**
 Retrieves material data of a specified type and ID from a Firestore database and sends it as a response

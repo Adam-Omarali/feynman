@@ -8,7 +8,7 @@ import { useDebouncedCallback } from "use-debounce";
 import { EditorBubbleMenu } from "./components";
 import "katex/dist/katex.min.css";
 
-export default function Editor({
+export default function TipTap({
   isEditable,
   setContent,
   content,
@@ -41,7 +41,7 @@ export default function Editor({
       debouncedUpdates(e);
       setContent(e.editor.getHTML());
     },
-    autofocus: "end",
+    autofocus: "all",
     editable: isEditable,
   });
 
@@ -61,7 +61,9 @@ export default function Editor({
       className={
         !flashcard
           ? "relative min-h-[500px] w-full max-w-screen-lg border-stone-200 bg-white p-12 px-8 sm:mb-[calc(20vh)] sm:rounded-lg sm:border sm:px-12 sm:shadow-lg h-fit"
-          : "relative w-full border-stone-200 bg-white p-8 sm:mb-2 sm:rounded-lg sm:border max-h-[500px]"
+          : isEditable
+          ? "relative w-full border-stone-200 bg-white p-8 sm:mb-2 sm:rounded-lg sm:border max-h-[500px]"
+          : "relative w-full py-8 max-h-[500px]"
       }
     >
       {isEditable ? (

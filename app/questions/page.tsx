@@ -23,7 +23,7 @@ function Page() {
             <TipTap
               isEditable={false}
               setContent={() => {}}
-              content={question.answer}
+              content={question.answer ? question.answer : {}}
               flashcard={true}
             />
           </div>

@@ -91,6 +91,7 @@ export async function addFlashcard(
         userId: userId,
         question: f.question,
         answer: f.answer,
+        solution: f.solution,
         difficulty: f.difficulty,
         lessonId: ids.lessonId
       }),

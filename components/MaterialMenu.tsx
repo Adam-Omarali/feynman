@@ -28,7 +28,7 @@ export function UserMenu({
       <ul className="p-2 shadow menu dropdown-content bg-base-100 rounded-box w-52">
         <li>
           <div
-            className="text-red-500 hover:text-red-500 hover:bg-red-100"
+            className="text-red-500 hover:text-red-500 hover:bg-red-100 p-4"
             onClick={async () => {
               await deleteMaterial(ids, type);
               if (type == "course") router.push("/");

@@ -15,10 +15,19 @@ import {
   SelectValue,
 } from "./ui/select";
 import { modalContext } from "./Modal";
+import { Switch } from "./ui/switch";
+import { Label } from "./ui/label";
+
+enum RESPONSE_TYPE {
+  answer = 1,
+  solution = 2,
+  both = 3,
+}
 
 function FlashcardForm() {
   const [question, setQuestion] = useState([]);
-  const [answer, setAnswer] = useState([]);
+  const [answer, setAnswer] = useState<false | Array<Object>>(false);
+  const [solution, setSolution] = useState<false | Array<Object>>(false);
   const [difficulty, setDifficulty] = useState(0);
   const [lesson, setLesson] = useState("none");
   const user = useSelector((state: RootState) => state.user);
@@ -37,7 +46,8 @@ function FlashcardForm() {
         { lessonId, courseId, unitId },
         {
           question: question,
-          answer: answer,
+          answer: answer ? answer : [],
+          solution: solution ? solution : [],
           difficulty: difficulty,
           lesson: lesson,
         }
@@ -59,13 +69,42 @@ function FlashcardForm() {
           flashcard={true}
         />
         <div className="divider"></div>
-        <p>Answer</p>
-        <TipTap
-          isEditable={true}
-          setContent={setAnswer}
-          content={answer}
-          flashcard={true}
-        />
+        <div className="flex items-center gap-4 mb-4">
+          <Switch
+            id="answer"
+            onCheckedChange={() => (answer ? setAnswer(false) : setAnswer([]))}
+          />
+          <Label htmlFor="answer">Answer</Label>
+          <Switch
+            id="solution"
+            onCheckedChange={() =>
+              solution ? setSolution(false) : setSolution([])
+            }
+          />
+          <Label htmlFor="solution">Solution</Label>
+        </div>
+        {answer && (
+          <div>
+            <p>Answer (Exact Number, Word or Formula)</p>
+            <TipTap
+              isEditable={true}
+              setContent={setAnswer}
+              content={answer}
+              flashcard={true}
+            />
+          </div>
+        )}
+        {solution && (
+          <div>
+            <p>Solution</p>
+            <TipTap
+              isEditable={true}
+              setContent={setSolution}
+              content={solution}
+              flashcard={true}
+            />
+          </div>
+        )}
         <div className="flex justify-between items-center">
           <div className="flex gap-4">
             <p>Difficulty</p>
@@ -129,6 +168,7 @@ function FlashcardForm() {
 export type Flashcard = {
   question: Array<Object>;
   answer: Array<Object>;
+  solution: Array<Object>;
   difficulty: number;
   lesson: string;
 };
