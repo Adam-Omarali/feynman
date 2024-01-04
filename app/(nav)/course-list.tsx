@@ -46,7 +46,7 @@ export function ItemInput({
 
   return (
     <div>
-      <div className="flex items-center gap-5 px-4">
+      <div className="flex items-center gap-5 p-4 z-10">
         <SelectEmoji
           emoji={emoji}
           setEmoji={setEmoji}

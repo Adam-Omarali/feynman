@@ -25,10 +25,10 @@ export function UserMenu({
       <summary className="m-1 btn btn-ghost btn-sm">
         <IconDots size="1.3rem" stroke={1.5} />
       </summary>
-      <ul className="p-2 shadow menu dropdown-content bg-base-100 rounded-box w-52">
+      <ul className="p-2 pb-4 shadow menu dropdown-content bg-base-100 rounded-box w-52">
         <li>
           <div
-            className="text-red-500 hover:text-red-500 hover:bg-red-100 p-4"
+            className="text-red-500 hover:text-red-500 hover:bg-red-100 m-2"
             onClick={async () => {
               await deleteMaterial(ids, type);
               if (type == "course") router.push("/");
