@@ -15,6 +15,7 @@ import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { addUnitStore, unit } from "@/redux/unit";
 import { useDispatch } from "react-redux";
+import MaterialSkeleton from "@/components/MaterialSkeleton";
 
 export default function Page({
   params,
@@ -69,7 +70,11 @@ export default function Page({
   let lessons = user.courses[searchParams.course].units[params.unitId].lessons;
 
   if (isLoading) {
-    return <Skeleton className="h-10 w-[150px] mx-4 pt-2"></Skeleton>;
+    return (
+      <MaterialSkeleton
+        text={user.courses[searchParams.course].units[params.unitId].name}
+      />
+    );
   } else {
     return (
       <div style={{ padding: "16px 20px", flex: "80%" }}>

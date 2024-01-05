@@ -14,6 +14,7 @@ import { fetchMaterial } from "@/services/fetchMaterial";
 import { useQuery } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
 import { addCourseStore } from "@/redux/courses";
+import MaterialSkeleton from "@/components/MaterialSkeleton";
 
 export default function Home({ params }: { params: { courseId: string } }) {
   let courseState = useSelector(
@@ -50,7 +51,7 @@ export default function Home({ params }: { params: { courseId: string } }) {
 
   //if course dne, fetch course
   if (isLoading) {
-    return <Skeleton className="h-10 w-[150px] mx-4 pt-2"></Skeleton>;
+    return <MaterialSkeleton text={user.courses[params.courseId].name} />;
   } else {
     let course = data;
 

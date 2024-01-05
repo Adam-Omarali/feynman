@@ -12,6 +12,7 @@ import { BookOpen, Edit } from "lucide-react";
 import { EditLessonContent } from "@/services/updateMaterial";
 import { content } from "@/redux/questions";
 import { addLessonStore } from "@/redux/lesson";
+import MaterialSkeleton from "@/components/MaterialSkeleton";
 
 export default function Page({
   params,
@@ -90,7 +91,15 @@ export default function Page({
   }
 
   if (isLoading) {
-    return <Skeleton className="h-10 w-[150px] mx-4 pt-2"></Skeleton>;
+    return (
+      <MaterialSkeleton
+        text={
+          user.courses[searchParams.course].units[searchParams.unit].lessons[
+            params.lessonId
+          ].name
+        }
+      ></MaterialSkeleton>
+    );
   } else {
     return (
       <div style={{ padding: "0px 20px", flex: "80%" }}>
