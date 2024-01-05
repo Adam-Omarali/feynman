@@ -28,7 +28,7 @@ export function DisplayCourseGroup({ course }: { course: courseMenu }) {
       if (lessons) {
         lessonTemp = [
           ...lessonTemp,
-          Array<boolean>(Object.keys(lessons).length).fill(false),
+          Array<boolean>(Object.keys(lessons).length).fill(unitTemp[unit]),
         ];
       } else {
         lessonTemp = [...lessonTemp, []];

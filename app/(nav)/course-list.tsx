@@ -94,8 +94,8 @@ export function CourseList() {
   let loading = useSelector((state: RootState) => state.loading.value);
 
   return (
-    <div>
-      <li className="py-2">
+    <div className="overflow-y-auto overflow-x-hidden">
+      <div className="py-2">
         <div className="flex justify-between items-center pl-3 pr-1.5">
           <Link href="/">
             <p className="text-sm">Courses</p>
@@ -110,7 +110,7 @@ export function CourseList() {
             />
           </div>
         </div>
-      </li>
+      </div>
       {addCourse ? (
         <ItemInput
           display={addCourse}
@@ -118,7 +118,7 @@ export function CourseList() {
           type={"course"}
         />
       ) : null}
-      <li>
+      <div>
         {Object.keys(courses).length === 0 && loading ? (
           <div className="space-y-2 flex flex-col gap-3 p-3">
             {[0, 1, 2].map((_) => (
@@ -132,7 +132,7 @@ export function CourseList() {
             </div>
           ))
         )}
-      </li>
+      </div>
     </div>
   );
 }
