@@ -6,8 +6,16 @@ import { useEffect, useState } from "react";
 import { rem } from "../../util/rem";
 import { ItemInput } from "./course-list";
 import { courseMenu } from "@/redux/courses";
+import { courseObj, simplifiedCourse } from "@/redux/user";
+import { Skeleton } from "@/components/ui/Skeleton";
 
-export function DisplayCourseGroup({ course }: { course: courseMenu }) {
+export function DisplayCourseGroup({
+  course,
+  courseId,
+}: {
+  course: simplifiedCourse;
+  courseId: string;
+}) {
   const [courseOpened, setCourseOpened] = useState(false);
   const [unitOpened, setUnitOpened] = useState<boolean[]>([]);
   const [lessonOpened, setLessonOpened] = useState<boolean[][]>([]);
@@ -22,13 +30,14 @@ export function DisplayCourseGroup({ course }: { course: courseMenu }) {
 
     let lessonTemp: boolean[][] = [];
 
-    for (let unit in Object.keys(course.units)) {
-      unit = Object.keys(course.units)[unit];
-      let lessons = course.units[unit].lessons;
+    let unitIds = Object.keys(course.units);
+    for (let i = 0; i < unitIds.length; i++) {
+      let unitId = unitIds[i];
+      let lessons = course.units[unitId].lessons;
       if (lessons) {
         lessonTemp = [
           ...lessonTemp,
-          Array<boolean>(Object.keys(lessons).length).fill(unitTemp[unit]),
+          Array<boolean>(Object.keys(lessons).length).fill(unitTemp[i]),
         ];
       } else {
         lessonTemp = [...lessonTemp, []];
@@ -41,12 +50,14 @@ export function DisplayCourseGroup({ course }: { course: courseMenu }) {
     <div>
       <CollectionButton
         item={course}
+        itemId={courseId}
         opened={courseOpened}
         setOpened={setCourseOpened}
-        type={"unit"}
-        refId={course.id}
+        dropdownOpens={"unit"} //dropdown opens units
+        refId={courseId}
       />
       {Object.values(course.units).map((unit, idx) => {
+        const unitId = Object.keys(course.units)[idx];
         function handleUnitOpened(value: boolean) {
           let arr = [...unitOpened];
           arr[idx] = value;
@@ -58,42 +69,40 @@ export function DisplayCourseGroup({ course }: { course: courseMenu }) {
             setLessonOpened(lessonArr);
           }
         }
-        let unitItem: { name: string; id: string; emoji: string } = {
-          name: unit.name!,
-          emoji: unit.emoji!,
-          id: unit.id!,
-        };
+
         if (courseOpened && unit) {
           return (
-            <div style={{ paddingLeft: "7px" }} key={unit.id}>
+            <div style={{ paddingLeft: "7px" }} key={unitId}>
               <CollectionButton
-                item={unitItem}
+                item={unit}
+                itemId={unitId}
                 opened={unitOpened[idx]}
                 setOpened={handleUnitOpened}
-                type={"lesson"}
-                refId={course.id + " " + unit.id} //have to have unit id at this level for adding lessons using + on a unit
+                dropdownOpens={"lesson"} //dropdown opens units
+                refId={courseId + " " + unitId} //have to have unit id at this level for adding lessons using + on a unit
               />
               {unit.lessons &&
                 Object.values(unit.lessons).map((lesson, idx2) => {
-                  let lesssonItem: { name: string; id: string; emoji: string } =
-                    {
-                      name: lesson.name!,
-                      emoji: lesson.emoji!,
-                      id: lesson.id!,
-                    };
+                  const lessonId = Object.keys(unit.lessons)[idx2];
+                  function handleLessonOpen() {
+                    let lessonArr = [...lessonOpened];
+                    lessonArr[idx][idx2] = true;
+                    setLessonOpened(lessonArr);
+                  }
                   if (
-                    unitOpened &&
-                    lessonOpened.length > idx &&
-                    lessonOpened[idx][idx2]
+                    unitOpened && //the unit which constains the lesson is opened
+                    lessonOpened.length > idx && //if the unit idx is smaller than the number of lessons (since can have a unit with no lesson)
+                    lessonOpened[idx][idx2] // if the lesson (idx2) with the unit (idx) is opened
                   ) {
                     return (
-                      <div style={{ paddingLeft: "20px" }} key={lesson.id}>
+                      <div style={{ paddingLeft: "20px" }} key={lessonId}>
                         <CollectionButton
-                          item={lesssonItem}
+                          item={lesson}
+                          itemId={lessonId}
                           opened={undefined}
-                          type={"none"}
+                          dropdownOpens={"none"}
                           setOpened={() => {}}
-                          refId={course.id + " " + unit.id}
+                          refId={courseId + " " + unitId}
                         />
                       </div>
                     );
@@ -109,19 +118,22 @@ export function DisplayCourseGroup({ course }: { course: courseMenu }) {
 
 export default function CollectionButton({
   item,
+  itemId,
   opened,
   setOpened,
-  type,
+  dropdownOpens,
   refId,
 }: {
-  item: { name: string; id: string; emoji: string };
+  item: { name: string; emoji: string };
+  itemId: string;
   opened: boolean | undefined;
   setOpened: Function;
-  type?: string;
+  dropdownOpens?: string;
   refId?: string;
 }) {
   const [displayAdd, setDisplayAdd] = useState(false);
   const [addCourse, setAddCourse] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const ChevronIcon = IconChevronRight;
 
   return (
@@ -129,12 +141,12 @@ export default function CollectionButton({
       <button className="w-full">
         <div
           // onClick={(event) => event.preventDefault()}
-          key={item.id}
+          key={itemId}
           className="flex items-center justify-between px-2 py-2 rounded text-xs leading-none font-medium text-gray-500 hover:text-black hover:bg-gray-100"
           onMouseEnter={() => setDisplayAdd(true)}
           onMouseLeave={() => setDisplayAdd(false)}
         >
-          <div style={{ display: "flex", alignItems: "center" }}>
+          <div className="flex items-center">
             {opened !== undefined ? (
               <ChevronIcon
                 onClick={() => {
@@ -151,12 +163,12 @@ export default function CollectionButton({
             ) : null}
             <Link
               href={
-                type == "unit"
-                  ? "/course/" + item.id
-                  : type == "lesson"
-                  ? "/unit/" + item.id + "?course=" + refId?.split(" ")[0]
+                dropdownOpens == "unit"
+                  ? "/course/" + itemId
+                  : dropdownOpens == "lesson"
+                  ? "/unit/" + itemId + "?course=" + refId?.split(" ")[0]
                   : "/lesson/" +
-                    item.id +
+                    itemId +
                     "?course=" +
                     refId?.split(" ")[0] +
                     "&unit=" +
@@ -187,11 +199,22 @@ export default function CollectionButton({
           <ItemInput
             display={addCourse}
             setDisplay={setAddCourse}
-            type={type!}
+            dropdownOpens={dropdownOpens!}
             refId={refId}
+            setSubmitting={setSubmitting}
           />
         </div>
       ) : null}
+      {submitting && dropdownOpens && (
+        <div className="ml-4 -mt-2">
+          <Skeleton className="h-6 w-[80%]">
+            <p className="text-sm m-4">
+              Adding{" "}
+              {dropdownOpens!.charAt(0).toUpperCase() + dropdownOpens!.slice(1)}
+            </p>
+          </Skeleton>
+        </div>
+      )}
     </div>
   );
 }

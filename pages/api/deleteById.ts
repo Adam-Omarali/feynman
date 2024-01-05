@@ -17,6 +17,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }  
     }
     else{
-        res.status(400).send("HTTP method is no applicable")
+        res.status(400).send("HTTP method is not applicable, must be POST")
     }
 }

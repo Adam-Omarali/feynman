@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { RootState, store } from "@/redux/store";
 import { useSelector } from "react-redux";
@@ -25,6 +26,7 @@ export function UserButton() {
       <div className="text-sm">
         <p>{user.name}</p>
       </div>
+      {/* <Button>Log Out</Button> */}
     </div>
   );
 }

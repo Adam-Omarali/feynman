@@ -4,6 +4,8 @@ import { IconTrash, IconDots } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { deleteMaterial } from "../services/deleteMaterial";
 import { useState } from "react";
+import Modal from "./Modal";
+import Spinner from "./Spinner";
 
 /**
  *
@@ -23,7 +25,7 @@ export function UserMenu({
   const router = useRouter();
   const [deleting, setDeleting] = useState(false);
   return (
-    <details className="dropdown dropdown-left">
+    <details className="dropdown dropdown-left z-20">
       <summary className="m-1 btn btn-ghost btn-sm">
         <IconDots size="1.3rem" stroke={1.5} />
       </summary>
@@ -44,7 +46,7 @@ export function UserMenu({
             <p>
               {deleting
                 ? "Deleting"
-                : "Delete" + type.charAt(0).toUpperCase() + type.slice(1)}
+                : "Delete " + type.charAt(0).toUpperCase() + type.slice(1)}
             </p>
           </div>
         </li>

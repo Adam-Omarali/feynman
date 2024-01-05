@@ -18,6 +18,6 @@ export async function getMaterial(type:string, id:string, res: NextApiResponse, 
         res.status(200).send(doc.data())
     }
     else{
-        res.status(400).send("Course with specified id does not exist")
+        res.status(400).send(`${type} with specified id does not exist`)
     }
 }

@@ -1,9 +1,9 @@
-import { updateLessonContent } from "@/redux/courses"
-import { history, updateQuestionHistory } from "@/redux/questions"
+import { updateLessonContent } from "@/redux/lesson"
+import { content, history, updateQuestionHistory } from "@/redux/questions"
 import { store } from "@/redux/store"
 
-export async function EditLessonContent(content: [], courseId: string, unitId: string, lessonId: string){
-    store.dispatch(updateLessonContent({courseId, unitId, lessonId, content}))
+export async function EditLessonContent(content: content | [], courseId: string, unitId: string, lessonId: string){
+    store.dispatch(updateLessonContent({lessonId, content}))
     await fetch("/api/lesson/" + lessonId, {
         body: JSON.stringify({
             content
