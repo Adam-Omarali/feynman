@@ -1,9 +1,9 @@
-import { lesson } from "@/redux/courses";
+import { lesson } from "@/redux/lesson";
 
 export async function fetchMaterial(endpoint:string){
   try{
     return await (
-      await fetch("http://localhost:3000/api/" + endpoint, {
+      await fetch("http://localhost:3000/api" + endpoint, {
         method: "GET",
       })
     ).json();
@@ -21,4 +21,9 @@ export async function getCourseIdFromUnitId(unitId: string){
 export async function getIdFromLessonId(lessonId: string){
   let data: lesson = await fetchMaterial("/lesson/" + lessonId) as lesson
   return {unitId: data.unitId, courseId: data.courseId}
+}
+
+export async function getUser(userId: string){
+  let data = await fetchMaterial("/user/" + userId)
+  return data
 }

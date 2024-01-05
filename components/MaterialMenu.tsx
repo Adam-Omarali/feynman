@@ -3,6 +3,9 @@
 import { IconTrash, IconDots } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { deleteMaterial } from "../services/deleteMaterial";
+import { useState } from "react";
+import Modal from "./Modal";
+import Spinner from "./Spinner";
 
 /**
  *
@@ -20,8 +23,9 @@ export function UserMenu({
   type: string;
 }) {
   const router = useRouter();
+  const [deleting, setDeleting] = useState(false);
   return (
-    <details className="dropdown dropdown-left">
+    <details className="dropdown dropdown-left z-20">
       <summary className="m-1 btn btn-ghost btn-sm">
         <IconDots size="1.3rem" stroke={1.5} />
       </summary>
@@ -30,6 +34,7 @@ export function UserMenu({
           <div
             className="text-red-500 hover:text-red-500 hover:bg-red-100 m-2"
             onClick={async () => {
+              setDeleting(true);
               await deleteMaterial(ids, type);
               if (type == "course") router.push("/");
               if (type == "unit") router.push("/course/" + ids.courseId);
@@ -38,7 +43,11 @@ export function UserMenu({
             }}
           >
             <IconTrash size="0.9rem" stroke={1.5} />
-            <p>Delete {type.charAt(0).toUpperCase() + type.slice(1)}</p>
+            <p>
+              {deleting
+                ? "Deleting"
+                : "Delete " + type.charAt(0).toUpperCase() + type.slice(1)}
+            </p>
           </div>
         </li>
       </ul>

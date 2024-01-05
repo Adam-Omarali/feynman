@@ -24,7 +24,7 @@ export default function RootLayout({
           <QueryClientWrapper>
             <AuthProvider>
               <div>
-                <div className="fixed">
+                <div className="fixed z-10 h-full">
                   <Navbar />
                 </div>
                 <div className="ml-56">{children}</div>

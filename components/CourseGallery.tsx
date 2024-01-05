@@ -7,6 +7,7 @@ import Modal from "./Modal";
 import NewMaterialForm from "./NewMaterialForm";
 import { addCourse } from "@/services/addMaterial";
 import Link from "next/link";
+import LoadingCircle from "./LoadingCircle";
 
 function CourseGallery() {
   let courses = useSelector((state: RootState) => state.courses.value);
@@ -18,14 +19,19 @@ function CourseGallery() {
   }
 
   if (loading) {
-    return <></>;
+    return (
+      <>
+        <LoadingCircle />
+      </>
+    );
   }
   return (
     <div className="flex flex-wrap gap-4">
-      {Object.values(courses).map((course) => {
+      {Object.values(user.courses).map((course, idx) => {
+        const courseId = Object.keys(user.courses)[idx];
         return (
-          <div key={course.id}>
-            <Link href={"/course/" + course.id}>
+          <div key={courseId}>
+            <Link href={"/course/" + courseId}>
               <MaterialCard title={course.emoji + " " + course.name} />
             </Link>
           </div>

@@ -10,6 +10,8 @@ import { RootState, store } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { BookOpen, Edit } from "lucide-react";
 import { EditLessonContent } from "@/services/updateMaterial";
+import { content } from "@/redux/questions";
+import { addLessonStore } from "@/redux/lesson";
 
 export default function Page({
   params,
@@ -18,30 +20,43 @@ export default function Page({
   params: { lessonId: string };
   searchParams: { course: string; unit: string };
 }) {
-  let course = useSelector(
-    (state: RootState) => state.courses.value[searchParams.course]
+  let lessonState = useSelector(
+    (state: RootState) => state.lesson.value[params.lessonId]
   );
+  let user = useSelector((state: RootState) => state.user);
+  let dispatch = useDispatch();
 
-  if (course === undefined) {
-    return <Skeleton className="h-4 w-[150px] p-4"></Skeleton>;
-  }
-  let unit = course.units[searchParams.unit];
-  if (unit === undefined) {
-    return <Skeleton className="h-4 w-[150px] p-4"></Skeleton>;
-  }
-  let lesson = unit.lessons[params.lessonId];
-  if (lesson === undefined) {
-    return <Skeleton className="h-4 w-[150px] p-4"></Skeleton>;
-  }
+  const {
+    isLoading,
+    error,
+    data: lesson,
+  } = useQuery(
+    ["lesson"],
+    async () => {
+      if (lessonState === undefined) {
+        console.log("fetching lesson");
+        let lesson = await fetchMaterial("/lesson/" + params.lessonId);
+        dispatch(addLessonStore(lesson));
+        return lesson;
+      } else {
+        return lessonState;
+      }
+    },
+    {
+      enabled:
+        !!user.courses[searchParams.course].units[searchParams.unit].lessons[
+          params.lessonId
+        ],
+    }
+  );
 
   let [editable, setEditable] = useState(true);
-  let [content, setContent] = useState<[]>(
-    lesson.content ? lesson.content : []
-  );
-  const contentRef = useRef<[]>(content);
+  let [content, setContent] = useState<[]>([]);
+  const contentRef = useRef<content | []>(content);
 
   function updateContent() {
-    if (contentRef.current != lesson.content) {
+    console.log("updating lesson content");
+    if (lesson && contentRef.current != lesson.content) {
       EditLessonContent(
         contentRef.current,
         searchParams.course,
@@ -57,6 +72,7 @@ export default function Page({
 
   useEffect(() => {
     window.addEventListener("beforeunload", (ev) => {
+      console.log("unloading lesson");
       updateContent();
     });
     return () => {
@@ -64,31 +80,42 @@ export default function Page({
     };
   }, []);
 
-  console.log(lesson);
+  if (
+    user.courses[searchParams.course].units[searchParams.unit].lessons[
+      params.lessonId
+    ] === undefined
+  ) {
+    //transistioning between deleting lesson and unit page
+    return <></>;
+  }
 
-  return (
-    <div style={{ padding: "0px 20px", flex: "80%" }}>
-      <div className="flex items-center justify-between py-2">
-        <h1>{lesson.name + " " + lesson.emoji}</h1>
-        <div className="flex items-center">
-          <button onClick={() => setEditable(!editable)}>
-            {editable ? <BookOpen /> : <Edit />}
-          </button>
-          <UserMenu
-            ids={{
-              courseId: searchParams.course,
-              unitId: searchParams.unit,
-              lessonId: params.lessonId,
-            }}
-            type={"lesson"}
-          />
+  if (isLoading) {
+    return <Skeleton className="h-10 w-[150px] mx-4 pt-2"></Skeleton>;
+  } else {
+    return (
+      <div style={{ padding: "0px 20px", flex: "80%" }}>
+        <div className="flex items-center justify-between py-2">
+          <h1>{lesson.name + " " + lesson.emoji}</h1>
+          <div className="flex items-center">
+            {/* <button onClick={() => setEditable(!editable)}>
+              {editable ? <BookOpen /> : <Edit />}
+            </button> */}
+            <UserMenu
+              ids={{
+                courseId: searchParams.course,
+                unitId: searchParams.unit,
+                lessonId: params.lessonId,
+              }}
+              type={"lesson"}
+            />
+          </div>
         </div>
+        <TipTap
+          isEditable={editable}
+          setContent={setContent}
+          content={lesson.content ? lesson.content : null}
+        />
       </div>
-      <TipTap
-        isEditable={editable}
-        setContent={setContent}
-        content={lesson.content ? lesson.content : []}
-      />
-    </div>
-  );
+    );
+  }
 }

@@ -5,20 +5,23 @@ import Modal from "@/components/Modal";
 import FlashcardForm from "@/components/FlashcardForm";
 import AddFlashcard from "../../components/AddFlashcard";
 import Link from "next/link";
+import SignOut from "@/components/SignOut";
 
 function Navbar() {
   return (
-    <div className="w-56 h-screen bg-gray-50 flex flex-col px-2 pb-4 justify-between">
-      <ul>
-        <li className="border-b-2">
+    <div className="w-56 h-full bg-gray-50 flex flex-col px-2 pb-4 justify-between">
+      <div className="flex flex-col max-h-[90%]">
+        <div className="border-b-2">
           <UserButton />
-        </li>
-
+        </div>
         <CourseList />
-      </ul>
-      <Button variant="hover">
-        <Link href={"/questions/add"}>New Flashcard</Link>
-      </Button>
+      </div>
+      <div className="flex flex-col gap-1 w-full">
+        <Button variant="hover">
+          <Link href={"/questions/add"}>New Flashcard</Link>
+        </Button>
+        <SignOut />
+      </div>
     </div>
   );
 }
