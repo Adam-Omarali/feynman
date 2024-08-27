@@ -35,7 +35,7 @@ export default function TipTap({
       TaskList,
       TaskItem,
       Typography,
-      Image,
+      // Image,
       Link,
       Mathematics,
       TextAlign.configure({

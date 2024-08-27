@@ -1,5 +1,3 @@
-"use client";
-
 import FlashcardForm from "@/components/FlashcardForm";
 import Modal from "@/components/Modal";
 import { Button } from "@/components/ui/Button";

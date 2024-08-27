@@ -6,7 +6,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const db = firebaseAdmin.firestore();
 
     if (req.method == "GET"){
-        let id = req?.query?.id as string
+        let id = req?.query?.userId as string
         if (id){
             let doc = await db.collection("users").doc(id).get()
             if (doc.exists) {

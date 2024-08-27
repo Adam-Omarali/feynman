@@ -1,6 +1,5 @@
 "use client";
 
-import { Skeleton } from "@/components/ui/Skeleton";
 import { useQuery } from "@tanstack/react-query";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import TipTap from "../../../components/editor/Editor";
@@ -8,8 +7,7 @@ import { UserMenu } from "../../../components/MaterialMenu";
 import { fetchMaterial } from "../../../services/fetchMaterial";
 import { RootState, store } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
-import { BookOpen, Edit } from "lucide-react";
-import { EditLessonContent } from "@/services/updateMaterial";
+import { editLessonContent } from "@/services/updateMaterial";
 import { content } from "@/redux/questions";
 import { addLessonStore } from "@/redux/lesson";
 import MaterialSkeleton from "@/components/MaterialSkeleton";
@@ -52,13 +50,15 @@ export default function Page({
   );
 
   let [editable, setEditable] = useState(true);
-  let [content, setContent] = useState<[]>([]);
+  let [content, setContent] = useState<[]>(
+    lesson ? (lesson.content ? lesson.content : []) : []
+  );
   const contentRef = useRef<content | []>(content);
 
   function updateContent() {
     console.log("updating lesson content");
     if (lesson && contentRef.current != lesson.content) {
-      EditLessonContent(
+      editLessonContent(
         contentRef.current,
         searchParams.course,
         searchParams.unit,
@@ -87,7 +87,7 @@ export default function Page({
     ] === undefined
   ) {
     //transistioning between deleting lesson and unit page
-    return <></>;
+    return <>You don't have access to this lesson</>;
   }
 
   if (isLoading) {
@@ -98,7 +98,7 @@ export default function Page({
             params.lessonId
           ].name
         }
-      ></MaterialSkeleton>
+      />
     );
   } else {
     return (

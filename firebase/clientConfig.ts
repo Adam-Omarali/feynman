@@ -2,7 +2,7 @@
 import { getApp, getApps } from 'firebase/app';
 import firebase from 'firebase/app';
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+import { getAnalytics, isSupported } from "firebase/analytics";
 import { getPerformance } from "firebase/performance";
 import { getFirestore } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
@@ -30,5 +30,6 @@ export const db = getFirestore(app);
 export const auth = getAuth(app)
 export const provider = new GoogleAuthProvider();
 export const storage = getStorage(app);
+const analytics = async() => await isSupported() ? getAnalytics(app) : null
 // export const per = getPerformance(app)
 // const analytics = typeof window !== undefined ? getAnalytics(app) : null

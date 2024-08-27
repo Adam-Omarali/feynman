@@ -20,3 +20,17 @@ export function getLessonList(){
   }
   return ret
 }
+
+export function getUnitIdFromLessonId(lessonId: string){
+  let courses = store.getState().user.courses
+  for (const course of Object.values(courses)){
+    for (const [unitId, unit] of Object.entries(course.units)){
+      for (const lessonId2 of Object.keys(unit.lessons)){
+        if (lessonId === lessonId2){
+          return unitId
+        }
+      }
+    }
+  }
+  return "lessonId doesn't exist"
+}

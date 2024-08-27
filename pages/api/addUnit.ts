@@ -17,13 +17,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const db = firebaseAdmin.firestore();
 
     if (req.method == "POST"){
-        const {name, userId, emoji, ref, description, courseObj} = JSON.parse(req.body)
+        const {name, userId, emoji, ref, description, courseObj}: addUnit = JSON.parse(req.body)
 
 
         if (name && userId){
             // Create a new course document in Firestore
             const unitRef = db.collection('units').doc();
             const userRef = db.collection('users').doc(userId)
+            const questionRef = userRef.collection("questions").doc(unitRef.id)
             const newUnit = {
               id: unitRef.id,
               userId: userId,
@@ -42,10 +43,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
 
             await userRef.update({courses: courseObj})
+            await questionRef.set({questions: []})
             await unitRef.set(newUnit);
 
-            const courseRef = db.collection('courses').doc(ref);
-            await courseRef.update({unitOrder: FieldValue.arrayUnion(unitRef.id)})
+            // const courseRef = db.collection('courses').doc(ref);
+            // await courseRef.update({unitOrder: FieldValue.arrayUnion(unitRef.id)})
           
             // Return the new course data
             res.status(200).json(newUnit);

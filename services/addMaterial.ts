@@ -4,7 +4,7 @@ import { Flashcard } from "@/components/FlashcardForm";
 import { addQuestion } from "@/redux/questions";
 import { addCourseUser, addLessonUser, addUnitUser, courseObj } from "@/redux/user";
 import { addUnitStore, unit } from "@/redux/unit";
-import { addLessonStore, addQuestionLesson, lesson } from "@/redux/lesson";
+import { addLessonStore, lesson } from "@/redux/lesson";
 
 export interface ids {
   lessonId: string,
@@ -105,7 +105,8 @@ export async function addFlashcard(
         answer: f.answer,
         solution: f.solution,
         difficulty: f.difficulty,
-        lessonId: ids.lessonId
+        lessonId: ids.lessonId,
+        unitId: ids.unitId
       }),
       headers: {
         'Content-Type': 'application/json',
@@ -115,5 +116,4 @@ export async function addFlashcard(
   ).json();
 
   store.dispatch(addQuestion(newFlashcard))
-  store.dispatch(addQuestionLesson({lessonId: ids.lessonId, questionId: newFlashcard.id}))
 }

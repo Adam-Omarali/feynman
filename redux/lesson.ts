@@ -8,7 +8,7 @@ export interface lesson {
     unitId: string
     emoji: string
     content?: content | []
-    questions: string[]
+    // questions: string[]
   }
   
 
@@ -36,9 +36,9 @@ const initialState: LessonState = {
         }
       },
       //add question
-      addQuestionLesson: (state, action: PayloadAction<{lessonId: string, questionId: string}>) => {
-        state.value[action.payload.lessonId].questions.push(action.payload.questionId)
-      },
+      // addQuestionLesson: (state, action: PayloadAction<{lessonId: string, questionId: string}>) => {
+      //   state.value[action.payload.lessonId].questions.push(action.payload.questionId)
+      // },
       //update content
       updateLessonContent: (state, action: PayloadAction<{lessonId: string, content: content | []}>) => {
         state.value[action.payload.lessonId].content = action.payload.content
@@ -47,6 +47,6 @@ const initialState: LessonState = {
   })
   
   // Action creators are generated for each case reducer function
-  export const { setLessons, addLessonStore, deleteLessonStore, addQuestionLesson, updateLessonContent } = lessonSlice.actions
+  export const { setLessons, addLessonStore, deleteLessonStore, updateLessonContent } = lessonSlice.actions
   
   export default lessonSlice.reducer

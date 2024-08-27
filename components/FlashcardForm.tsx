@@ -17,6 +17,7 @@ import {
 import { modalContext } from "./Modal";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
+import { defaultDoc } from "@/redux/questions";
 
 enum RESPONSE_TYPE {
   answer = 1,
@@ -24,18 +25,25 @@ enum RESPONSE_TYPE {
   both = 3,
 }
 
+type doc = {
+  type: string;
+  content: any;
+};
+
 function FlashcardForm() {
-  const [question, setQuestion] = useState([]);
-  const [answer, setAnswer] = useState<false | Array<Object>>(false);
-  const [solution, setSolution] = useState<false | Array<Object>>(false);
+  const [question, setQuestion] = useState<doc>(defaultDoc);
+  const [answer, setAnswer] = useState<false | doc>(false);
+  const [solution, setSolution] = useState<false | doc>(false);
   const [difficulty, setDifficulty] = useState(0);
   const [lesson, setLesson] = useState("none");
+  const [alertLesson, setAlertLesson] = useState(false);
   const user = useSelector((state: RootState) => state.user);
   const lessonList = getLessonList();
   const modal = useContext(modalContext);
 
   async function createFlashCard() {
     if (lesson == "none") {
+      setAlertLesson(true);
       alert("needs a lesson");
     } else {
       let lessonId = lessonList[lesson].id;
@@ -46,14 +54,14 @@ function FlashcardForm() {
         { lessonId, courseId, unitId },
         {
           question: question,
-          answer: answer ? answer : [],
-          solution: solution ? solution : [],
+          answer: answer ? answer : defaultDoc,
+          solution: solution ? solution : defaultDoc,
           difficulty: difficulty,
           lesson: lesson,
         }
       );
-      setQuestion([]);
-      setAnswer([]);
+      setQuestion(defaultDoc);
+      setAnswer(defaultDoc);
       setDifficulty(0);
       setLesson("none");
     }
@@ -72,13 +80,15 @@ function FlashcardForm() {
         <div className="flex items-center gap-4 mb-4">
           <Switch
             id="answer"
-            onCheckedChange={() => (answer ? setAnswer(false) : setAnswer([]))}
+            onCheckedChange={() =>
+              answer ? setAnswer(false) : setAnswer(defaultDoc)
+            }
           />
           <Label htmlFor="answer">Answer</Label>
           <Switch
             id="solution"
             onCheckedChange={() =>
-              solution ? setSolution(false) : setSolution([])
+              solution ? setSolution(false) : setSolution(defaultDoc)
             }
           />
           <Label htmlFor="solution">Solution</Label>
@@ -144,20 +154,29 @@ function FlashcardForm() {
               />
             </div>
           </div>
-          <Select onValueChange={(e) => setLesson(e)} value={lesson}>
-            <SelectTrigger className="w-[260px]">
-              <SelectValue placeholder="Related Lesson" />
-            </SelectTrigger>
-            <SelectContent>
-              {Object.keys(lessonList).map((lesson) => {
-                return (
-                  <SelectItem value={lesson} key={lessonList[lesson].id}>
-                    {lesson}
-                  </SelectItem>
-                );
-              })}
-            </SelectContent>
-          </Select>
+          <div className="flex items-center gap-2">
+            <p className={alertLesson ? "text-red-600" : ""}>Lesson</p>
+            <Select
+              onValueChange={(e) => {
+                setLesson(e);
+                setAlertLesson(false);
+              }}
+              value={lesson}
+            >
+              <SelectTrigger className="w-[260px]">
+                <SelectValue placeholder="Related Lesson" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.keys(lessonList).map((lesson) => {
+                  return (
+                    <SelectItem value={lesson} key={lessonList[lesson].id}>
+                      {lesson}
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </div>
       <Button onClick={createFlashCard}>Submit</Button>
@@ -166,9 +185,9 @@ function FlashcardForm() {
 }
 
 export type Flashcard = {
-  question: Array<Object>;
-  answer: Array<Object>;
-  solution: Array<Object>;
+  question: Object;
+  answer: Object;
+  solution: Object;
   difficulty: number;
   lesson: string;
 };

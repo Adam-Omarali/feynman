@@ -3,8 +3,10 @@
 import Question from "@/components/Question";
 import { Button } from "@/components/ui/Button";
 import { Slider } from "@/components/ui/slider";
+import { getUnitIdFromLessonId } from "@/lib/utils";
 import { question } from "@/redux/questions";
 import { RootState } from "@/redux/store";
+import { getQuestions } from "@/services/fetchMaterial";
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -22,10 +24,8 @@ function selectQuestion({
 }
 
 function GenerateTest({ params }: { params: { courseId: string } }) {
-  let course = useSelector(
-    (state: RootState) => state.courses.value[params.courseId]
-  );
-  let allQuestions = useSelector((state: RootState) => state.questions);
+  let user = useSelector((state: RootState) => state.user);
+  let questionState = useSelector((state: RootState) => state.questions);
   const [numQuestions, setNumQuestions] = useState(0);
   const [maxQuestions, setMaxQuestions] = useState(0);
   const [possibleQ, setPossibleQ] = useState<Array<question>>([]);
@@ -43,21 +43,26 @@ function GenerateTest({ params }: { params: { courseId: string } }) {
     addQuestion(temp);
   }
 
-  function addQuestion(unitIds: Array<string>) {
+  async function addQuestion(unitIds: Array<string>) {
     let count = 0;
-    let qs = [];
-    for (let unitId in course.units) {
-      if (unitIds.includes(unitId)) {
-        let unit = course.units[unitId];
-        for (let lessonId in unit.lessons) {
-          let lesson = unit.lessons[lessonId];
-          for (let i in lesson.questions) {
-            qs.push(allQuestions[lesson.questions[i]]);
-          }
-          count += lesson.questions.length;
-        }
-      }
+    let qs: Array<question> = [];
+    for (let unitId in unitIds) {
+      let questions = await getQuestions(user.id, unitId);
+      qs.concat(questions);
+      count += questions.length;
     }
+    // for (let unitId in course.units) {
+    //   if (unitIds.includes(unitId)) {
+    //     let unit = course.units[unitId];
+    //     for (let lessonId in unit.lessons) {
+    //       let lesson = unit.lessons[lessonId];
+    //       for (let i in lesson.questions) {
+    //         qs.push(allQuestions[lesson.questions[i]]);
+    //       }
+    //       count += lesson.questions.length;
+    //     }
+    //   }
+    // }
     console.log(qs);
     setMaxQuestions(count);
     setPossibleQ(qs);
@@ -68,18 +73,23 @@ function GenerateTest({ params }: { params: { courseId: string } }) {
       <div className="p-4">
         <h1>Select The Units for Your Test</h1>
         <div className="flex gap-2 py-4">
-          {Object.values(course.units).map((unit, id) => {
-            return (
-              <div key={id}>
-                <Button
-                  variant={units.includes(unit.id) ? "default" : "outline"}
-                  onClick={() => handleUnits(unit.id)}
-                >
-                  {unit.name}
-                </Button>
-              </div>
-            );
-          })}
+          {Object.keys(user.courses[params.courseId].units).map(
+            (unitId, idx) => {
+              let unit = Object.values(user.courses[params.courseId].units)[
+                idx
+              ];
+              return (
+                <div key={idx}>
+                  <Button
+                    variant={units.includes(unitId) ? "default" : "outline"}
+                    onClick={() => handleUnits(unitId)}
+                  >
+                    {unit.name}
+                  </Button>
+                </div>
+              );
+            }
+          )}
         </div>
         <div className="flex gap-2 items-center">
           <p className="w-fit">Number of Questions</p>

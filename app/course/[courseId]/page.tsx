@@ -46,7 +46,7 @@ export default function Home({ params }: { params: { courseId: string } }) {
 
   if (user.courses[params.courseId] === undefined) {
     //transistioning between deleting course and switching to home page
-    return <></>;
+    return <>You don't have access to this course</>;
   }
 
   //if course dne, fetch course

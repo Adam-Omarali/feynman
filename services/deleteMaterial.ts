@@ -30,6 +30,7 @@ async function deleteLessonAPI(lessonId: string){
 //     }
 // }
 
+//need to delete questions??
 export async function deleteLesson(courseId:string, unitId: string, lessonId: string){
     //delete lesson from database
     await deleteLessonAPI(lessonId)
@@ -92,6 +93,17 @@ async function deleteUnitAPI(unitId: string, courseId: string, unit: simplifiedU
             method: "POST",
         })
     }
+
+    await fetch("/api/deleteUnitQuestions", {
+        body: JSON.stringify({
+            userId: store.getState().user.id,
+            unitId
+        }),
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        method: "POST",
+    })
 
     deleteUnitStore(unitId)
 

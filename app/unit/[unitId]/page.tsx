@@ -38,7 +38,6 @@ export default function Page({
   } = useQuery(
     ["unit"],
     async () => {
-      console.log("tanquery running");
       if (unitState === undefined) {
         console.log("fetching unit");
         let unit = await fetchMaterial("/unit/" + params.unitId);
@@ -49,6 +48,7 @@ export default function Page({
       }
     },
     {
+      //also prevents a user trying to access a courseId they don't own
       enabled: !!user.courses[searchParams.course].units[params.unitId],
     }
   );
@@ -65,7 +65,7 @@ export default function Page({
 
   if (user.courses[searchParams.course].units[params.unitId] === undefined) {
     //just transitioning from a delete unit to course page
-    return <></>;
+    return <>You don't have access to this unit</>;
   }
   let lessons = user.courses[searchParams.course].units[params.unitId].lessons;
 

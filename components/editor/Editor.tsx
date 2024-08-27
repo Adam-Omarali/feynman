@@ -16,7 +16,7 @@ export default function TipTap({
 }: {
   isEditable: boolean;
   setContent: Function;
-  content: Object;
+  content: { content: { type: string; content: any }[] };
   flashcard?: boolean;
 }) {
   const [saveStatus, setSaveStatus] = useState("Saved");
@@ -31,27 +31,32 @@ export default function TipTap({
     setTimeout(() => {
       setSaveStatus("Saved");
     }, 500);
+    console.log("debounce", json);
   }, 750);
 
   const editor = useEditor({
     extensions: TiptapExtensions,
     editorProps: TiptapEditorProps,
     onUpdate: (e) => {
+      //update consistently
       setSaveStatus("Unsaved");
       debouncedUpdates(e);
-      setContent(e.editor.getHTML());
+      // setContent(e.editor.getHTML()); this was updating the context twice. once in debouncedUpdates and again here.
     },
     autofocus: "all",
     editable: isEditable,
   });
 
-  // Hydrate the editor with the content from localStorage.
+  //Hydrate the editor with the content from localStorage for initial load
   useEffect(() => {
-    if (editor && content && !hydrated) {
+    if (editor && content) {
       editor.commands.setContent(content);
       setHydrated(true);
     }
-  }, [editor, content, hydrated]);
+    // if (editor && content.length > 0 || content.content.length == 0) {
+    //   editor.commands.setContent(content);
+    // }
+  }, [editor, content]); //editor needed for initial load, content needed if a change is made, pages are switched, and then switch back because editor is already loaded.
 
   return (
     <div
@@ -60,10 +65,10 @@ export default function TipTap({
       }}
       className={
         !flashcard
-          ? "relative min-h-[500px] w-full max-w-screen-lg border-stone-200 bg-white p-12 px-8 sm:mb-[calc(20vh)] sm:rounded-lg sm:border sm:px-12 sm:shadow-lg h-fit"
+          ? "relative min-h-[500px] w-full max-w-screen-lg border-stone-200 bg-white p-12 px-8 sm:mb-[calc(20vh)] sm:rounded-lg sm:border sm:px-12 sm:shadow-lg h-fit overflow-scroll"
           : isEditable
-          ? "relative w-full border-stone-200 bg-white p-8 sm:mb-2 sm:rounded-lg sm:border max-h-[500px]"
-          : "relative w-full py-8 max-h-[500px]"
+          ? "relative w-full border-stone-200 bg-white p-8 sm:mb-2 sm:rounded-lg sm:border max-h-[500px] overflow-scroll"
+          : "relative w-full py-8 max-h-[500px] overflow-scroll"
       }
     >
       {isEditable ? (
