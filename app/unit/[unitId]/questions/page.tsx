@@ -16,6 +16,7 @@ function Page({ params }: { params: { unitId: string } }) {
     data: questions,
   } = useQuery(["questions"], async () => {
     let qs = await getQuestions(user.id, params.unitId);
+    console.log("useQuery", qs);
     return qs;
   });
 
@@ -24,7 +25,6 @@ function Page({ params }: { params: { unitId: string } }) {
     return (
       <div className="p-4">
         {Object.values(questions).map((question, id) => {
-          console.log(question);
           return (
             <div key="id">
               <p>Question</p>

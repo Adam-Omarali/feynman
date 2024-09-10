@@ -30,7 +30,7 @@ async function deleteLessonAPI(lessonId: string){
 //     }
 // }
 
-//need to delete questions??
+//TODO: need to delete questions??
 export async function deleteLesson(courseId:string, unitId: string, lessonId: string){
     //delete lesson from database
     await deleteLessonAPI(lessonId)
@@ -94,6 +94,7 @@ async function deleteUnitAPI(unitId: string, courseId: string, unit: simplifiedU
         })
     }
 
+    //delete questions
     await fetch("/api/deleteUnitQuestions", {
         body: JSON.stringify({
             userId: store.getState().user.id,
@@ -105,8 +106,6 @@ async function deleteUnitAPI(unitId: string, courseId: string, unit: simplifiedU
         method: "POST",
     })
 
-    deleteUnitStore(unitId)
-
     if(unit[unitId].lessons){
         let lessons = unit[unitId].lessons
         for(let lessonId in lessons){
@@ -117,13 +116,13 @@ async function deleteUnitAPI(unitId: string, courseId: string, unit: simplifiedU
     }
 }
 
-export async function deleteUnit(unitId: string, courseId: string){
-    //delete first, so lesson knows not to delete
+export async function deleteUnit(unitId: string, courseId: string){    
+    let courses = {...store.getState().user.courses}
+    let units = courses[courseId].units
+
     store.dispatch(deleteUnitStore(unitId))
     store.dispatch(deleteUnitUser({courseId, unitId}))
 
-    let courses = {...store.getState().user.courses}
-    let units = courses[courseId].units
     if(units){
         await deleteUnitAPI(unitId, courseId, units)
     }
@@ -156,6 +155,7 @@ export async function deleteCourse(id: string){
         let units = courses[id].units
         for(let unitId in units){
             deleteUnitAPI(unitId, id, units)
+            deleteUnitStore(unitId)
         }
     }
 

@@ -65,10 +65,10 @@ export default function TipTap({
       }}
       className={
         !flashcard
-          ? "relative min-h-[500px] w-full max-w-screen-lg border-stone-200 bg-white p-12 px-8 sm:mb-[calc(20vh)] sm:rounded-lg sm:border sm:px-12 sm:shadow-lg h-fit overflow-scroll"
+          ? "relative min-h-[500px] border-stone-200 bg-white p-12 px-8 sm:mb-[calc(20vh)] sm:rounded-lg sm:border sm:px-12 sm:shadow-lg h-fit overflow-scroll"
           : isEditable
-          ? "relative w-full border-stone-200 bg-white p-8 sm:mb-2 sm:rounded-lg sm:border max-h-[500px] overflow-scroll"
-          : "relative w-full py-8 max-h-[500px] overflow-scroll"
+          ? "relative border-stone-200 bg-white p-8 sm:mb-2 sm:rounded-lg sm:border max-h-[500px] overflow-scroll"
+          : "relative py-8 max-h-[500px] overflow-scroll"
       }
     >
       {isEditable ? (

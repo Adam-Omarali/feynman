@@ -9,12 +9,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         let docRef = db.collection("users").doc(userId).collection("questions").doc(unitId)
         let doc = await docRef.get()
         if (doc.exists){
-            let question = doc.data()
-            //delete question_content if the user created it
-            if (question && question.created){
-                let questionContentRef = db.collection("question_content").doc(question.content)
-                await questionContentRef.delete()
-            }
             await docRef.delete()
             res.send(200)
         }

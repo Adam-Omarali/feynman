@@ -39,6 +39,7 @@ export const questionSlice = createSlice({
   initialState,
   reducers: {
     addQuestion: (state, action: PayloadAction<question>) => {
+      console.log("adding question", action.payload)
         return produce(state, draft => {
             draft.questions[action.payload.id] = action.payload
         })   

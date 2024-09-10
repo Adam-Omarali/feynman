@@ -4,6 +4,7 @@ import { addQuestion, fetchUnit, question } from "@/redux/questions";
 import { store } from "@/redux/store";
 
 export async function fetchMaterial(endpoint:string){
+  console.log("firebase read")
   try{
     return await (
       await fetch("http://localhost:3000/api" + endpoint, {
@@ -34,6 +35,7 @@ export async function getUser(userId: string){
 export async function getQuestions(userId: string, unitId: string){
   const questionState = store.getState().questions
   let ret = []
+  console.log(questionState)
   if (questionState.fetchedUnits.includes(unitId)) {
     for (let question of Object.values(questionState.questions)) {
       if (getUnitIdFromLessonId(question.lessonId) == unitId) {
@@ -42,7 +44,11 @@ export async function getQuestions(userId: string, unitId: string){
     }
   } else {
     console.log("fetching questions by unitId")
-    let data: question[] = (await fetchMaterial("/user/"+userId+"/"+unitId)).questions
+    let temp = await fetchMaterial("/user/"+userId+"/"+unitId)
+    if (!temp.hasOwnProperty("questions")){
+      return []
+    }
+    let data: question[] = temp.questions
     console.log(data)
     for (let question of data){
       store.dispatch(addQuestion(question))

@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import firebaseAdmin from "../../firebase/serverConfig";
+import { courseMenu } from "@/redux/courses";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse){
     const db = firebaseAdmin.firestore();
@@ -12,12 +13,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             // Create a new course document in Firestore
             const courseRef = db.collection('courses').doc();
             const userRef = db.collection('users').doc(userId)
-            const newCourse = {
+            const newCourse: courseMenu = {
               id: courseRef.id,
               userId: userId,
               name: name,
               emoji: emoji,
-              units: {},
               description: description ? description : "",
               unitOrder: []
             };

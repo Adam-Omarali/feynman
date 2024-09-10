@@ -3,6 +3,7 @@ import firebaseAdmin from "../../firebase/serverConfig";
 import { FieldValue } from "firebase-admin/firestore";
 import { store } from "@/redux/store";
 import { courseObj } from "@/redux/user";
+import { unit } from "@/redux/unit";
 
 interface addUnit {
     name: string,
@@ -25,13 +26,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const unitRef = db.collection('units').doc();
             const userRef = db.collection('users').doc(userId)
             const questionRef = userRef.collection("questions").doc(unitRef.id)
-            const newUnit = {
+            const newUnit: unit = {
               id: unitRef.id,
               userId: userId,
               name: name,
               emoji: emoji,
               courseId: ref,
-              lessons: {},
               description: description ? description : "",
               lessonOrder: []
             };
