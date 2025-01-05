@@ -7,7 +7,7 @@ export async function fetchMaterial(endpoint:string){
   console.log("firebase read")
   try{
     return await (
-      await fetch("http://localhost:3000/api" + endpoint, {
+      await fetch(process.env.NEXT_PUBLIC_BASE_URL + "/api" + endpoint, {
         method: "GET",
       })
     ).json();

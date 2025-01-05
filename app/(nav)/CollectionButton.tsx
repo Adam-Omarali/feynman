@@ -207,7 +207,7 @@ export default function CollectionButton({
       ) : null}
       {submitting && dropdownOpens && (
         <div className="ml-4 -mt-2">
-          <Skeleton className="h-6 w-[80%]">
+          <Skeleton className="h-10 w-[80%]">
             <p className="text-sm m-4">
               Adding{" "}
               {dropdownOpens!.charAt(0).toUpperCase() + dropdownOpens!.slice(1)}

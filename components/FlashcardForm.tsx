@@ -18,6 +18,7 @@ import { modalContext } from "./Modal";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
 import { defaultDoc } from "@/redux/questions";
+import { useToast } from "@/components/hooks/use-toast";
 
 enum RESPONSE_TYPE {
   answer = 1,
@@ -40,6 +41,7 @@ function FlashcardForm() {
   const user = useSelector((state: RootState) => state.user);
   const lessonList = getLessonList();
   const modal = useContext(modalContext);
+  const { toast } = useToast();
 
   async function createFlashCard() {
     if (lesson == "none") {
@@ -64,6 +66,10 @@ function FlashcardForm() {
       setAnswer(defaultDoc);
       setDifficulty(0);
       setLesson("none");
+      toast({
+        title: "Flashcard Created",
+        duration: 5000,
+      });
     }
   }
   return (

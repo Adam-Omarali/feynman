@@ -6,6 +6,7 @@ import ReduxWrapper from "./(providers)/reduxProvider";
 import AuthProvider from "./(providers)/OnLoadProvider";
 import { getAnalytics } from "firebase/analytics";
 import { app } from "@/firebase/clientConfig";
+import { Toaster } from "@/components/ui/toaster";
 
 const manrope = Manrope({
   subsets: [],
@@ -28,6 +29,7 @@ export default function RootLayout({
                   <Navbar />
                 </div>
                 <div className="ml-56">{children}</div>
+                <Toaster />
               </div>
             </AuthProvider>
           </QueryClientWrapper>

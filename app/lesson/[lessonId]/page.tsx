@@ -32,6 +32,7 @@ export default function Page({
   } = useQuery(
     ["lesson"],
     async () => {
+      console.log("lessonState", lessonState);
       if (lessonState === undefined) {
         console.log("fetching lesson");
         let lesson = await fetchMaterial("/lesson/" + params.lessonId);

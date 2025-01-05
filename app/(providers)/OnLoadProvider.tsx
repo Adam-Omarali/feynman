@@ -9,50 +9,63 @@ import { RootState } from "@/redux/store";
 import { UserState, courseObj, login } from "@/redux/user";
 import { fetched } from "@/redux/loading";
 import { getUser } from "@/services/fetchMaterial";
+import { useQuery } from "@tanstack/react-query";
 
 function AuthProvider({ children }: { children: React.ReactNode }) {
   const user = useSelector((state: RootState) => state.user);
-  const courses = useSelector((state: RootState) => state.courses.value);
-  const loading = useSelector((state: RootState) => state.loading.value);
   const dispatch = useDispatch();
-  const [loaded, setLoaded] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
-  async function fetchUser(currentUser: User) {
-    let user = await getUser(currentUser.uid);
-    let courses: courseObj = {};
-    if (user) {
-      courses = user.courses;
+  // Query to fetch user data
+  const { data: fetchedUser, isLoading } = useQuery(
+    ["user", currentUser?.uid],
+    () => getUser(currentUser!.uid),
+    {
+      enabled: !!currentUser,
+      staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
+      cacheTime: 1000 * 60 * 30, // Keep data in cache for 30 minutes
+      refetchOnWindowFocus: false, // Prevent refetch on window focus
+      onSuccess: (userData) => {
+        if (currentUser) {
+          const courses: courseObj = userData?.courses || {};
+          const newUser: UserState = {
+            name: currentUser.displayName!,
+            email: currentUser.email!,
+            photo: currentUser.photoURL!,
+            id: currentUser.uid,
+            courses,
+          };
+          dispatch(login(newUser));
+          dispatch(fetched());
+        }
+      },
     }
-    let newUser: UserState = {
-      name: currentUser?.displayName!,
-      email: currentUser?.email!,
-      photo: currentUser?.photoURL!,
-      id: currentUser.uid,
-      courses,
-    };
-    dispatch(login(newUser));
-    dispatch(fetched());
-  }
+  );
 
   useEffect(() => {
-    const subscribe = onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser === null || currentUser.uid === null) {
-        await signInWithPopup(auth, provider);
-      } else if (!loaded) {
-        setLoaded(true);
-        fetchUser(currentUser);
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (!user || !user.uid) {
+        try {
+          await signInWithPopup(auth, provider);
+        } catch (error) {
+          console.error("Error signing in with popup:", error);
+        }
+      } else {
+        setCurrentUser(user);
       }
     });
-    return () => {
-      subscribe();
-    };
-  });
 
-  if (user.id === "") {
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  // Render Spinner while user data is loading
+  if (isLoading || user.id === "") {
     return <Spinner />;
-  } else {
-    return <>{children}</>;
   }
+
+  return <>{children}</>;
 }
 
 export default AuthProvider;

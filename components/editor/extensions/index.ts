@@ -98,7 +98,7 @@ export const TiptapExtensions = [
         "text-stone-400 underline underline-offset-[3px] hover:text-stone-600 transition-colors cursor-pointer",
     },
   }),
-  Image,
+  // Image,
   CustomImage.configure({
     allowBase64: true,
     HTMLAttributes: {
@@ -129,7 +129,7 @@ export const TiptapExtensions = [
   }),
   Youtube.configure({
     controls: true,
-    width: window.innerWidth * 0.7,
+    width: typeof window !== 'undefined' ? window.innerWidth * 0.7 : 800,
   }),
   Mathematics,
   Typography

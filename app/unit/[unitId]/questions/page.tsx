@@ -34,7 +34,6 @@ function Page({ params }: { params: { unitId: string } }) {
                 content={question.question}
                 flashcard={true}
               />
-              <div className="divider"></div>
               <p>Answer</p>
               <TipTap
                 isEditable={false}
@@ -42,6 +41,7 @@ function Page({ params }: { params: { unitId: string } }) {
                 content={question.answer ? question.answer : defaultDoc}
                 flashcard={true}
               />
+              <div className="divider"></div>
             </div>
           );
         })}
