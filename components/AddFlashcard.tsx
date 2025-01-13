@@ -2,7 +2,9 @@ import FlashcardForm from "@/components/FlashcardForm";
 import Modal from "@/components/Modal";
 import { Button } from "@/components/ui/Button";
 
-function AddFlashcard() {
+function AddFlashcard({
+  onSubmit,
+}: Readonly<{ onSubmit: (flashcard: any) => void }>) {
   return (
     <Modal>
       <Modal.Trigger>
@@ -11,7 +13,7 @@ function AddFlashcard() {
         </div>
       </Modal.Trigger>
       <Modal.Content triggerText="Add Flashcard">
-        <FlashcardForm />
+        <FlashcardForm onSubmit={onSubmit} />
       </Modal.Content>
     </Modal>
   );

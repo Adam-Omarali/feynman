@@ -1,42 +1,52 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useMemo } from "react";
 import CloseModal from "./CloseModal";
 
-export let modalContext = createContext({
+export const modalContext = createContext({
   close: () => {},
   open: () => {},
   value: false,
 });
 
-function Modal({ children }: { children: React.ReactNode }) {
-  const [modal, setOpenModal] = useState(false);
+function Modal({
+  children,
+  open,
+}: Readonly<{
+  children: React.ReactNode;
+  open?: boolean;
+}>) {
+  const [modal, setModal] = useState(open ?? false);
 
   function closeModal() {
-    setOpenModal(false);
+    setModal(false);
   }
 
   function openModal() {
-    setOpenModal(true);
+    setModal(true);
   }
+
+  const contextValue = useMemo(
+    () => ({ close: closeModal, open: openModal, value: modal }),
+    [modal]
+  );
 
   return (
     <div>
-      <modalContext.Provider
-        value={{ close: closeModal, open: openModal, value: modal }}
-      >
+      <modalContext.Provider value={contextValue}>
         {children}
       </modalContext.Provider>
     </div>
   );
 }
 
-Modal.Trigger = ({ children }: { children: React.ReactNode }) => {
+const ModalTrigger = ({ children }: { children: React.ReactNode }) => {
   const modal = useContext(modalContext);
-  return <div onClick={modal.open}>{children}</div>;
+  return <button onClick={modal.open}>{children}</button>;
 };
+Modal.Trigger = ModalTrigger;
 
-Modal.Content = ({
+const ModalContent = ({
   children,
   triggerText,
 }: {
@@ -69,5 +79,7 @@ Modal.Content = ({
     </div>
   );
 };
+
+Modal.Content = ModalContent;
 
 export default Modal;

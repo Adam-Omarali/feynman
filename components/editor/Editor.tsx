@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useEditor, EditorContent } from "@tiptap/react";
+import { useEditor, EditorContent, Editor } from "@tiptap/react";
 import { TiptapEditorProps } from "./props";
 import { TiptapExtensions } from "./extensions";
 import { useDebouncedCallback } from "use-debounce";
 import { EditorBubbleMenu } from "./components";
 import "katex/dist/katex.min.css";
+
+import { QuestionExtension } from "./QuestionExtension";
 
 export default function TipTap({
   isEditable,
@@ -35,7 +37,7 @@ export default function TipTap({
   }, 750);
 
   const editor = useEditor({
-    extensions: TiptapExtensions,
+    extensions: [...TiptapExtensions, QuestionExtension],
     editorProps: TiptapEditorProps,
     onUpdate: (e) => {
       //update consistently
@@ -43,7 +45,7 @@ export default function TipTap({
       debouncedUpdates(e);
       // setContent(e.editor.getHTML()); this was updating the context twice. once in debouncedUpdates and again here.
     },
-    autofocus: "all",
+    autofocus: "start",
     editable: isEditable,
   });
 
@@ -76,7 +78,9 @@ export default function TipTap({
           {saveStatus}
         </div>
       ) : null}
-      {editor && isEditable && <EditorBubbleMenu editor={editor} />}
+      {editor && isEditable && !flashcard && (
+        <EditorBubbleMenu editor={editor} />
+      )}
       <EditorContent editor={editor} />
     </div>
   );

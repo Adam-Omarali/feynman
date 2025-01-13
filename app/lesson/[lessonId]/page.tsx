@@ -47,6 +47,8 @@ export default function Page({
         !!user.courses[searchParams.course].units[searchParams.unit].lessons[
           params.lessonId
         ],
+      staleTime: 1000 * 60 * 60 * 24,
+      cacheTime: 1000 * 60 * 60 * 24,
     }
   );
 

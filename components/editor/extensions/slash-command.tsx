@@ -21,6 +21,7 @@ import {
   Image as ImageIcon,
   Code,
   CheckSquare,
+  HelpCircle,
 } from "lucide-react";
 import { startImageUpload } from "../plugins/imageUpload";
 
@@ -191,6 +192,26 @@ const getSuggestionItems = ({ query }: { query: string }) => {
           }
         };
         input.click();
+      },
+    },
+    {
+      title: "Question",
+      description: "Add an embedded question with answer.",
+      searchTerms: ["question", "quiz", "ask", "answer"],
+      icon: <HelpCircle size={18} />,
+      command: ({ editor, range }: CommandProps) => {
+        editor
+          .chain()
+          .deleteRange(range)
+          .insertContent({
+            type: "questionNode",
+            attrs: {
+              question: "",
+              answer: "",
+              solution: "",
+            },
+          })
+          .run();
       },
     },
   ].filter((item) => {

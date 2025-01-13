@@ -16,6 +16,7 @@ import Youtube from "@tiptap/extension-youtube";
 import Link from "@tiptap/extension-link";
 import MenuBar from "./components/MenuBar";
 import Mathematics from "@tiptap-pro/extension-mathematics";
+import { QuestionExtension } from "./QuestionExtension";
 
 export default function TipTap({
   isEditable,

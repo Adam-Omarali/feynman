@@ -63,6 +63,14 @@ export const EditorBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
       if (editor.isActive("image")) {
         return false;
       }
+
+      // don't show if question node is selected
+      const node = editor.state.selection.$anchor.node();
+      const parent = editor.state.selection.$anchor.parent;
+      if (node.type.name === "doc" || parent.type.name === "doc") {
+        return false;
+      }
+
       return editor.view.state.selection.content().size > 0;
     },
     tippyOptions: {

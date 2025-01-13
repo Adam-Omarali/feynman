@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import firebaseAdmin from "../../firebase/serverConfig";
 import { FieldValue } from "firebase-admin/firestore";
 import { question } from "@/redux/questions";
+import { v4 as uuidv4 } from 'uuid';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse){
     const db = firebaseAdmin.firestore();
@@ -14,8 +15,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const flashcardRef = db.collection('users').doc(userId).collection("questions").doc(unitId);
 
             // const lessonRef = db.collection('lessons').doc(lessonId);
+            const questionId = uuidv4();
             const newFlashcard: question = {
-            id: flashcardRef.id,
+            id: questionId,
               userId: userId,
               lessonId: lessonId,
               history: [],
@@ -26,11 +28,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               created: true
             };
             //write flashcard
-            await flashcardRef.update({questions: FieldValue.arrayUnion(newFlashcard)})
+            await flashcardRef.set({
+                questions: {
+                    [questionId]: newFlashcard
+                }
+            }, { merge: true });
             // await lessonRef.update({questions: FieldValue.arrayUnion(flashcardRef.id)})
           
             let ret: question = {
-                id: flashcardRef.id,
+                id: questionId,
                 userId: userId,
                 lessonId: lessonId,
                 history: [],

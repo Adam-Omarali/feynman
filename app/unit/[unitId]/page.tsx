@@ -16,6 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 import { addUnitStore, unit } from "@/redux/unit";
 import { useDispatch } from "react-redux";
 import MaterialSkeleton from "@/components/MaterialSkeleton";
+import { Button } from "@/components/ui/Button";
 
 export default function Page({
   params,
@@ -122,6 +123,9 @@ export default function Page({
             </Modal.Content>
           </Modal>
         </div>
+        <Button className="mt-4">
+          <Link href={`/unit/${params.unitId}/quiz`}>Generate Quiz</Link>
+        </Button>
       </div>
     );
   }

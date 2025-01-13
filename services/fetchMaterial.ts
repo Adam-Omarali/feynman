@@ -1,6 +1,6 @@
 import { getUnitIdFromLessonId } from "@/lib/utils";
 import { lesson } from "@/redux/lesson";
-import { addQuestion, fetchUnit, question } from "@/redux/questions";
+import { addQuestion, fetchUnit, question, updateQuestionHistory } from "@/redux/questions";
 import { store } from "@/redux/store";
 
 export async function fetchMaterial(endpoint:string){
@@ -34,24 +34,24 @@ export async function getUser(userId: string){
 
 export async function getQuestions(userId: string, unitId: string){
   const questionState = store.getState().questions
-  let ret = []
-  console.log(questionState)
+  let ret: { [key: string]: question } = {}
   if (questionState.fetchedUnits.includes(unitId)) {
-    for (let question of Object.values(questionState.questions)) {
-      if (getUnitIdFromLessonId(question.lessonId) == unitId) {
-        ret.push(question);
+    console.log(questionState.questions)
+    for (let id of Object.keys(questionState.questions)) {
+      let lessonId = getUnitIdFromLessonId(questionState.questions[id].lessonId)
+      if (lessonId == unitId) {
+        ret[id] = questionState.questions[id]
       }
     }
   } else {
     console.log("fetching questions by unitId")
     let temp = await fetchMaterial("/user/"+userId+"/"+unitId)
     if (!temp.hasOwnProperty("questions")){
-      return []
+      return {}
     }
-    let data: question[] = temp.questions
-    console.log(data)
-    for (let question of data){
-      store.dispatch(addQuestion(question))
+    let data: { [key: string]: question } = temp.questions
+    for (let questionId of Object.keys(data)){
+      store.dispatch(addQuestion({question: data[questionId], qId: questionId}))
     }
     store.dispatch(fetchUnit(unitId))
     ret = data
@@ -59,14 +59,36 @@ export async function getQuestions(userId: string, unitId: string){
   return ret
 }
 
-
-
-export async function getQuestionContent(contentId: string){
-  let questionState = store.getState().questions
-  if (questionState.fetchedContent.includes(contentId)){
-    //get question from contentId
-    return questionState.questions[contentId]
+export async function updateQuestion(userId: string, unitId: string, questionsMap: {
+  [key: string]: {
+    id: string;
+    question: any;
+    answer: any;
+    history: {
+      confidence: number;
+      attempts: number;
+      correct: boolean;
+      date: number;
+    }[];
+    // ... other question fields
   }
-  // let qContent = await fetchMaterial("/question/"+contentId)
-  return await fetchMaterial("/question/"+contentId)
+}) {
+
+  const response = await fetch(`/api/updateQuestion`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      userId,
+      unitId,
+      questions: questionsMap
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to update questions');
+  }
+
+  return response.json();
 }

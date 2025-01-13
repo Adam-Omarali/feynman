@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Button } from "./ui/Button";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -19,19 +19,16 @@ import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
 import { defaultDoc } from "@/redux/questions";
 import { useToast } from "@/components/hooks/use-toast";
-
-enum RESPONSE_TYPE {
-  answer = 1,
-  solution = 2,
-  both = 3,
-}
+import { usePathname, useSearchParams } from "next/navigation";
 
 type doc = {
   type: string;
   content: any;
 };
 
-function FlashcardForm() {
+function FlashcardForm({
+  onSubmit,
+}: Readonly<{ onSubmit?: (flashcard: any) => void }>) {
   const [question, setQuestion] = useState<doc>(defaultDoc);
   const [answer, setAnswer] = useState<false | doc>(false);
   const [solution, setSolution] = useState<false | doc>(false);
@@ -42,6 +39,21 @@ function FlashcardForm() {
   const lessonList = getLessonList();
   const modal = useContext(modalContext);
   const { toast } = useToast();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const pathParts = pathname?.split("/");
+    if (pathParts && pathParts[1] === "lesson") {
+      const lessonId = pathParts[2];
+      const lessonName = Object.keys(lessonList).find(
+        (name) => lessonList[name].id === lessonId
+      );
+      if (lessonName) {
+        setLesson(lessonName);
+      }
+    }
+  }, [pathname, searchParams, lessonList]);
 
   async function createFlashCard() {
     if (lesson == "none") {
@@ -51,25 +63,30 @@ function FlashcardForm() {
       let lessonId = lessonList[lesson].id;
       let unitId = lessonList[lesson].unitId;
       let courseId = lessonList[lesson].courseId;
-      await addFlashcard(
-        user.id,
-        { lessonId, courseId, unitId },
-        {
-          question: question,
-          answer: answer ? answer : defaultDoc,
-          solution: solution ? solution : defaultDoc,
-          difficulty: difficulty,
-          lesson: lesson,
-        }
-      );
+      let flashcard = {
+        question: question,
+        answer: answer ?? defaultDoc,
+        solution: solution ?? defaultDoc,
+        difficulty: difficulty,
+        lesson: lesson,
+      };
+
+      await addFlashcard(user.id, { lessonId, courseId, unitId }, flashcard);
+
+      onSubmit?.(flashcard);
+
       setQuestion(defaultDoc);
       setAnswer(defaultDoc);
       setDifficulty(0);
       setLesson("none");
-      toast({
-        title: "Flashcard Created",
-        duration: 5000,
-      });
+      if (onSubmit) {
+        modal.close();
+      } else {
+        toast({
+          title: "Flashcard Created",
+          duration: 5000,
+        });
+      }
     }
   }
   return (
@@ -122,7 +139,7 @@ function FlashcardForm() {
           </div>
         )}
         <div className="flex justify-between items-center">
-          <div className="flex gap-4">
+          <div className="flex gap-4 items-center">
             <p>Difficulty</p>
             <div
               className="rating"
