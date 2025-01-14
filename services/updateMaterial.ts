@@ -1,5 +1,5 @@
 import { updateLessonContent } from "@/redux/lesson"
-import { content, history, updateQuestionHistory } from "@/redux/questions"
+import { content } from "@/redux/questions"
 import { store } from "@/redux/store"
 
 export async function editLessonContent(content: content | [], courseId: string, unitId: string, lessonId: string){
@@ -13,16 +13,4 @@ export async function editLessonContent(content: content | [], courseId: string,
         },
         method: "PUT",
     })
-}
-
-export async function updateHistory(obj: history){
-    store.dispatch(updateQuestionHistory(obj))
-    let res = await(await fetch("/api/updateHistory", {
-        body: JSON.stringify(obj),
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        method: "PUT",
-    })).json()
-    console.log(res)
 }

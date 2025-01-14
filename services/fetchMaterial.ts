@@ -1,6 +1,6 @@
 import { getUnitIdFromLessonId } from "@/lib/utils";
 import { lesson } from "@/redux/lesson";
-import { addQuestion, fetchUnit, question, updateQuestionHistory } from "@/redux/questions";
+import { addQuestion, fetchUnit, question } from "@/redux/questions";
 import { store } from "@/redux/store";
 
 export async function fetchMaterial(endpoint:string){
