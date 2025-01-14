@@ -4,8 +4,6 @@ import QueryClientWrapper from "./(providers)/queryProvider";
 import Navbar from "./(nav)/nav";
 import ReduxWrapper from "./(providers)/reduxProvider";
 import AuthProvider from "./(providers)/OnLoadProvider";
-import { getAnalytics } from "firebase/analytics";
-import { app } from "@/firebase/clientConfig";
 import { Toaster } from "@/components/ui/toaster";
 
 const manrope = Manrope({
@@ -14,11 +12,11 @@ const manrope = Manrope({
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
-    <html className={manrope.className}>
+    <html className={manrope.className} lang="en">
       <head />
       <body style={{ margin: 0 }}>
         <ReduxWrapper>

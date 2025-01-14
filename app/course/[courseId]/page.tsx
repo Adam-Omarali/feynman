@@ -2,21 +2,20 @@
 
 import { UserMenu } from "@/components/MaterialMenu";
 import { RootState } from "@/redux/store";
-import { Skeleton } from "@/components/ui/Skeleton";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Modal from "@/components/Modal";
 import { MaterialCard } from "@/components/MaterialCard";
 import NewMaterialForm from "@/components/NewMaterialForm";
 import { addUnit } from "@/services/addMaterial";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { fetchMaterial } from "@/services/fetchMaterial";
 import { useQuery } from "@tanstack/react-query";
-import { useDispatch } from "react-redux";
 import { addCourseStore } from "@/redux/courses";
 import MaterialSkeleton from "@/components/MaterialSkeleton";
 
-export default function Home({ params }: { params: { courseId: string } }) {
+export default function Home({
+  params,
+}: Readonly<{ params: { courseId: string } }>) {
   let courseState = useSelector(
     (state: RootState) => state.courses.value[params.courseId]
   );

@@ -6,9 +6,9 @@ const queryClient = new QueryClient();
 
 export default function QueryClientWrapper({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );

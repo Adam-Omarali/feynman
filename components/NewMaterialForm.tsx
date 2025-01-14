@@ -9,10 +9,10 @@ import Spinner from "./Spinner";
 function NewMaterialForm({
   add,
   lesson,
-}: {
+}: Readonly<{
   add: (name: string, emoji: string, description: string) => {};
   lesson: boolean;
-}) {
+}>) {
   const [selectEmoji, setSelectEmoji] = useState(false);
   const [emoji, setEmoji] = useState("🚀");
   const [name, setName] = useState("");
@@ -24,10 +24,10 @@ function NewMaterialForm({
     setSelectEmoji(false);
   }
 
-  async function handleFormSubmit(e: FormEvent<HTMLButtonElement>) {
+  function handleFormSubmit(e: FormEvent<HTMLButtonElement>) {
     e.preventDefault();
     setLoading(true);
-    await add(name, emoji, description);
+    add(name, emoji, description);
     modal.close();
   }
 

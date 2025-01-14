@@ -7,7 +7,7 @@ import { getQuestions } from "@/services/fetchMaterial";
 import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 
-function Page({ params }: { params: { unitId: string } }) {
+function Page({ params }: Readonly<{ params: { unitId: string } }>) {
   let user = useSelector((state: RootState) => state.user);
 
   const {

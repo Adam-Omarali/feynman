@@ -1,11 +1,11 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import TipTap from "../../../components/editor/Editor";
 import { UserMenu } from "../../../components/MaterialMenu";
 import { fetchMaterial } from "../../../services/fetchMaterial";
-import { RootState, store } from "@/redux/store";
+import { RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { editLessonContent } from "@/services/updateMaterial";
 import { content } from "@/redux/questions";
@@ -15,10 +15,10 @@ import MaterialSkeleton from "@/components/MaterialSkeleton";
 export default function Page({
   params,
   searchParams,
-}: {
+}: Readonly<{
   params: { lessonId: string };
   searchParams: { course: string; unit: string };
-}) {
+}>) {
   let lessonState = useSelector(
     (state: RootState) => state.lesson.value[params.lessonId]
   );

@@ -5,17 +5,16 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { rem } from "../../util/rem";
 import { ItemInput } from "./course-list";
-import { courseMenu } from "@/redux/courses";
-import { courseObj, simplifiedCourse } from "@/redux/user";
+import { simplifiedCourse } from "@/redux/user";
 import { Skeleton } from "@/components/ui/Skeleton";
 
 export function DisplayCourseGroup({
   course,
   courseId,
-}: {
+}: Readonly<{
   course: simplifiedCourse;
   courseId: string;
-}) {
+}>) {
   const [courseOpened, setCourseOpened] = useState(false);
   const [unitOpened, setUnitOpened] = useState<boolean[]>([]);
   const [lessonOpened, setLessonOpened] = useState<boolean[][]>([]);
@@ -123,14 +122,14 @@ export default function CollectionButton({
   setOpened,
   dropdownOpens,
   refId,
-}: {
+}: Readonly<{
   item: { name: string; emoji: string };
   itemId: string;
   opened: boolean | undefined;
   setOpened: Function;
   dropdownOpens?: string;
   refId?: string;
-}) {
+}>) {
   const [displayAdd, setDisplayAdd] = useState(false);
   const [addCourse, setAddCourse] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -138,20 +137,22 @@ export default function CollectionButton({
 
   return (
     <div>
-      <button className="w-full">
+      <button
+        className="w-full"
+        onMouseEnter={() => setDisplayAdd(true)}
+        onMouseLeave={() => setDisplayAdd(false)}
+      >
         <div
           // onClick={(event) => event.preventDefault()}
           key={itemId}
           className="flex items-center justify-between px-2 py-2 rounded text-xs leading-none font-medium text-gray-500 hover:text-black hover:bg-gray-100"
-          onMouseEnter={() => setDisplayAdd(true)}
-          onMouseLeave={() => setDisplayAdd(false)}
         >
           <div className="flex items-center">
             {opened !== undefined ? (
               <ChevronIcon
                 onClick={() => {
-                  addCourse ? setAddCourse(false) : null;
-                  opened !== undefined ? setOpened(!opened) : null;
+                  addCourse ? setAddCourse(false) : () => {};
+                  opened !== undefined ? setOpened(!opened) : () => {};
                 }}
                 className="transition-transform duration-150 ease-linear"
                 size="1rem"
@@ -210,7 +211,7 @@ export default function CollectionButton({
           <Skeleton className="h-10 w-[80%]">
             <p className="text-sm m-4">
               Adding{" "}
-              {dropdownOpens!.charAt(0).toUpperCase() + dropdownOpens!.slice(1)}
+              {dropdownOpens.charAt(0).toUpperCase() + dropdownOpens.slice(1)}
             </p>
           </Skeleton>
         </div>

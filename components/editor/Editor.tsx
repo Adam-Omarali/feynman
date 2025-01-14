@@ -5,10 +5,10 @@ import { useEditor, EditorContent, Editor } from "@tiptap/react";
 import { TiptapEditorProps } from "./props";
 import { TiptapExtensions } from "./extensions";
 import { useDebouncedCallback } from "use-debounce";
-import { EditorBubbleMenu } from "./components";
 import "katex/dist/katex.min.css";
 
 import { QuestionExtension } from "./QuestionExtension";
+import { EditorBubbleMenu } from "./components/EditorBubbleMenu";
 
 export default function TipTap({
   isEditable,

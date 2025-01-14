@@ -1,6 +1,5 @@
 "use client";
 
-import { rem } from "@/util/rem";
 import EmojiPicker from "emoji-picker-react";
 import { useDetectClickOutside } from "react-detect-click-outside";
 
@@ -10,13 +9,13 @@ function SelectEmoji({
   setEmoji,
   setSelectEmoji,
   close,
-}: {
+}: Readonly<{
   emoji: string;
   selectEmoji: boolean;
   setEmoji: Function;
   setSelectEmoji: Function;
   close: () => void;
-}) {
+}>) {
   const ref = useDetectClickOutside({ onTriggered: close });
 
   return (

@@ -1,7 +1,6 @@
 "use client";
-import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { RootState, store } from "@/redux/store";
+import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
 
 export function UserButton() {
@@ -20,7 +19,7 @@ export function UserButton() {
     <div className="w-full flex p-3 gap-4 items-center">
       <div className="avatar">
         <div className="w-10 rounded-full">
-          <img src={user.photo} />
+          <img src={user.photo} alt="" />
         </div>
       </div>
       <div className="text-sm">

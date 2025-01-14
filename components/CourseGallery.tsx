@@ -10,7 +10,6 @@ import Link from "next/link";
 import LoadingCircle from "./LoadingCircle";
 
 function CourseGallery() {
-  let courses = useSelector((state: RootState) => state.courses.value);
   let user = useSelector((state: RootState) => state.user);
   let loading = useSelector((state: RootState) => state.loading.value);
 
@@ -19,11 +18,7 @@ function CourseGallery() {
   }
 
   if (loading) {
-    return (
-      <>
-        <LoadingCircle />
-      </>
-    );
+    return <LoadingCircle />;
   }
   return (
     <div className="flex flex-wrap gap-4">
