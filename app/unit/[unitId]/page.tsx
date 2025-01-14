@@ -21,10 +21,10 @@ import { Button } from "@/components/ui/Button";
 export default function Page({
   params,
   searchParams,
-}: {
+}: Readonly<{
   params: { unitId: string };
   searchParams: { course: string };
-}) {
+}>) {
   let courseId = searchParams.course;
   let user = useSelector((state: RootState) => state.user);
   let unitState = useSelector(
