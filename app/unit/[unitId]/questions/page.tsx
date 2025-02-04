@@ -21,7 +21,7 @@ function Page({ params }: Readonly<{ params: { unitId: string } }>) {
       console.log("useQuery", qs);
       return qs;
     },
-    { keepPreviousData: true, staleTime: 1000 * 60 * 5 }
+    { keepPreviousData: true, refetchOnWindowFocus: false }
   );
 
   if (isLoading) return <Loading />;

@@ -11,6 +11,7 @@ import { editLessonContent } from "@/services/updateMaterial";
 import { content } from "@/redux/questions";
 import { addLessonStore } from "@/redux/lesson";
 import MaterialSkeleton from "@/components/MaterialSkeleton";
+import { Button } from "@/components/ui/Button";
 
 export default function Page({
   params,
@@ -47,8 +48,7 @@ export default function Page({
         !!user.courses[searchParams.course].units[searchParams.unit].lessons[
           params.lessonId
         ],
-      staleTime: 1000 * 60 * 60 * 24,
-      cacheTime: 1000 * 60 * 60 * 24,
+      refetchOnWindowFocus: false,
     }
   );
 
@@ -59,8 +59,8 @@ export default function Page({
   const contentRef = useRef<content | []>(content);
 
   function updateContent() {
-    console.log("updating lesson content");
     if (lesson && contentRef.current != lesson.content) {
+      console.log("updating lesson content");
       editLessonContent(
         contentRef.current,
         searchParams.course,
@@ -127,6 +127,13 @@ export default function Page({
           setContent={setContent}
           content={lesson.content ? lesson.content : null}
         />
+        {/* <Button
+          onClick={() => {
+            updateContent();
+          }}
+        >
+          Save
+        </Button> */}
       </div>
     );
   }

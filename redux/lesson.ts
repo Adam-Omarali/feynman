@@ -41,6 +41,7 @@ const initialState: LessonState = {
       // },
       //update content
       updateLessonContent: (state, action: PayloadAction<{lessonId: string, content: content | []}>) => {
+        console.log("updateLessonContent", action.payload);
         state.value[action.payload.lessonId].content = action.payload.content
       }
     },

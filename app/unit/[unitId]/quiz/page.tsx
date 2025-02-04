@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { defaultDoc, updateQuestionHistory } from "@/redux/questions";
 import { Slider } from "@/components/ui/slider";
 import { useToast } from "@/components/hooks/use-toast";
+import { UserState } from "@/redux/user";
 
 function QuizPage({ params }: { params: { unitId: string } }) {
   const [updatedQuestions, setUpdatedQuestions] = useState<{
@@ -27,7 +28,7 @@ function QuizPage({ params }: { params: { unitId: string } }) {
   const [attempts, setAttempts] = useState(1);
   const { toast } = useToast();
 
-  const user = useSelector((state: RootState) => state.user);
+  const user: UserState = useSelector((state: RootState) => state.user);
 
   const { isLoading, data: questions } = useQuery({
     queryKey: ["questions", params.unitId],

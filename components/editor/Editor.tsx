@@ -73,11 +73,11 @@ export default function TipTap({
           : "relative py-8 max-h-[500px] overflow-scroll"
       }
     >
-      {isEditable ? (
+      {/* {isEditable ? (
         <div className="absolute right-5 top-5 mb-5 rounded-lg bg-stone-100 px-1 py-1 text-sm text-stone-400">
           {saveStatus}
         </div>
-      ) : null}
+      ) : null} */}
       {editor && isEditable && !flashcard && (
         <EditorBubbleMenu editor={editor} />
       )}
