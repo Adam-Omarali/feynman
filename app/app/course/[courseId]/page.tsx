@@ -75,7 +75,7 @@ export default function Home({
             let unit = user.courses[params.courseId].units[unitID];
             return (
               <div key={unitID}>
-                <Link href={"/unit/" + unitID + "?course=" + course.id}>
+                <Link href={"/app/unit/" + unitID + "?course=" + course.id}>
                   <MaterialCard title={unit.name} />
                 </Link>
               </div>

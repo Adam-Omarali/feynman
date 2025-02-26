@@ -26,7 +26,7 @@ function CourseGallery() {
         const courseId = Object.keys(user.courses)[idx];
         return (
           <div key={courseId}>
-            <Link href={"/course/" + courseId}>
+            <Link href={"/app/course/" + courseId}>
               <MaterialCard title={course.emoji + " " + course.name} />
             </Link>
           </div>

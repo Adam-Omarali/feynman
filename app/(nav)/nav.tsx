@@ -17,7 +17,7 @@ function Navbar() {
         <CourseList />
       </div>
       <div className="flex flex-col gap-1 w-full">
-        <Link href={"/questions/add"}>
+        <Link href={"/app/questions/add"}>
           <Button variant="hover" className="w-full">
             New Flashcard
           </Button>

@@ -2,9 +2,9 @@
 
 import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useRef, useState } from "react";
-import TipTap from "../../../components/editor/Editor";
-import { UserMenu } from "../../../components/MaterialMenu";
-import { fetchMaterial } from "../../../services/fetchMaterial";
+import TipTap from "../../../../components/editor/Editor";
+import { UserMenu } from "../../../../components/MaterialMenu";
+import { fetchMaterial } from "../../../../services/fetchMaterial";
 import { RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { editLessonContent } from "@/services/updateMaterial";
@@ -56,6 +56,7 @@ export default function Page({
   let [content, setContent] = useState<[]>(
     lesson ? (lesson.content ? lesson.content : []) : []
   );
+  let [saved, setSaved] = useState(false);
   const contentRef = useRef<content | []>(content);
 
   function updateContent() {
@@ -72,6 +73,7 @@ export default function Page({
 
   useEffect(() => {
     contentRef.current = content;
+    setSaved(false);
   }, [content]);
 
   useEffect(() => {
@@ -112,6 +114,15 @@ export default function Page({
             {/* <button onClick={() => setEditable(!editable)}>
               {editable ? <BookOpen /> : <Edit />}
             </button> */}
+            <Button
+              onClick={() => {
+                updateContent();
+                setSaved(true);
+              }}
+              className="h-8 px-3 text-sm"
+            >
+              {saved ? "Saved" : "Save"}
+            </Button>
             <UserMenu
               ids={{
                 courseId: searchParams.course,
@@ -127,13 +138,6 @@ export default function Page({
           setContent={setContent}
           content={lesson.content ? lesson.content : null}
         />
-        {/* <Button
-          onClick={() => {
-            updateContent();
-          }}
-        >
-          Save
-        </Button> */}
       </div>
     );
   }

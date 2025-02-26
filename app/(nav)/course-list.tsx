@@ -107,7 +107,7 @@ export function CourseList() {
     <div className="overflow-y-auto overflow-x-hidden w-full">
       <div className="mb-2 mt-4">
         <div className="flex justify-between items-center pl-3 pr-1.5">
-          <Link href="/">
+          <Link href="/app">
             <p className="text-sm">Courses</p>
           </Link>
           <div className="tooltip" data-tip="Create Course">

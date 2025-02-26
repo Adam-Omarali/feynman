@@ -165,10 +165,10 @@ export default function CollectionButton({
             <Link
               href={
                 dropdownOpens == "unit"
-                  ? "/course/" + itemId
+                  ? "/app/course/" + itemId
                   : dropdownOpens == "lesson"
-                  ? "/unit/" + itemId + "?course=" + refId?.split(" ")[0]
-                  : "/lesson/" +
+                  ? "/app/unit/" + itemId + "?course=" + refId?.split(" ")[0]
+                  : "/app/lesson/" +
                     itemId +
                     "?course=" +
                     refId?.split(" ")[0] +

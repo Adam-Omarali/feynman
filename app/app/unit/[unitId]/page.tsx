@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { fetchMaterial } from "../../../services/fetchMaterial";
-import TipTap from "../../../components/editor/Editor";
+import { fetchMaterial } from "../../../../services/fetchMaterial";
+import TipTap from "../../../../components/editor/Editor";
 import { UserMenu } from "@/components/MaterialMenu";
 import { RootState, store } from "@/redux/store";
 import { useSelector } from "react-redux";
@@ -101,7 +101,7 @@ export default function Page({
               <div key={lessonId}>
                 <Link
                   href={
-                    "/lesson/" +
+                    "/app/lesson/" +
                     lessonId +
                     "?course=" +
                     courseId +
@@ -124,7 +124,7 @@ export default function Page({
           </Modal>
         </div>
         <Button className="mt-4">
-          <Link href={`/unit/${params.unitId}/quiz`}>Generate Quiz</Link>
+          <Link href={`/app/unit/${params.unitId}/quiz`}>Generate Quiz</Link>
         </Button>
       </div>
     );
