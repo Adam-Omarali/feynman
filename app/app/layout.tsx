@@ -4,7 +4,6 @@ import QueryClientWrapper from "../(providers)/queryProvider";
 import Navbar from "../(nav)/nav";
 import ReduxWrapper from "../(providers)/reduxProvider";
 import AuthProvider from "../(providers)/OnLoadProvider";
-import { Toaster } from "@/components/ui/toaster";
 import { Analytics } from "@vercel/analytics/react";
 
 const manrope = Manrope({
@@ -26,7 +25,6 @@ export default function RootLayout({
                 <Navbar />
               </div>
               <div className="ml-56">{children}</div>
-              <Toaster />
               <Analytics />
             </div>
           </AuthProvider>

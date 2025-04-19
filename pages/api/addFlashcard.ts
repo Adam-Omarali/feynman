@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import firebaseAdmin from "../../firebase/serverConfig";
-import { FieldValue } from "firebase-admin/firestore";
 import { question } from "@/redux/questions";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -14,7 +13,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             // Create a new flashcard document in Firestore
             const flashcardRef = db.collection('users').doc(userId).collection("questions").doc(unitId);
 
-            // const lessonRef = db.collection('lessons').doc(lessonId);
             const questionId = uuidv4();
             const newFlashcard: question = {
             id: questionId,

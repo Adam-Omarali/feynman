@@ -12,6 +12,7 @@ import { content } from "@/redux/questions";
 import { addLessonStore } from "@/redux/lesson";
 import MaterialSkeleton from "@/components/MaterialSkeleton";
 import { Button } from "@/components/ui/Button";
+import { toast } from "sonner";
 
 export default function Page({
   params,
@@ -78,18 +79,29 @@ export default function Page({
     }
   }, [content]);
 
-  function updateContent() {
+  async function updateContent() {
     if (
       lesson &&
       JSON.stringify(contentRef.current) !== JSON.stringify(lesson.content)
     ) {
-      editLessonContent(
-        contentRef.current,
-        searchParams.course,
-        searchParams.unit,
-        params.lessonId
-      );
-      setSaved(true);
+      try {
+        const response = await editLessonContent(
+          contentRef.current,
+          searchParams.course,
+          searchParams.unit,
+          params.lessonId
+        );
+
+        if (response?.status === 200) {
+          setSaved(true);
+        } else {
+          throw new Error(`Server returned status: ${response?.status}`);
+        }
+      } catch (error) {
+        console.error("Error saving content:", error);
+        toast.error("Failed to save content. Please try again.");
+        setSaved(false);
+      }
     }
   }
 

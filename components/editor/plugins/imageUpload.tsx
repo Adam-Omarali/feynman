@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import { EditorState, Plugin, PluginKey, StateField } from "@tiptap/pm/state";
+import { EditorState, Plugin, PluginKey } from "@tiptap/pm/state";
 import { Decoration, DecorationSet, EditorView } from "@tiptap/pm/view";
 import { store } from "@/redux/store";
 import { format } from "date-fns";
@@ -19,7 +19,7 @@ const UploadImagesPlugin = () =>
         set = set.map(tr.mapping, tr.doc);
         // See if the transaction adds or removes any placeholders
         const action = tr.getMeta(this as any);
-        if (action && action.add) {
+        if (action ?? action.add) {
           const { id, pos, src } = action.add;
 
           const placeholder = document.createElement("div");
@@ -35,7 +35,7 @@ const UploadImagesPlugin = () =>
             id,
           });
           set = set.add(tr.doc, [deco]);
-        } else if (action && action.remove) {
+        } else if (action ?? action.remove) {
           set = set.remove(
             set.find(
               undefined,

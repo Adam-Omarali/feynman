@@ -37,8 +37,7 @@ const commonEmojis = [
     "📊",
     "📈",
     "📉",
-    "📋",
-    "📌",
+    "📋",    
   ];
 
   export default commonEmojis;

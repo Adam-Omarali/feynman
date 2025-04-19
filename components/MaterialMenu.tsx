@@ -4,8 +4,6 @@ import { IconTrash, IconDots } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { deleteMaterial } from "../services/deleteMaterial";
 import { useState } from "react";
-import Modal from "./Modal";
-import Spinner from "./Spinner";
 
 /**
  *
@@ -18,10 +16,10 @@ import Spinner from "./Spinner";
 export function UserMenu({
   ids,
   type,
-}: {
+}: Readonly<{
   ids: { lessonId: string; unitId: string; courseId: string };
   type: string;
-}) {
+}>) {
   const router = useRouter();
   const [deleting, setDeleting] = useState(false);
   return (
@@ -31,7 +29,7 @@ export function UserMenu({
       </summary>
       <ul className="p-2 pb-4 shadow menu dropdown-content bg-base-100 rounded-box w-52">
         <li>
-          <div
+          <button
             className="text-red-500 hover:text-red-500 hover:bg-red-100 m-2"
             onClick={async () => {
               setDeleting(true);
@@ -50,7 +48,7 @@ export function UserMenu({
                 ? "Deleting"
                 : "Delete " + type.charAt(0).toUpperCase() + type.slice(1)}
             </p>
-          </div>
+          </button>
         </li>
       </ul>
     </details>

@@ -31,10 +31,10 @@ function NewMaterialForm({
     setEmoji(randomEmoji);
   }, []);
 
-  function handleFormSubmit(e: FormEvent<HTMLButtonElement>) {
+  async function handleFormSubmit(e: FormEvent<HTMLButtonElement>) {
     e.preventDefault();
     setLoading(true);
-    add(name, emoji, description);
+    await add(name, emoji, description);
     modal.close();
   }
 

@@ -2,7 +2,6 @@
 
 import EmojiPicker from "emoji-picker-react";
 import { useDetectClickOutside } from "react-detect-click-outside";
-import { useEffect } from "react";
 
 function SelectEmoji({
   emoji,

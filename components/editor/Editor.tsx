@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { useEditor, EditorContent, Editor } from "@tiptap/react";
+import { useEffect, useState } from "react";
+import { useEditor, EditorContent } from "@tiptap/react";
 import { TiptapEditorProps } from "./props";
 import { TiptapExtensions } from "./extensions";
 import { useDebouncedCallback } from "use-debounce";
@@ -16,20 +16,18 @@ export default function TipTap({
   content,
   flashcard,
   setSaved,
-}: {
+}: Readonly<{
   isEditable: boolean;
   setContent: Function;
   content: { content: { type: string; content: any }[] };
   flashcard?: boolean;
   setSaved?: Function;
-}) {
-  const [hydrated, setHydrated] = useState(false);
-
+}>) {
   const debouncedUpdates = useDebouncedCallback(async ({ editor }) => {
     const json = editor.getJSON();
     setContent(json);
     console.log("debounce", json);
-  }, 1500);
+  }, 4000);
 
   const editor = useEditor({
     extensions: [...TiptapExtensions, QuestionExtension],
@@ -55,7 +53,6 @@ export default function TipTap({
       if (JSON.stringify(currentContent) !== JSON.stringify(content)) {
         if (!Array.isArray(content) && content.content.length > 0) {
           editor.commands.setContent(content);
-          setHydrated(true);
         }
       }
     }
