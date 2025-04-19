@@ -126,7 +126,7 @@ export const handleImageUpload = (file: File) => {
   const uid = store.getState().user.id;
 
   const formattedDate = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss'Z'");
-  const imgRef = ref(storage, `${uid}/${file.name + formattedDate}`);
+  const imgRef = ref(storage, `${uid}/${formattedDate + file.name}`);
   // upload to Vercel Blob
   return new Promise((resolve) => {
     toast.promise(

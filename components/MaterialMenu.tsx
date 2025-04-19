@@ -36,10 +36,12 @@ export function UserMenu({
             onClick={async () => {
               setDeleting(true);
               await deleteMaterial(ids, type);
-              if (type == "course") router.push("/");
-              if (type == "unit") router.push("/course/" + ids.courseId);
+              if (type == "course") router.push("/app/");
+              if (type == "unit") router.push("/app/course/" + ids.courseId);
               if (type == "lesson")
-                router.push("/unit/" + ids.unitId + "?course=" + ids.courseId);
+                router.push(
+                  "/app/unit/" + ids.unitId + "?course=" + ids.courseId
+                );
             }}
           >
             <IconTrash size="0.9rem" stroke={1.5} />

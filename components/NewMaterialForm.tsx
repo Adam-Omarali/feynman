@@ -1,10 +1,11 @@
 "use client";
 
-import { FormEvent, useContext, useState } from "react";
+import { FormEvent, useContext, useMemo, useState } from "react";
 import SelectEmoji from "./SelectEmoji";
 import { Button } from "./ui/Button";
 import { modalContext } from "./Modal";
 import Spinner from "./Spinner";
+import commonEmojis from "@/data/emojis";
 
 function NewMaterialForm({
   add,
@@ -14,7 +15,7 @@ function NewMaterialForm({
   lesson: boolean;
 }>) {
   const [selectEmoji, setSelectEmoji] = useState(false);
-  const [emoji, setEmoji] = useState("🚀");
+  const [emoji, setEmoji] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
@@ -23,6 +24,12 @@ function NewMaterialForm({
   function close() {
     setSelectEmoji(false);
   }
+
+  useMemo(() => {
+    const randomEmoji =
+      commonEmojis[Math.floor(Math.random() * commonEmojis.length)];
+    setEmoji(randomEmoji);
+  }, []);
 
   function handleFormSubmit(e: FormEvent<HTMLButtonElement>) {
     e.preventDefault();

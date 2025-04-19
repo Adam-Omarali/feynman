@@ -12,6 +12,10 @@ const imageList = [
   "https://www.notion.so/images/page-cover/gradients_11.jpg",
   "https://www.notion.so/images/page-cover/gradients_8.png",
   "https://www.notion.so/images/page-cover/gradients_10.jpg",
+  "https://www.notion.so/images/page-cover/nasa_transonic_tunnel.jpg",
+  "https://www.notion.so/images/page-cover/nasa_tim_peake_spacewalk.jpg",
+  "https://www.notion.so/images/page-cover/nasa_ibm_type_704.jpg",
+  "https://www.notion.so/images/page-cover/nasa_earth_grid.jpg",
 ];
 
 export function MaterialCard({ title, add }: { title?: string; add?: string }) {
@@ -21,7 +25,7 @@ export function MaterialCard({ title, add }: { title?: string; add?: string }) {
         <>
           <figure>
             <img
-              src={imageList[Math.floor(title.length % imageList.length)]}
+              src={imageList[title.length % imageList.length]}
               alt="Image"
               className="w-full h-56 object-cover"
             />

@@ -15,50 +15,51 @@ export default function TipTap({
   setContent,
   content,
   flashcard,
+  setSaved,
 }: {
   isEditable: boolean;
   setContent: Function;
   content: { content: { type: string; content: any }[] };
   flashcard?: boolean;
+  setSaved?: Function;
 }) {
-  const [saveStatus, setSaveStatus] = useState("Saved");
-
   const [hydrated, setHydrated] = useState(false);
 
   const debouncedUpdates = useDebouncedCallback(async ({ editor }) => {
     const json = editor.getJSON();
-    setSaveStatus("Saving...");
     setContent(json);
-    // Simulate a delay in saving.
-    setTimeout(() => {
-      setSaveStatus("Saved");
-    }, 500);
     console.log("debounce", json);
-  }, 750);
+  }, 1500);
 
   const editor = useEditor({
     extensions: [...TiptapExtensions, QuestionExtension],
     editorProps: TiptapEditorProps,
     onUpdate: (e) => {
-      //update consistently
-      setSaveStatus("Unsaved");
+      // Immediately mark as unsaved when content changes
+      if (setSaved) {
+        setSaved(false);
+      }
+      // Still use debounced updates for content
       debouncedUpdates(e);
-      // setContent(e.editor.getHTML()); this was updating the context twice. once in debouncedUpdates and again here.
     },
     autofocus: "start",
     editable: isEditable,
+    content: content,
   });
 
   //Hydrate the editor with the content from localStorage for initial load
   useEffect(() => {
     if (editor && content) {
-      editor.commands.setContent(content);
-      setHydrated(true);
+      // Only set content if it's different from current content
+      const currentContent = editor.getJSON();
+      if (JSON.stringify(currentContent) !== JSON.stringify(content)) {
+        if (!Array.isArray(content) && content.content.length > 0) {
+          editor.commands.setContent(content);
+          setHydrated(true);
+        }
+      }
     }
-    // if (editor && content.length > 0 || content.content.length == 0) {
-    //   editor.commands.setContent(content);
-    // }
-  }, [editor, content]); //editor needed for initial load, content needed if a change is made, pages are switched, and then switch back because editor is already loaded.
+  }, [editor, content]);
 
   return (
     <div

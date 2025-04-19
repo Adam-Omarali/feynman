@@ -10,11 +10,7 @@ import { useSelector } from "react-redux";
 function Page({ params }: Readonly<{ params: { unitId: string } }>) {
   let user = useSelector((state: RootState) => state.user);
 
-  const {
-    isLoading,
-    error,
-    data: questions,
-  } = useQuery(
+  const { isLoading, data: questions } = useQuery(
     ["questions"],
     async () => {
       let qs = await getQuestions(user.id, params.unitId);

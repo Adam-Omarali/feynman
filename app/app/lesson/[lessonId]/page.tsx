@@ -26,11 +26,7 @@ export default function Page({
   let user = useSelector((state: RootState) => state.user);
   let dispatch = useDispatch();
 
-  const {
-    isLoading,
-    error,
-    data: lesson,
-  } = useQuery(
+  const { isLoading, data: lesson } = useQuery(
     ["lesson"],
     async () => {
       console.log("lessonState", lessonState);
@@ -52,39 +48,50 @@ export default function Page({
     }
   );
 
-  let [editable, setEditable] = useState(true);
-  let [content, setContent] = useState<[]>(
-    lesson ? (lesson.content ? lesson.content : []) : []
+  let [content, setContent] = useState<content>(
+    lesson?.content ?? { content: [], type: "" }
   );
-  let [saved, setSaved] = useState(false);
-  const contentRef = useRef<content | []>(content);
+  let [saved, setSaved] = useState(true);
+  const contentRef = useRef<content>(
+    lesson?.content ?? { content: [], type: "" }
+  );
+
+  // Update content when lesson changes
+  useEffect(() => {
+    if (lesson?.content) {
+      setContent(lesson.content);
+      contentRef.current = lesson.content;
+      setSaved(true);
+    }
+  }, [lesson]);
+
+  // Update contentRef whenever content changes
+  useEffect(() => {
+    contentRef.current = content;
+    if (
+      lesson &&
+      (lesson?.content == "" ||
+        JSON.stringify(content) !== JSON.stringify(lesson.content))
+    ) {
+      setSaved(false);
+      updateContent();
+    }
+  }, [content]);
 
   function updateContent() {
-    if (lesson && contentRef.current != lesson.content) {
-      console.log("updating lesson content");
+    if (
+      lesson &&
+      JSON.stringify(contentRef.current) !== JSON.stringify(lesson.content)
+    ) {
       editLessonContent(
         contentRef.current,
         searchParams.course,
         searchParams.unit,
         params.lessonId
       );
+      setSaved(true);
     }
   }
-
-  useEffect(() => {
-    contentRef.current = content;
-    setSaved(false);
-  }, [content]);
-
-  useEffect(() => {
-    window.addEventListener("beforeunload", (ev) => {
-      console.log("unloading lesson");
-      updateContent();
-    });
-    return () => {
-      updateContent();
-    };
-  }, []);
 
   if (
     user.courses[searchParams.course].units[searchParams.unit].lessons[
@@ -95,7 +102,7 @@ export default function Page({
     return <>You don't have access to this lesson</>;
   }
 
-  if (isLoading) {
+  if (isLoading || (lesson && lesson.id != params.lessonId)) {
     return (
       <MaterialSkeleton
         text={
@@ -120,6 +127,7 @@ export default function Page({
                 setSaved(true);
               }}
               className="h-8 px-3 text-sm"
+              variant={saved ? "default" : "outline"}
             >
               {saved ? "Saved" : "Save"}
             </Button>
@@ -134,8 +142,9 @@ export default function Page({
           </div>
         </div>
         <TipTap
-          isEditable={editable}
+          isEditable={true}
           setContent={setContent}
+          setSaved={setSaved}
           content={lesson.content ? lesson.content : null}
         />
       </div>

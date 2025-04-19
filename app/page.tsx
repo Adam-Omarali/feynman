@@ -28,7 +28,7 @@ export default function LandingPage() {
             </Button>
           </div>
 
-          <div className="flex-1">
+          <div className="flex-1 mb-16">
             <img
               src="/feynman.png"
               alt="Richard Feynman at chalkboard"

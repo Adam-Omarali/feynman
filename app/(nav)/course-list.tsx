@@ -11,6 +11,7 @@ import { RootState } from "@/redux/store";
 import { useRouter } from "next/navigation";
 import SelectEmoji from "@/components/SelectEmoji";
 import { simplifiedCourse } from "@/redux/user";
+import commonEmojis from "@/data/emojis";
 
 export const blankCourse = {
   emoji: "",
@@ -42,7 +43,9 @@ export function ItemInput({
     }
   }
 
-  const [emoji, setEmoji] = useState("🚀");
+  const [emoji, setEmoji] = useState(
+    commonEmojis[Math.floor(Math.random() * commonEmojis.length)]
+  );
   const [pickEmoji, setPickEmoji] = useState(false);
   const user = useSelector((state: RootState) => state.user);
   const router = useRouter();

@@ -34,20 +34,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }
             }, { merge: true });
             // await lessonRef.update({questions: FieldValue.arrayUnion(flashcardRef.id)})
-          
-            let ret: question = {
-                id: questionId,
-                userId: userId,
-                lessonId: lessonId,
-                history: [],
-                difficulty: difficulty,
+            
+            try {
+                let ret: question = {
+                    id: questionId,
+                    userId: userId,
+                    lessonId: lessonId,
+                    history: [],
+                    difficulty: difficulty,
                 question: question,
                 answer: answer.length == 0 ? null : answer,
                 solution: solution.length == 0 ? null : solution,
                 created: true
+                }
+                // Return the new flashcard
+                res.status(200).json(ret);
+            } catch (error) {
+                console.error('Error adding flashcard:', error);
+                res.status(500).send('Error adding flashcard');
             }
-            // Return the new flashcard
-            res.status(200).json(ret);
         }
         else{
             res.status(400).send('Incorrect body, should include course name and user id.')

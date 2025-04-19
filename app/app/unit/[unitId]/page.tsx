@@ -2,11 +2,9 @@
 
 import React from "react";
 import { fetchMaterial } from "../../../../services/fetchMaterial";
-import TipTap from "../../../../components/editor/Editor";
 import { UserMenu } from "@/components/MaterialMenu";
-import { RootState, store } from "@/redux/store";
-import { useSelector } from "react-redux";
-import { Skeleton } from "@/components/ui/Skeleton";
+import { RootState } from "@/redux/store";
+import { useSelector, useDispatch } from "react-redux";
 import { MaterialCard } from "@/components/MaterialCard";
 import Modal from "@/components/Modal";
 import NewMaterialForm from "@/components/NewMaterialForm";
@@ -14,7 +12,6 @@ import { addLesson } from "@/services/addMaterial";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { addUnitStore, unit } from "@/redux/unit";
-import { useDispatch } from "react-redux";
 import MaterialSkeleton from "@/components/MaterialSkeleton";
 import { Button } from "@/components/ui/Button";
 
@@ -32,11 +29,7 @@ export default function Page({
   );
   const dispatch = useDispatch();
 
-  const {
-    isLoading,
-    error,
-    data: unit,
-  } = useQuery(
+  const { isLoading, data: unit } = useQuery(
     ["unit"],
     async () => {
       if (unitState === undefined) {

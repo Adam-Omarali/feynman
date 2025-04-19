@@ -21,7 +21,7 @@ export default function Home({
   );
   let user = useSelector((state: RootState) => state.user);
   let dispatch = useDispatch();
-  const { isLoading, error, data } = useQuery(
+  const { isLoading, data } = useQuery(
     ["course"],
     async () => {
       if (courseState === undefined) {
