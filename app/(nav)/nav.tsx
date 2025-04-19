@@ -10,8 +10,14 @@ import Link from "next/link";
 import SignOut from "@/components/SignOut";
 import { useState, useRef, useEffect } from "react";
 
-function Navbar() {
-  const [width, setWidth] = useState(224); // 14rem in pixels
+function Navbar({
+  initialWidth,
+  onWidthChange,
+}: {
+  initialWidth?: number;
+  onWidthChange?: (width: number) => void;
+}) {
+  const [width, setWidth] = useState(initialWidth || 224); // 14rem in pixels
   const [isResizing, setIsResizing] = useState(false);
   const startX = useRef(0);
   const startWidth = useRef(0);
@@ -28,6 +34,7 @@ function Navbar() {
     const delta = e.clientX - startX.current;
     const newWidth = Math.max(200, Math.min(400, startWidth.current + delta)); // Min 200px, max 400px
     setWidth(newWidth);
+    onWidthChange?.(newWidth);
   };
 
   const handleMouseUp = () => {

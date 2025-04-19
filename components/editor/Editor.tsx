@@ -60,12 +60,16 @@ export default function TipTap({
 
   return (
     <div
-      onClick={() => {
-        editor?.chain().focus().run();
+      onClick={(e) => {
+        // Only focus if clicking directly on the editor content or its immediate children
+        if (e.target === e.currentTarget || e.target === editor?.view.dom) {
+          console.log(content);
+          editor?.chain().focus().run();
+        }
       }}
       className={
         !flashcard
-          ? "relative min-h-[500px] border-stone-200 bg-white p-12 px-8 sm:mb-[calc(20vh)] sm:rounded-lg sm:border sm:px-12 sm:shadow-lg h-fit overflow-scroll"
+          ? "relative min-h-[500px] border-stone-200 bg-white p-12 px-8 sm:mb-[calc(8vh)] sm:rounded-lg sm:border sm:px-12 sm:shadow-lg h-fit overflow-scroll"
           : isEditable
           ? "relative border-stone-200 bg-white p-8 sm:mb-2 sm:rounded-lg sm:border max-h-[500px] overflow-scroll"
           : "relative py-8 max-h-[500px] overflow-scroll"

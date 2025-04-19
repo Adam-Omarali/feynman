@@ -6,7 +6,8 @@ export interface UserState {
   name: string,
   email: string,
   photo: string,
-  courses: courseObj
+  courses: courseObj,
+  storageUsed: number
 }
 
 export type simplifiedLesson = {
@@ -41,7 +42,8 @@ const initialState: UserState = {
   name: "",
   email: "",
   photo: "",
-  courses: {}
+  courses: {},
+  storageUsed: 0
 }
 
 export const userSlice = createSlice({

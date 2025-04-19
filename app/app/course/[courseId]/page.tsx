@@ -12,6 +12,7 @@ import { fetchMaterial } from "@/services/fetchMaterial";
 import { useQuery } from "@tanstack/react-query";
 import { addCourseStore } from "@/redux/courses";
 import MaterialSkeleton from "@/components/MaterialSkeleton";
+import FileUpload from "@/components/FileUpload";
 
 export default function Home({
   params,
@@ -60,10 +61,12 @@ export default function Home({
           <p className="text-xl font-semibold pb-2">
             {course.name + " " + course.emoji}
           </p>
-          <UserMenu
-            ids={{ courseId: course.id, lessonId: "", unitId: "" }}
-            type={"course"}
-          />
+          <div className="flex items-center gap-4">
+            <UserMenu
+              ids={{ courseId: course.id, lessonId: "", unitId: "" }}
+              type={"course"}
+            />
+          </div>
         </div>
         <div className="pb-2">{course.description}</div>
         {/* <div className="flex justify-between items-center">
@@ -90,6 +93,7 @@ export default function Home({
             </Modal.Content>
           </Modal>
         </div>
+        <FileUpload userId={user.id} path={params.courseId} />
       </div>
     );
   }

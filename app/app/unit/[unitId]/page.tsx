@@ -14,6 +14,7 @@ import { useQuery } from "@tanstack/react-query";
 import { addUnitStore, unit } from "@/redux/unit";
 import MaterialSkeleton from "@/components/MaterialSkeleton";
 import { Button } from "@/components/ui/Button";
+import FileUpload from "@/components/FileUpload";
 
 export default function Page({
   params,
@@ -74,14 +75,16 @@ export default function Page({
       <div style={{ padding: "16px 20px", flex: "80%" }}>
         <div className="flex justify-between items-center">
           <p className="text-xl font-semibold pb-2">{unit.name}</p>
-          <UserMenu
-            ids={{
-              unitId: params.unitId,
-              courseId: courseId,
-              lessonId: "",
-            }}
-            type={"unit"}
-          />
+          <div className="flex items-center gap-4">
+            <UserMenu
+              ids={{
+                unitId: params.unitId,
+                courseId: courseId,
+                lessonId: "",
+              }}
+              type={"unit"}
+            />
+          </div>
         </div>
         {/* <div className="flex justify-between items-center">
           <h3>Lessons</h3>
@@ -116,9 +119,12 @@ export default function Page({
             </Modal.Content>
           </Modal>
         </div>
-        <Button className="mt-4">
-          <Link href={`/app/unit/${params.unitId}/quiz`}>Generate Quiz</Link>
-        </Button>
+        <div className="mt-4">
+          <Button>
+            <Link href={`/app/unit/${params.unitId}/quiz`}>Generate Quiz</Link>
+          </Button>
+        </div>
+        <FileUpload userId={user.id} path={params.unitId} />
       </div>
     );
   }

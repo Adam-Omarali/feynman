@@ -13,8 +13,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 return res.status(200).send(doc.data())
             }
             else {
-                await db.collection("users").doc(id).set({courses: {}})
-                return res.status(200).send({courses: {}})
+                await db.collection("users").doc(id).set({
+                    courses: {},
+                    subscription: "free",
+                    storageUsed: 0
+                })
+                return res.status(200).send({
+                    courses: {},
+                    subscription: "free",
+                    storageUsed: 0
+                })
             }
         } else {
             return res.status(400).send("Missing Id in URL requestion /user/{userId}")

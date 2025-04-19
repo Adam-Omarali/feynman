@@ -13,7 +13,9 @@ function AddFlashcard({
         </div>
       </Modal.Trigger>
       <Modal.Content triggerText="Add Flashcard">
-        <FlashcardForm onSubmit={onSubmit} />
+        <div className="mb-4 -mt-8">
+          <FlashcardForm onSubmit={onSubmit} />
+        </div>
       </Modal.Content>
     </Modal>
   );

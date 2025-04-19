@@ -2,6 +2,7 @@
 import { Skeleton } from "@/components/ui/Skeleton";
 import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
+import Link from "next/link";
 
 export function UserButton() {
   const user = useSelector((state: RootState) => state.user);
@@ -16,16 +17,17 @@ export function UserButton() {
     );
   }
   return (
-    <div className="w-full flex p-3 gap-4 items-center">
-      <div className="avatar">
-        <div className="w-10 rounded-full">
-          <img src={user.photo} alt="" />
+    <Link href="/app/profile" className="w-full">
+      <div className="w-full flex p-3 gap-4 items-center hover:bg-gray-100 rounded-lg">
+        <div className="avatar">
+          <div className="w-10 rounded-full">
+            <img src={user.photo} alt="" />
+          </div>
+        </div>
+        <div className="text-sm">
+          <p>{user.name}</p>
         </div>
       </div>
-      <div className="text-sm">
-        <p>{user.name}</p>
-      </div>
-      {/* <Button>Log Out</Button> */}
-    </div>
+    </Link>
   );
 }

@@ -7,12 +7,15 @@ import {
   listAll,
   deleteObject,
   getDownloadURL,
+  getMetadata,
 } from "firebase/storage";
 import { storage } from "@/firebase/clientConfig";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { UserState } from "@/redux/user";
 import { Button } from "./ui/Button";
-import { Trash2, Download, Image as ImageIcon } from "lucide-react";
+import { Trash2, Download, File, Folder } from "lucide-react";
+import { toast } from "sonner";
 
 interface FileItem {
   name: string;
@@ -24,7 +27,7 @@ interface FileItem {
 export default function FileManager() {
   const [files, setFiles] = useState<FileItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const user = useSelector((state: RootState) => state.user);
+  const user = useSelector((state: RootState) => state.user) as UserState;
 
   useEffect(() => {
     if (user.id) {
@@ -38,21 +41,41 @@ export default function FileManager() {
       const storageRef = ref(storage, user.id);
       const result = await listAll(storageRef);
 
+      // Get all files in the root directory
       const filePromises = result.items.map(async (item) => {
         const url = await getDownloadURL(item);
-        const type = item.name.split(".").pop()?.toLowerCase() || "";
         return {
           name: item.name,
           url,
           fullPath: item.fullPath,
-          type,
+          type: item.name.split(".").pop()?.toLowerCase() || "",
         };
       });
 
-      const fileList = await Promise.all(filePromises);
-      setFiles(fileList);
+      // Get all files in subdirectories
+      const subdirPromises = result.prefixes.map(async (prefix) => {
+        const subdirRef = ref(storage, prefix.fullPath);
+        const subdirResult = await listAll(subdirRef);
+        return subdirResult.items.map(async (item) => {
+          const url = await getDownloadURL(item);
+          return {
+            name: item.name,
+            url,
+            fullPath: item.fullPath,
+            type: item.name.split(".").pop()?.toLowerCase() || "",
+          };
+        });
+      });
+
+      const rootFiles = await Promise.all(filePromises);
+      const subdirFiles = await Promise.all(
+        (await Promise.all(subdirPromises)).flat()
+      );
+
+      setFiles([...rootFiles, ...subdirFiles]);
     } catch (error) {
       console.error("Error fetching files:", error);
+      toast.error("Failed to fetch files");
     } finally {
       setLoading(false);
     }
@@ -61,10 +84,30 @@ export default function FileManager() {
   const handleDelete = async (filePath: string) => {
     try {
       const fileRef = ref(storage, filePath);
+
+      // Get file metadata to get the size
+      const metadata = await getMetadata(fileRef);
+      const fileSize = metadata.size;
+
       await deleteObject(fileRef);
+
+      // Update storage usage (subtract the file size)
+      await fetch("/api/updateStorageUsage", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          bytes: -fileSize, // Negative value to subtract from total
+        }),
+      });
+
       setFiles(files.filter((file) => file.fullPath !== filePath));
+      toast.success("File deleted successfully");
     } catch (error) {
       console.error("Error deleting file:", error);
+      toast.error("Failed to delete file");
     }
   };
 
@@ -86,12 +129,12 @@ export default function FileManager() {
           {files.map((file) => (
             <div
               key={file.fullPath}
-              className="flex items-center justify-between p-4 bg-white rounded-lg shadow min-w-fit"
+              className="flex items-center justify-between p-4 bg-white rounded-lg shadow"
             >
               <div className="flex items-center space-x-4">
                 {isImage(file.type) ? (
                   <div className="flex items-center space-x-4">
-                    <div className="relative w-48 h-32">
+                    <div className="relative w-32 h-32">
                       <img
                         src={file.url}
                         alt={file.name}
@@ -105,7 +148,7 @@ export default function FileManager() {
                             fallback.className =
                               "w-32 h-32 flex items-center justify-center bg-gray-100 rounded";
                             fallback.innerHTML =
-                              '<ImageIcon class="w-12 h-12 text-gray-400" />';
+                              '<File class="w-12 h-12 text-gray-400" />';
                             parent.appendChild(fallback);
                           }
                         }}

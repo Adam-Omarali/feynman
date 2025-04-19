@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { DivideSquareIcon, Plus } from "lucide-react";
 
 const imageList = [
   "https://www.notion.so/images/page-cover/nasa_space_shuttle_columbia.jpg",
@@ -35,14 +35,14 @@ export function MaterialCard({ title, add }: { title?: string; add?: string }) {
           </div>
         </>
       ) : (
-        <button>
+        <div>
           <div className="flex items-center justify-center h-56 text-slate-500 hover:text-black">
             <div className="flex flex-col items-center content-center">
               <Plus size={40} />
               <h2 className="card-title font-normal">{add}</h2>
             </div>
           </div>
-        </button>
+        </div>
       )}
     </div>
   );

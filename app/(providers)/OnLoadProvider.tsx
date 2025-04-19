@@ -34,6 +34,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
             photo: currentUser.photoURL!,
             id: currentUser.uid,
             courses,
+            storageUsed: 0,
           };
           dispatch(login(newUser));
           dispatch(fetched());

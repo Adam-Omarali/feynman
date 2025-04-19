@@ -44,8 +44,9 @@ function FlashcardForm({
 
   useEffect(() => {
     const pathParts = pathname?.split("/");
-    if (pathParts && pathParts[1] === "lesson") {
-      const lessonId = pathParts[2];
+    console.log(pathParts);
+    if (pathParts && pathParts.includes("lesson")) {
+      const lessonId = pathParts[pathParts.indexOf("lesson") + 1];
       const lessonName = Object.keys(lessonList).find(
         (name) => lessonList[name].id === lessonId
       );
@@ -90,7 +91,7 @@ function FlashcardForm({
     }
   }
   return (
-    <div className="grid gap-4 py-2">
+    <div className="grid gap-4">
       <div>
         <p>Question</p>
         <TipTap

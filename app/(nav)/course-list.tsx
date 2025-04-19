@@ -113,7 +113,7 @@ export function CourseList() {
           <Link href="/app">
             <p className="text-sm">Courses</p>
           </Link>
-          <div className="tooltip" data-tip="Create Course">
+          <div>
             <IconPlus
               size="0.8rem"
               stroke={1.5}

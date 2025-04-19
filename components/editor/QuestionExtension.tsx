@@ -24,7 +24,7 @@ const QuestionComponent = ({ node, updateAttributes, editor }: any) => {
   }
 
   return (
-    <NodeViewWrapper className="border-2 border-blue-200 bg-blue-50 pb-2 -pt-4 rounded-md px-4">
+    <NodeViewWrapper className="border-2 border-blue-200 bg-blue-50 pb-2 -pt-4 rounded-md px-4 mt-4">
       {node.attrs.question ? (
         <div className="-mt-6">
           <div className="flex justify-between items-start">

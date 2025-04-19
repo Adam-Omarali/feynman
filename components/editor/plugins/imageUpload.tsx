@@ -19,7 +19,7 @@ const UploadImagesPlugin = () =>
         set = set.map(tr.mapping, tr.doc);
         // See if the transaction adds or removes any placeholders
         const action = tr.getMeta(this as any);
-        if (action ?? action.add) {
+        if (action?.add) {
           const { id, pos, src } = action.add;
 
           const placeholder = document.createElement("div");
@@ -35,7 +35,7 @@ const UploadImagesPlugin = () =>
             id,
           });
           set = set.add(tr.doc, [deco]);
-        } else if (action ?? action.remove) {
+        } else if (action?.remove) {
           set = set.remove(
             set.find(
               undefined,
@@ -133,6 +133,18 @@ export const handleImageUpload = (file: File) => {
       uploadBytes(imgRef, file).then(async (snapshot) => {
         const url = await getDownloadURL(snapshot.ref);
         if (url) {
+          // Update storage usage
+          await fetch("/api/updateStorageUsage", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              userId: uid,
+              bytes: file.size,
+            }),
+          });
+
           let image = new Image();
           image.src = url;
           image.onload = () => {

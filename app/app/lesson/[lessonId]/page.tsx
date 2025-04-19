@@ -13,6 +13,7 @@ import { addLessonStore } from "@/redux/lesson";
 import MaterialSkeleton from "@/components/MaterialSkeleton";
 import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
+import FileUpload from "@/components/FileUpload";
 
 export default function Page({
   params,
@@ -159,6 +160,7 @@ export default function Page({
           setSaved={setSaved}
           content={lesson.content ? lesson.content : null}
         />
+        <FileUpload userId={user.id} path={params.lessonId} />
       </div>
     );
   }
