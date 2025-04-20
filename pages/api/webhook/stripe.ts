@@ -23,7 +23,7 @@ async function getUserIdByEmail(email: string): Promise<string | null> {
     const userRecord = await getAuth().getUserByEmail(email);
     return userRecord.uid;
   } catch (error) {
-    console.log(`No user found for email ${email}`);
+    console.log(`No user found for email ${email}`, error);
     return null;
   }
 }
