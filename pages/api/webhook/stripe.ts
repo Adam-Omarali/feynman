@@ -3,9 +3,16 @@ import {NextApiRequest, NextApiResponse} from 'next';
 import { FieldValue, getFirestore } from 'firebase-admin/firestore';
 import { getAuth } from 'firebase-admin/auth';
 
+//dev
+// const priceIds = {
+//   subscription: "price_1RFVCiAgvuBiMV3enKFPQKyl",
+//   storage: "price_1RFVJFAgvuBiMV3eCV5r9PvX"
+// }
+
+//prod
 const priceIds = {
-  subscription: "price_1RFVCiAgvuBiMV3enKFPQKyl",
-  storage: "price_1RFVJFAgvuBiMV3eCV5r9PvX"
+  subscription: "price_1RFmjcAgvuBiMV3e11LQhMWb",
+  storage: "price_1RFmjZAgvuBiMV3eCaJzNBlH"
 }
 
 const PURCHASED_STORAGE = 5 * 1024 * 1024 * 1024; // 5GB in bytes
@@ -147,7 +154,6 @@ const handler = async (
 
     // Successfully constructed event
     console.log('✅ Success:', event.id);
-    console.log(event)
 
     // Cast event data to Stripe object
     if (event.type === 'customer.subscription.deleted') {
