@@ -77,7 +77,7 @@ export default function ProfilePage() {
               <p className="text-gray-600 mb-4">
                 {subscription === "pro"
                   ? "You have access to all pro features."
-                  : "Upgrade to Pro for unlimited courses and storage."}
+                  : "Upgrade to Pro for unlimited courses and 10GB ofstorage."}
               </p>
               {subscription !== "pro" && (
                 <Link
@@ -132,7 +132,7 @@ export default function ProfilePage() {
                 target="_blank"
               >
                 <Button className="w-full">
-                  Get More Storage
+                  Get 5GB More Storage
                   <ArrowUpRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
