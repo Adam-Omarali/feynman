@@ -9,6 +9,7 @@ const priceIds = {
 }
 
 const PURCHASED_STORAGE = 5 * 1024 * 1024 * 1024; // 5GB in bytes
+const PRO_STORAGE_BONUS = 10 * 1024 * 1024 * 1024; // 10GB in bytes
 
 async function getUserIdByEmail(email: string): Promise<string | null> {
   try {
@@ -32,7 +33,40 @@ async function updateUserSubscription(email: string, subscription: 'free' | 'pro
   const userDoc = await userRef.get();
 
   if (userDoc.exists) {
-    await userRef.update({ subscription });
+    const userData = userDoc.data();
+    if (!userData) {
+      console.log(`No data found for user ${userId}`);
+      return;
+    }
+
+    const updates: { [key: string]: any } = { subscription };
+    console.log(subscription, userData.subscription)
+    
+    // Handle storage changes based on subscription changes
+    if ('maxStorage' in userData) {
+      if (subscription === 'pro' && userData.subscription === 'free') {
+        // Going from free to pro: add 10GB
+        updates.maxStorage = FieldValue.increment(PRO_STORAGE_BONUS);
+        console.log(`Added ${PRO_STORAGE_BONUS} bytes to maxStorage for user ${userId}`);
+      } else if (subscription === 'free' && userData.subscription === 'pro') {
+        // Going from pro to free: subtract 10GB
+        updates.maxStorage = FieldValue.increment(-PRO_STORAGE_BONUS);
+        console.log(`Subtracted ${PRO_STORAGE_BONUS} bytes from maxStorage for user ${userId}`);
+      }
+    } else {
+      // Initialize maxStorage if it doesn't exist
+      updates.maxStorage = subscription === 'pro' ? PRO_STORAGE_BONUS : PURCHASED_STORAGE;
+      console.log(`Set initial maxStorage to ${updates.maxStorage} for user ${userId}`);
+    }
+
+    // Initialize storageUsed if it doesn't exist
+    if (!('storageUsed' in userData)) {
+      updates.storageUsed = 0;
+      console.log(`Set initial storageUsed to 0 for user ${userId}`);
+    }
+
+    // Apply updates
+    await userRef.set(updates, { merge: true });
     console.log(`Updated subscription to ${subscription} for user ${userId}`);
   } else {
     console.log(`User not found for userId ${userId} and subscription ${subscription}`);
@@ -51,10 +85,34 @@ async function updateUserStorage(email: string, additionalStorage: number) {
   const userDoc = await userRef.get();
 
   if (userDoc.exists) {
-    await userRef.update({
-      maxStorage: FieldValue.increment(additionalStorage)
-    });
-    console.log(`Updated storage for user ${userId}`);
+    const userData = userDoc.data();
+    if (!userData) {
+      console.log(`No data found for user ${userId}`);
+      return;
+    }
+
+    const updates: { [key: string]: any } = {};
+    
+    // Initialize or update maxStorage
+    if (!('maxStorage' in userData)) {
+      updates.maxStorage = PURCHASED_STORAGE + additionalStorage;
+      console.log(`Set initial maxStorage to ${updates.maxStorage} for user ${userId}`);
+    } else {
+      updates.maxStorage = FieldValue.increment(additionalStorage);
+      console.log(`Incremented maxStorage by ${additionalStorage} for user ${userId}`);
+    }
+
+    // Initialize storageUsed if it doesn't exist
+    if (!('storageUsed' in userData)) {
+      updates.storageUsed = 0;
+      console.log(`Set initial storageUsed to 0 for user ${userId}`);
+    }
+
+    // Apply updates
+    if (Object.keys(updates).length > 0) {
+      await userRef.set(updates, { merge: true });
+      console.log(`Updated storage fields for user ${userId}`);
+    }
   } else {
     console.log(`No user found for email ${email}`);
   }

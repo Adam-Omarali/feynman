@@ -22,7 +22,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (!userData?.subscription) {
       await userRef.update({
-        subscription: "free"
+        subscription: "free",
+        maxStorage: 20 * 1024 * 1024,
+        storageUsed: 0
       });
     }
 
