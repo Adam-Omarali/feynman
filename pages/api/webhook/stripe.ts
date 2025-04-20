@@ -150,7 +150,7 @@ const buffer = (req: NextApiRequest) => {
     });
 
     req.on('end', () => {
-      resolve(Buffer.concat(chunks as unknown as Uint8Array<ArrayBufferLike>[]));
+      resolve(Buffer.concat(chunks as unknown as Uint8Array[]));
     });
 
     req.on('error', reject);
