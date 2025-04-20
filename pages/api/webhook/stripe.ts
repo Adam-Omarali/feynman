@@ -147,6 +147,7 @@ const handler = async (
 
     // Successfully constructed event
     console.log('✅ Success:', event.id);
+    console.log(event)
 
     // Cast event data to Stripe object
     if (event.type === 'customer.subscription.deleted') {
