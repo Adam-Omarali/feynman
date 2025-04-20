@@ -7,6 +7,7 @@ import { storage } from "@/firebase/clientConfig";
 import { ref, uploadBytes, getDownloadURL, listAll } from "firebase/storage";
 import { toast } from "sonner";
 import Link from "next/link";
+import { store } from "@/redux/store";
 
 interface FileUploadProps {
   userId: string;
@@ -58,6 +59,12 @@ export default function FileUpload({ userId, path }: FileUploadProps) {
   const handleUpload = async () => {
     if (!file || !fileName) {
       toast.error("Please select a file and enter a name");
+      return;
+    }
+
+    const { storageUsed, maxStorage } = store.getState().user;
+    if (storageUsed + file.size > (maxStorage || 0)) {
+      toast.error("Upload failed: Storage limit exceeded");
       return;
     }
 

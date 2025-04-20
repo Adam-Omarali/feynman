@@ -7,6 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { ArrowUpRight, File, Book } from "lucide-react";
 import { UserState } from "@/redux/user";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
 
 const COURSE_LIMITS = {
   free: 3,
@@ -17,27 +19,30 @@ export default function ProfilePage() {
   const user = useSelector((state: RootState) => state.user) as UserState;
   const [subscription, setSubscription] = useState("free");
 
-  useEffect(() => {
-    const fetchSubscription = async () => {
-      try {
-        const response = await fetch("/api/setDefaultSubscription", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ userId: user.id }),
-        });
-        const data = await response.json();
-        setSubscription(data.subscription);
-      } catch (error) {
-        console.error("Error fetching subscription:", error);
+  const { data: subscriptionData } = useQuery({
+    queryKey: ["subscription", user.id],
+    queryFn: async () => {
+      if (user?.subscription) {
+        return { subscription: user.subscription };
       }
-    };
+      const response = await fetch("/api/setDefaultSubscription", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: user.id }),
+      });
+      const data = await response.json();
+      return data;
+    },
+    enabled: !!user.id,
+  });
 
-    if (user.id) {
-      fetchSubscription();
+  useEffect(() => {
+    if (subscriptionData?.subscription) {
+      setSubscription(subscriptionData.subscription);
     }
-  }, [user.id]);
+  }, [subscriptionData]);
 
   const formatStorage = (bytes: number) => {
     if (bytes < 1024) return `${bytes} B`;
@@ -75,10 +80,19 @@ export default function ProfilePage() {
                   : "Upgrade to Pro for unlimited courses and storage."}
               </p>
               {subscription !== "pro" && (
-                <Button className="w-full">
-                  Upgrade to Pro
-                  <ArrowUpRight className="ml-2 h-4 w-4" />
-                </Button>
+                <Link
+                  href={
+                    process.env.NEXT_PUBLIC_PRO_SUBSCRIPTION_LINK! +
+                    "?prefilled_email=" +
+                    user.email
+                  }
+                  target="_blank"
+                >
+                  <Button className="w-full">
+                    Upgrade to Pro
+                    <ArrowUpRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
               )}
             </CardContent>
           </Card>
@@ -105,9 +119,23 @@ export default function ProfilePage() {
                   <span>Storage Used</span>
                 </div>
                 <span className="font-medium">
-                  {formatStorage(user.storageUsed)}
+                  {formatStorage(user.storageUsed)} /{" "}
+                  {formatStorage(user.maxStorage || 0)}
                 </span>
               </div>
+              <Link
+                href={
+                  process.env.NEXT_PUBLIC_STORAGE_PAYMENT_LINK! +
+                  "?prefilled_email=" +
+                  user.email
+                }
+                target="_blank"
+              >
+                <Button className="w-full">
+                  Get More Storage
+                  <ArrowUpRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
             </CardContent>
           </Card>
         </div>

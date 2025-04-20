@@ -28,13 +28,18 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
       onSuccess: (userData) => {
         if (currentUser) {
           const courses: courseObj = userData?.courses || {};
+          const storageUsed = userData?.storageUsed || 0;
+          const maxStorage = userData?.maxStorage || 0;
+          const subscription = userData?.subscription || "";
           const newUser: UserState = {
             name: currentUser.displayName!,
             email: currentUser.email!,
             photo: currentUser.photoURL!,
             id: currentUser.uid,
             courses,
-            storageUsed: 0,
+            storageUsed: storageUsed,
+            maxStorage: maxStorage,
+            subscription: subscription,
           };
           dispatch(login(newUser));
           dispatch(fetched());

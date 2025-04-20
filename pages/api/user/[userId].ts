@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getMaterial } from "../../../firebase/getMaterial";
 import firebaseAdmin from "../../../firebase/serverConfig";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse){
@@ -16,12 +15,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 await db.collection("users").doc(id).set({
                     courses: {},
                     subscription: "free",
-                    storageUsed: 0
+                    storageUsed: 0,
+                    maxStorage: 20 * 1024 * 1024
                 })
                 return res.status(200).send({
                     courses: {},
                     subscription: "free",
-                    storageUsed: 0
+                    storageUsed: 0,
+                    maxStorage: 20 * 1024 * 1024
                 })
             }
         } else {

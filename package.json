@@ -64,6 +64,7 @@
     "remixicon": "^1.2.2",
     "sass": "^1.62.1",
     "sonner": "^0.6.2",
+    "stripe": "^18.0.0",
     "tailwind-merge": "^1.13.2",
     "tailwindcss-animate": "^1.0.6",
     "tiptap-markdown": "^0.8.1",

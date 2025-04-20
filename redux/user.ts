@@ -7,7 +7,9 @@ export interface UserState {
   email: string,
   photo: string,
   courses: courseObj,
-  storageUsed: number
+  storageUsed: number,
+  subscription?: string,
+  maxStorage?: number
 }
 
 export type simplifiedLesson = {
@@ -43,7 +45,9 @@ const initialState: UserState = {
   email: "",
   photo: "",
   courses: {},
-  storageUsed: 0
+  storageUsed: 0,
+  subscription: "",
+  maxStorage: 20*1024*1024
 }
 
 export const userSlice = createSlice({
@@ -56,6 +60,9 @@ export const userSlice = createSlice({
         state.photo = action.payload.photo
         state.email = action.payload.email
         state.courses = action.payload.courses
+        state.storageUsed = action.payload.storageUsed
+        state.subscription = action.payload.subscription
+        state.maxStorage = action.payload.maxStorage
     },
     logout: (state) => {
         state = initialState

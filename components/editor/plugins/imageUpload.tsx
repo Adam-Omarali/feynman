@@ -124,6 +124,12 @@ export function startImageUpload(file: File, view: EditorView, pos: number) {
 
 export const handleImageUpload = (file: File) => {
   const uid = store.getState().user.id;
+  const { storageUsed, maxStorage } = store.getState().user;
+
+  if (storageUsed + file.size > (maxStorage || 0)) {
+    toast.error("Upload failed: Storage limit exceeded");
+    return Promise.reject("Storage limit exceeded");
+  }
 
   const formattedDate = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss'Z'");
   const imgRef = ref(storage, `${uid}/${formattedDate + file.name}`);
