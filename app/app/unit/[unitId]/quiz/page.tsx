@@ -1,13 +1,13 @@
 "use client";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getQuestions, updateQuestion } from "@/services/fetchMaterial";
+import { getQuestions } from "@/services/fetchMaterial";
 import { useSelector } from "react-redux";
 import { RootState, store } from "@/redux/store";
 import Loading from "@/app/loading";
 import TipTap from "@/components/editor/Editor";
 import { Button } from "@/components/ui/Button";
-import { defaultDoc, updateQuestionHistory } from "@/redux/questions";
+import { defaultDoc } from "@/redux/questions";
 import { Slider } from "@/components/ui/slider";
 import { useToast } from "@/components/hooks/use-toast";
 import { UserState } from "@/redux/user";
@@ -24,7 +24,7 @@ function QuizPage({ params }: { params: { unitId: string } }) {
   const [currentQuestionId, setCurrentQuestionId] = useState<string>("");
   const [showAnswer, setShowAnswer] = useState(false);
   const [userAnswer, setUserAnswer] = useState(defaultDoc);
-  const [confidence, setConfidence] = useState<number>(3);
+  const [confidence, setConfidence] = useState<number>(2);
   const [attempts, setAttempts] = useState(1);
   const { toast } = useToast();
 
@@ -37,6 +37,7 @@ function QuizPage({ params }: { params: { unitId: string } }) {
       setUpdatedQuestions(questions);
       return questions;
     },
+    staleTime: Infinity,
   });
 
   const extractText = (content: any): string => {
@@ -69,46 +70,44 @@ function QuizPage({ params }: { params: { unitId: string } }) {
   const checkNumericAnswer = (userAns: any, correctAns: any) => {
     const userNum = parseFloat(extractText(userAns));
     const correctNum = parseFloat(extractText(correctAns));
+    console.log(userAns, userNum, correctNum);
     const percentDiff = Math.abs((userNum - correctNum) / correctNum) * 100;
     return percentDiff <= 5;
   };
 
   const handleAnswerSubmit = (isCorrect: boolean) => {
     const currentQuestion = currentQuestions[currentQuestionId];
-    const newHistory = {
-      confidence,
-      attempts,
+    const attempt = {
+      timestamp: Date.now(),
       correct: isCorrect,
-      date: Date.now(),
+      confidence: confidence,
     };
 
-    const updatedQuestion = {
-      ...currentQuestion,
-      history: currentQuestion.history
-        ? [...currentQuestion.history, newHistory]
-        : [newHistory],
-    };
+    // Update progress through API
+    fetch("/api/updateQuestionProgress", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: user.id,
+        unitId: params.unitId,
+        questionId: currentQuestionId,
+        attempt,
+      }),
+    });
 
     let newUpdatedQuestions = {
       ...questions,
-      [currentQuestionId]: updatedQuestion,
+      [currentQuestionId]: {
+        ...currentQuestion,
+        history: currentQuestion.history
+          ? [...currentQuestion.history, attempt]
+          : [attempt],
+      },
     };
 
     setUpdatedQuestions(newUpdatedQuestions);
-
-    store.dispatch(
-      updateQuestionHistory({
-        qId: currentQuestionId,
-        history: updatedQuestion.history,
-      })
-    );
-
-    if (
-      currentQuestionId ===
-      Object.keys(currentQuestions)[Object.keys(currentQuestions).length - 1]
-    ) {
-      updateQuestion(user.id, params.unitId, newUpdatedQuestions);
-    }
     nextQuestion();
   };
 
@@ -133,6 +132,7 @@ function QuizPage({ params }: { params: { unitId: string } }) {
           title: "Incorrect Answer",
           description: `Attempt ${attempts + 1}. Try again!`,
         });
+        // Don't show answer yet, let them try again
       }
     } else {
       setAttempts(attempts + 1);
@@ -141,7 +141,7 @@ function QuizPage({ params }: { params: { unitId: string } }) {
   };
 
   const startQuiz = () => {
-    if (!questions) return;
+    if (!questions || numQuestions === 0) return;
 
     // Randomly select questions while maintaining map structure
     const questionIds = Object.keys(questions);
@@ -160,6 +160,9 @@ function QuizPage({ params }: { params: { unitId: string } }) {
     setCurrentQuestionId(selectedIds[0]);
     setQuizStarted(true);
     setShowAnswer(false);
+    setUserAnswer(defaultDoc);
+    setConfidence(3);
+    setAttempts(1);
   };
 
   const nextQuestion = () => {
@@ -170,10 +173,11 @@ function QuizPage({ params }: { params: { unitId: string } }) {
       setCurrentQuestionId(questionIds[currentIndex + 1]);
       setShowAnswer(false);
       setUserAnswer(defaultDoc);
-      setConfidence(2);
-      setAttempts(0);
+      setConfidence(3);
+      setAttempts(1);
     } else {
       setQuizStarted(false);
+      setNumQuestions(0);
     }
   };
 
@@ -231,17 +235,39 @@ function QuizPage({ params }: { params: { unitId: string } }) {
               content={userAnswer}
               flashcard={true}
             />
-            <Button className="mt-2" onClick={checkAnswer}>
-              Submit Answer
-            </Button>
+            <div className="flex gap-2 mt-2">
+              {isNumericAnswer(currentQuestion.answer) && attempts > 1 ? (
+                <Button
+                  onClick={() => {
+                    if (
+                      checkNumericAnswer(userAnswer, currentQuestion.answer)
+                    ) {
+                      setShowAnswer(true);
+                    } else {
+                      setUserAnswer(defaultDoc);
+                      setAttempts(attempts + 1);
+                    }
+                  }}
+                >
+                  Try Again
+                </Button>
+              ) : (
+                <Button onClick={checkAnswer}>Submit Answer</Button>
+              )}
+              <Button variant="secondary" onClick={() => setShowAnswer(true)}>
+                Show Answer
+              </Button>
+            </div>
           </div>
         )}
 
-        {!showAnswer ? (
+        {!showAnswer && !isNumericAnswer(currentQuestion.answer) && (
           <Button className="w-full" onClick={() => setShowAnswer(true)}>
             Show Answer
           </Button>
-        ) : (
+        )}
+
+        {showAnswer && (
           <div>
             <h2 className="text-xl font-bold mb-2">Answer:</h2>
             <TipTap
@@ -283,21 +309,35 @@ function QuizPage({ params }: { params: { unitId: string } }) {
               </div>
             </div>
 
-            <div className="flex gap-2 mt-4">
-              <Button
-                className="flex-1"
-                onClick={() => handleAnswerSubmit(true)}
-              >
-                Got it Right
-              </Button>
-              <Button
-                className="flex-1"
-                variant="secondary"
-                onClick={() => handleAnswerSubmit(false)}
-              >
-                Got it Wrong
-              </Button>
-            </div>
+            {isNumericAnswer(currentQuestion.answer) &&
+            checkNumericAnswer(userAnswer, currentQuestion.answer) ? (
+              <div className="flex gap-2 mt-4">
+                <Button
+                  className="flex-1"
+                  variant="default"
+                  onClick={() => handleAnswerSubmit(true)}
+                >
+                  Next Question
+                </Button>
+              </div>
+            ) : (
+              <div className="flex gap-2 mt-4">
+                <Button
+                  className="flex-1 bg-green-700 hover:bg-green-800"
+                  variant="default"
+                  onClick={() => handleAnswerSubmit(true)}
+                >
+                  Got it Right
+                </Button>
+                <Button
+                  className="flex-1"
+                  variant="secondary"
+                  onClick={() => handleAnswerSubmit(false)}
+                >
+                  Got it Wrong
+                </Button>
+              </div>
+            )}
           </div>
         )}
       </div>

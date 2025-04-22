@@ -103,7 +103,7 @@ export default function FileUpload({ userId, path }: FileUploadProps) {
   };
 
   return (
-    <div className="mt-4">
+    <div className="mt-4 mb-8">
       <h3 className="text-lg font-semibold mb-2">Resources</h3>
       {resources.length > 0 ? (
         <div className="flex flex-wrap gap-4 mb-4">

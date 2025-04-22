@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import firebaseAdmin from "../../firebase/serverConfig";
+import firebaseAdmin from "@/firebase/serverConfig";
 import { courseObj } from "@/redux/user";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse){

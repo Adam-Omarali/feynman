@@ -23,11 +23,14 @@ export default function TipTap({
   flashcard?: boolean;
   setSaved?: Function;
 }>) {
-  const debouncedUpdates = useDebouncedCallback(async ({ editor }) => {
-    const json = editor.getJSON();
-    setContent(json);
-    console.log("debounce", json);
-  }, 4000);
+  const debouncedUpdates = useDebouncedCallback(
+    async ({ editor }) => {
+      const json = editor.getJSON();
+      setContent(json);
+      console.log("debounce", json);
+    },
+    flashcard ? 10 : 4000
+  );
 
   const editor = useEditor({
     extensions: [...TiptapExtensions, QuestionExtension],

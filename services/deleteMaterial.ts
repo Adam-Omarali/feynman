@@ -1,10 +1,9 @@
 import { store } from "@/redux/store";
-import { fetchMaterial, getCourseIdFromUnitId, getIdFromLessonId } from "./fetchMaterial";
-import { CourseState, deleteCourseStore, setCourses } from "@/redux/courses";
 import { deleteLessonStore } from "@/redux/lesson";
-import { deleteUnitStore, unit } from "@/redux/unit";
+import { deleteUnitStore } from "@/redux/unit";
 import { courseObj, deleteCourseUser, deleteLessonUser, deleteUnitUser, simplifiedUnit } from "@/redux/user";
 import { produce } from "immer";
+import { deleteCourseStore } from "@/redux/courses";
 
 async function deleteLessonAPI(lessonId: string){
     await fetch("/api/deleteById", {
@@ -63,25 +62,42 @@ export async function deleteLesson(courseId:string, unitId: string, lessonId: st
 }
 
 async function deleteUnitAPI(unitId: string, courseId: string, unit: simplifiedUnit){
-    await fetch("/api/deleteById", {
-        body: JSON.stringify({
-            id: unitId,
-            type: "units"
-        }),
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        method: "POST",
-    })
+    try {
+        // Delete all lessons in the unit
+        if(unit[unitId].lessons){
+            let lessons = unit[unitId].lessons
+            for(let lessonId in lessons){
+                await deleteLessonAPI(lessonId)
+            }
+        }
 
-    let courseObj = {...store.getState().user.courses}
+        // Delete questions from Firebase
+        const questionsResponse = await fetch(`/api/deleteUnitQuestions?unitId=${unitId}`, {
+            method: 'DELETE',
+        });
 
-    //if already deleted course, no need to delete unit
-    if (courseObj[courseId]) {
+        if (!questionsResponse.ok) {
+            throw new Error('Failed to delete unit questions');
+        }
+
+        // Delete unit from Firebase using deleteById
+        await fetch("/api/deleteById", {
+            body: JSON.stringify({
+                id: unitId,
+                type: "units"
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            method: "POST",
+        });
+
+        // Update user's courses in Firebase
+        let courseObj = {...store.getState().user.courses};
         courseObj = produce(courseObj, draft => {
-            delete draft[courseId].units[unitId]
-        })
-        deleteUnitUser({courseId, unitId})
+            delete draft[courseId].units[unitId];
+        });
+
         await fetch("/api/updateUserCourses", {
             body: JSON.stringify({
                 courseObj,
@@ -91,28 +107,10 @@ async function deleteUnitAPI(unitId: string, courseId: string, unit: simplifiedU
                 'Content-Type': 'application/json',
             },
             method: "POST",
-        })
-    }
-
-    //delete questions
-    await fetch("/api/deleteUnitQuestions", {
-        body: JSON.stringify({
-            userId: store.getState().user.id,
-            unitId
-        }),
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        method: "POST",
-    })
-
-    if(unit[unitId].lessons){
-        let lessons = unit[unitId].lessons
-        for(let lessonId in lessons){
-            await deleteLessonAPI(lessonId)
-            deleteLessonUser({courseId, unitId, lessonId})
-            deleteLessonStore(lessonId)
-        }
+        });
+    } catch (error) {
+        console.error('Error deleting unit:', error);
+        throw error;
     }
 }
 
@@ -120,10 +118,23 @@ export async function deleteUnit(unitId: string, courseId: string){
     let courses = {...store.getState().user.courses}
     let units = courses[courseId].units
 
+    // Delete questions from Redux
     store.dispatch(deleteUnitStore(unitId))
+    
+    // Delete unit from User object
     store.dispatch(deleteUnitUser({courseId, unitId}))
 
     if(units){
+        // Delete all lessons from User object and Redux
+        if(units[unitId].lessons){
+            let lessons = units[unitId].lessons
+            for(let lessonId in lessons){
+                store.dispatch(deleteLessonUser({courseId, unitId, lessonId}))
+                store.dispatch(deleteLessonStore(lessonId))
+            }
+        }
+
+        // Handle all Firebase operations through deleteUnitAPI
         await deleteUnitAPI(unitId, courseId, units)
     }
 }

@@ -37,3 +37,7 @@ next-env.d.ts
 
 .env
 firebase.json
+
+# Admin files
+/app/app/admin/
+/pages/api/admin/

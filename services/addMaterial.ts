@@ -2,8 +2,8 @@ import { store } from "@/redux/store";
 import { addCourseStore } from "@/redux/courses";
 import { Flashcard } from "@/components/FlashcardForm";
 import { addQuestion } from "@/redux/questions";
-import { addCourseUser, addLessonUser, addUnitUser, courseObj } from "@/redux/user";
-import { addUnitStore, unit } from "@/redux/unit";
+import { addCourseUser, addLessonUser, addUnitUser } from "@/redux/user";
+import { addUnitStore, Unit  } from "@/redux/unit";
 import { addLessonStore, lesson } from "@/redux/lesson";
 
 export interface ids {
@@ -45,7 +45,7 @@ export async function addUnit(
     description?: string
 ) {
     let courseObj = store.getState().user.courses
-    let newUnit: unit = await (
+    let newUnit: Unit = await (
       await fetch("/api/addUnit", {
         body: JSON.stringify({
           name: label,
@@ -114,6 +114,7 @@ export async function addFlashcard(
       method: "POST",
     })
   ).json();
+
 
   store.dispatch(addQuestion(newFlashcard))
 }

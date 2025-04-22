@@ -77,7 +77,7 @@ export default function ProfilePage() {
               <p className="text-gray-600 mb-4">
                 {subscription === "pro"
                   ? "You have access to all pro features."
-                  : "Upgrade to Pro for unlimited courses and 10GB ofstorage."}
+                  : "Upgrade to Pro for unlimited courses and 10GB of storage."}
               </p>
               {subscription !== "pro" && (
                 <Link

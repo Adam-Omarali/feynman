@@ -44,7 +44,6 @@ function FlashcardForm({
 
   useEffect(() => {
     const pathParts = pathname?.split("/");
-    console.log(pathParts);
     if (pathParts && pathParts.includes("lesson")) {
       const lessonId = pathParts[pathParts.indexOf("lesson") + 1];
       const lessonName = Object.keys(lessonList).find(

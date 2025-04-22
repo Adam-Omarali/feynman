@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import firebaseAdmin from "../../firebase/serverConfig";
+import firebaseAdmin from "@/firebase/serverConfig";
 import { courseMenu } from "@/redux/courses";
 
 // Define fixed limits

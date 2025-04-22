@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { fetchMaterial } from "../../../../services/fetchMaterial";
+import { fetchMaterial } from "@/services/fetchMaterial";
 import { UserMenu } from "@/components/MaterialMenu";
 import { RootState } from "@/redux/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -11,7 +11,7 @@ import NewMaterialForm from "@/components/NewMaterialForm";
 import { addLesson } from "@/services/addMaterial";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
-import { addUnitStore, unit } from "@/redux/unit";
+import { addUnitStore } from "@/redux/unit";
 import MaterialSkeleton from "@/components/MaterialSkeleton";
 import { Button } from "@/components/ui/Button";
 import FileUpload from "@/components/FileUpload";

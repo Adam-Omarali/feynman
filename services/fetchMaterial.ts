@@ -1,6 +1,6 @@
 import { getUnitIdFromLessonId } from "@/lib/utils";
 import { lesson } from "@/redux/lesson";
-import { addQuestion, fetchUnit, question } from "@/redux/questions";
+import { addQuestion, fetchUnit, Question } from "@/redux/questions";
 import { store } from "@/redux/store";
 
 export async function fetchMaterial(endpoint:string){
@@ -34,9 +34,9 @@ export async function getUser(userId: string){
 
 export async function getQuestions(userId: string, unitId: string){
   const questionState = store.getState().questions
-  let ret: { [key: string]: question } = {}
+  let ret: { [key: string]: Question } = {}
   if (questionState.fetchedUnits.includes(unitId)) {
-    console.log(questionState.questions)
+    console.log("Using cached questions:", questionState.questions)
     for (let id of Object.keys(questionState.questions)) {
       let lessonId = getUnitIdFromLessonId(questionState.questions[id].lessonId)
       if (lessonId == unitId) {
@@ -44,51 +44,15 @@ export async function getQuestions(userId: string, unitId: string){
       }
     }
   } else {
-    console.log("fetching questions by unitId")
-    let temp = await fetchMaterial("/user/"+userId+"/"+unitId)
-    if (!temp.hasOwnProperty("questions")){
-      return {}
-    }
-    let data: { [key: string]: question } = temp.questions
+    console.log("Fetching questions by unitId")
+    let data = await fetchMaterial(`/getQuestions?userId=${userId}&unitId=${unitId}`)
     for (let questionId of Object.keys(data)){
-      store.dispatch(addQuestion({question: data[questionId], qId: questionId}))
+      // Ensure history field exists and is properly initialized
+      const question = data[questionId]
+      store.dispatch(addQuestion({question, qId: questionId}))
     }
     store.dispatch(fetchUnit(unitId))
     ret = data
   }
   return ret
-}
-
-export async function updateQuestion(userId: string, unitId: string, questionsMap: {
-  [key: string]: {
-    id: string;
-    question: any;
-    answer: any;
-    history: {
-      confidence: number;
-      attempts: number;
-      correct: boolean;
-      date: number;
-    }[];
-    // ... other question fields
-  }
-}) {
-
-  const response = await fetch(`/api/updateQuestion`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      userId,
-      unitId,
-      questions: questionsMap
-    }),
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to update questions');
-  }
-
-  return response.json();
 }

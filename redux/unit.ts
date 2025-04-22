@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit"
 
-export interface unit {
+export interface Unit {
     name: string,
     emoji: string,
     id: string
@@ -11,7 +11,7 @@ export interface unit {
 }
 
 export interface UnitState {
-    value: {[key: string]: unit}
+    value: {[key: string]: Unit}
   }
 
 const initialState: UnitState = {
@@ -22,10 +22,10 @@ const initialState: UnitState = {
     name: 'units',
     initialState,
     reducers: {
-      setUnit: (state, action: PayloadAction<{[key: string]: unit}>) => {
+      setUnit: (state, action: PayloadAction<{[key: string]: Unit}>) => {
         state.value = action.payload
       },
-      addUnitStore: (state, action: PayloadAction<unit>) => {
+      addUnitStore: (state, action: PayloadAction<Unit>) => {
         state.value[action.payload.id] = action.payload
       },
       deleteUnitStore: (state, action: PayloadAction<string>) => {

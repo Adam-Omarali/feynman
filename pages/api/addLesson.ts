@@ -1,9 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import firebaseAdmin from "../../firebase/serverConfig";
-import { FieldValue } from "firebase-admin/firestore";
+import firebaseAdmin from "@/firebase/serverConfig";
 import { courseObj } from "@/redux/user";
 
-interface addLesson {
+interface AddLesson {
     name: string,
     userId: string,
     emoji: string,
@@ -16,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const db = firebaseAdmin.firestore();
 
     if (req.method == "POST"){
-        const {name, userId, emoji, courseId, unitId, courseObj} : addLesson = JSON.parse(req.body)
+        const {name, userId, emoji, courseId, unitId, courseObj} : AddLesson = JSON.parse(req.body)
 
 
         if (name && userId){
