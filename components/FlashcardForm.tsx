@@ -18,8 +18,8 @@ import { modalContext } from "./Modal";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
 import { defaultDoc } from "@/redux/questions";
-import { useToast } from "@/components/hooks/use-toast";
 import { usePathname, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 
 type doc = {
   type: string;
@@ -38,7 +38,6 @@ function FlashcardForm({
   const user = useSelector((state: RootState) => state.user);
   const lessonList = getLessonList();
   const modal = useContext(modalContext);
-  const { toast } = useToast();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -75,17 +74,15 @@ function FlashcardForm({
 
       onSubmit?.(flashcard);
 
-      setQuestion(defaultDoc);
-      setAnswer(defaultDoc);
+      setQuestion({ type: "doc", content: [] });
+      setAnswer(false);
+      setSolution(false);
       setDifficulty(0);
       setLesson("none");
       if (onSubmit) {
         modal.close();
       } else {
-        toast({
-          title: "Flashcard Created",
-          duration: 5000,
-        });
+        toast.success("Flashcard Created");
       }
     }
   }
@@ -106,6 +103,7 @@ function FlashcardForm({
             onCheckedChange={() =>
               answer ? setAnswer(false) : setAnswer(defaultDoc)
             }
+            checked={!!answer}
           />
           <Label htmlFor="answer">Answer</Label>
           <Switch
@@ -113,6 +111,7 @@ function FlashcardForm({
             onCheckedChange={() =>
               solution ? setSolution(false) : setSolution(defaultDoc)
             }
+            checked={!!solution}
           />
           <Label htmlFor="solution">Solution</Label>
         </div>
