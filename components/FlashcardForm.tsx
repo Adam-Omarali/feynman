@@ -35,6 +35,7 @@ function FlashcardForm({
   const [difficulty, setDifficulty] = useState(0);
   const [lesson, setLesson] = useState("none");
   const [alertLesson, setAlertLesson] = useState(false);
+  const [editorKey, setEditorKey] = useState(0);
   const user = useSelector((state: RootState) => state.user);
   const lessonList = getLessonList();
   const modal = useContext(modalContext);
@@ -79,6 +80,7 @@ function FlashcardForm({
       setSolution(false);
       setDifficulty(0);
       setLesson("none");
+      setEditorKey((prev) => prev + 1);
       if (onSubmit) {
         modal.close();
       } else {
@@ -91,6 +93,7 @@ function FlashcardForm({
       <div>
         <p>Question</p>
         <TipTap
+          key={editorKey}
           isEditable={true}
           setContent={setQuestion}
           content={question}
@@ -143,6 +146,7 @@ function FlashcardForm({
             <div
               className="rating"
               onChange={(e: any) => setDifficulty(e.target.id)}
+              key={editorKey}
             >
               <input
                 type="radio"
